@@ -1,0 +1,1046 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090b12">
+  <meta name="description" content="WolfPack — The Workshop. Aprenda Ruby jogando missões reais, explore ferramentas e construa junto com a matilha.">
+  <title>WolfPack — The Workshop | Kingmaker</title>
+  <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCI+CiAgPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiByeD0iMTYiIGZpbGw9IiMxNDEwMWYiLz4KICA8cGF0aCBkPSJNMTMgMTEgMjggMjIgNDAgMTYgNTIgMjIgNjcgMTEgNjIgNDAgNzAgNTYgNTYgNjEgNDUgNzQgNDAgNjQgMzUgNzQgMjQgNjEgMTAgNTYgMTggNDBaIiBmaWxsPSJub25lIiBzdHJva2U9IiNiOWExZmYiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxwYXRoIGQ9Im0yNSAzNyAxMSA3LTEyIDNNNTUgMzcgNDQgNDRsMTIgM00zMSA1Nmw5IDYgOS02IiBmaWxsPSJub25lIiBzdHJva2U9IiNiOWExZmYiIHN0cm9rZS13aWR0aD0iMi4zIi8+CiAgPHBhdGggZD0ibTIzIDQzIDE0IDQtMTAgNS00LTJabTM0IDAtMTQgNCAxMCA1IDQtMloiIGZpbGw9IiNiZGY3N2MiLz4KPC9zdmc+Cg==" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style id="wolfpack-critical-css">
+:root{color-scheme:dark;--bg:#080a10;--surface:#10131d;--surface2:#141824;--line:#282c3b;--text:#f0eff8;--muted:#969aab;--sub:#636a7e;--purple:#a789fb;--purple2:#7251d1;--lime:#bdf77c;--green:#80dcb6;--radius:15px;--mono:"JetBrains Mono",monospace;--display:"Space Grotesk",sans-serif;--body:"DM Sans",sans-serif}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:85px}body{margin:0;background:var(--bg);color:var(--text);font-family:var(--body);-webkit-font-smoothing:antialiased}button,input,textarea{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}a:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px solid var(--lime);outline-offset:3px}::selection{background:#7354b8;color:white}.ambient-grid{position:fixed;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(104,85,150,.035) 1px,transparent 1px),linear-gradient(rgba(104,85,150,.035) 1px,transparent 1px);background-size:54px 54px;mask-image:linear-gradient(90deg,transparent 0%,#000 44%,#000 100%);z-index:0}.app-shell{display:grid;grid-template-columns:242px minmax(0,1fr);min-height:100vh;position:relative;z-index:1}.sidebar{position:sticky;top:0;height:100vh;border-right:1px solid #202430;background:#0b0d15;display:flex;flex-direction:column;padding:31px 17px 20px;z-index:3}.brand{display:flex;align-items:center;gap:12px;padding:0 10px 53px}.brand-mark{width:44px;height:48px;flex:0 0 44px;color:var(--purple)}.brand-mark svg{width:100%;height:100%}.brand-wordmark strong{display:block;font:700 20px var(--display);letter-spacing:.035em}.brand-wordmark small{font:600 9px var(--mono);color:#8a829e;letter-spacing:.24em;display:block;margin-top:4px}.nav-group-label,.side-kicker{font:700 10px var(--mono);letter-spacing:.13em;color:#5d647b;padding:0 16px 15px}.side-nav{display:grid;gap:5px}.nav-link{height:44px;display:flex;align-items:center;gap:12px;padding:0 13px;border-radius:8px;color:#898fa3;font-size:12px;font-weight:700;transition:background .2s,color .2s}.nav-link:hover{background:#191a2b;color:var(--text)}.nav-link.active{color:#cab8ff;background:linear-gradient(90deg,#251b3b,#171723);box-shadow:inset 2px 0 #aa83ff}.nav-icon{font:400 23px var(--display);width:21px;text-align:center}.nav-count{font:500 10px var(--mono);color:#73758c;margin-left:auto}.nav-dot{width:6px;height:6px;border-radius:50%;background:var(--lime);box-shadow:0 0 10px var(--lime);margin-left:auto}.sidebar-spacer{flex:1}.sidebar-pulse{display:flex;align-items:center;gap:10px;font:600 9px var(--mono);letter-spacing:.07em;color:#92ceab;padding:12px 10px 22px}.pulse-dot{width:7px;height:7px;background:var(--lime);border-radius:50%;display:inline-block;box-shadow:0 0 0 4px #bdf77c15,0 0 14px #bdf77c85;flex:0 0 auto}.sidebar-card{border:1px solid #333047;background:linear-gradient(155deg,#181628,#12141e);border-radius:12px;padding:19px 15px}.sidebar-card .side-kicker{padding:0;color:#bda7ff;font-size:9px}.sidebar-card p{font:500 14px/1.6 var(--display);margin:14px 0 20px}.side-signature{font:600 9px var(--mono);color:#8785a5;letter-spacing:.08em}.sidebar-version{display:flex;justify-content:space-between;font:600 9px var(--mono);letter-spacing:.08em;color:#585e70;padding:29px 12px 0}.sidebar-version span{color:#7c7997}.main-content{min-width:0}.topbar{height:71px;border-bottom:1px solid #202430;padding:0 5.3%;display:flex;align-items:center;justify-content:space-between;background:#090b13bb;backdrop-filter:blur(15px);position:sticky;top:0;z-index:2}.breadcrumbs{font:600 10px var(--mono);letter-spacing:.07em;color:#626879}.breadcrumbs span{color:#38394e;margin:0 11px}.breadcrumbs b{color:#beb8cc;font-weight:600}.topbar-right{display:flex;align-items:center;gap:20px}.mini-online{font:700 10px var(--mono);color:#87ac9b;display:flex;align-items:center;gap:9px;letter-spacing:.04em}.mini-online i,.engine-status i,.terminal-header i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--lime);box-shadow:0 0 8px #baff8e78}.topbar-divider{height:26px;border-left:1px solid #292a3b}.top-avatar{background:#25203b;border:1px solid #624e9b;color:#d7c7ff;border-radius:9px;width:32px;height:32px;display:grid;place-items:center;font:700 13px var(--display)}.content-wrap{padding:0 5.3%;max-width:1800px;margin:auto}.section-anchor{scroll-margin-top:100px}.hero{display:grid;grid-template-columns:1.02fr .98fr;gap:25px;min-height:540px;align-items:center;border-bottom:1px solid #212533;position:relative;overflow:hidden}.hero-copy{padding:63px 0 62px;z-index:1}.eyebrow{font:700 10px var(--mono);letter-spacing:.11em;color:var(--purple);margin-bottom:30px}.eyebrow-line{display:inline-block;width:27px;height:1px;background:var(--purple);vertical-align:middle;margin-right:8px}.hero-label{font:700 9px var(--mono);letter-spacing:.14em;color:#a5d2ab;display:flex;gap:11px;align-items:center;margin-bottom:19px}.hero-label-code{color:#6e7285;margin-left:5px}.hero h1{font:700 clamp(45px,5.4vw,79px)/1.03 var(--display);letter-spacing:-.057em;margin:0 0 25px}.hero h1 em{font-style:normal;background:linear-gradient(92deg,#cdb8ff,#9b7fe9);-webkit-background-clip:text;background-clip:text;color:transparent}.hero-period{color:var(--lime)}.hero-copy>p{max-width:535px;color:#aaaabc;font:500 15px/1.8 var(--body);margin-bottom:28px}.hero-actions{display:flex;gap:12px;flex-wrap:wrap}.btn{display:inline-flex;justify-content:center;align-items:center;gap:12px;border-radius:8px;min-height:46px;padding:0 19px;font:700 11px var(--mono);letter-spacing:.02em;transition:filter .2s,transform .2s,background .2s;border:1px solid transparent}.btn:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.1)}.btn:disabled{opacity:.55;cursor:wait}.btn-primary{background:var(--lime);color:#111b0b;border-color:var(--lime);box-shadow:0 0 24px #bdf77c19}.btn-primary span{font-size:17px}.btn-ghost{color:#ddd7eb;border-color:#474253;background:#15152185}.btn-ghost:hover{background:#211b31}.btn-ghost span{font-size:17px}.hero-footnote{margin-top:36px;color:#63697b;font:600 9px var(--mono);letter-spacing:.1em}.hero-dash{color:var(--purple);margin-right:8px}.hero-art{height:465px;position:relative;display:grid;place-items:center;isolation:isolate}.hero-art:before{content:"";position:absolute;width:86%;height:90%;background:radial-gradient(ellipse,#44337970 0%,#29203c3a 38%,transparent 72%);z-index:-1}.hero-ring{position:absolute;border-radius:50%;border:1px solid #7970b02e;transform:rotate(-25deg) scaleX(.86)}.ring-one{width:435px;height:435px}.ring-two{width:345px;height:345px;border-color:#735ac344}.ring-three{width:260px;height:260px;border-color:#8882c82c}.wolf-figure{width:245px;height:300px;filter:drop-shadow(0 0 22px #9a85fd43);z-index:1}.wolf-figure svg{width:100%;height:100%}.art-orb{width:310px;height:160px;position:absolute;bottom:58px;background:radial-gradient(ellipse,#b79afa33 0%,transparent 70%);filter:blur(13px);transform:perspective(100px) rotateX(57deg)}.hero-art-caption{position:absolute;z-index:1;font:600 10px/2 var(--mono);letter-spacing:.06em;color:#727794}.hero-art-caption span{color:#baf184}.art-left{left:0;top:155px}.art-right{right:0;bottom:135px;text-align:right}.hero-art-bottom{position:absolute;bottom:27px;font:600 10px var(--mono);letter-spacing:.06em;color:#6f708c}.hero-art-bottom span{color:var(--purple);padding:0 10px}.metrics{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid #212533}.metric{display:flex;align-items:center;gap:17px;padding:26px 17px;border-right:1px solid #222533}.metric:first-child{padding-left:0}.metric:last-child{border-right:0}.metric-icon{display:grid;place-items:center;width:39px;height:39px;border:1px solid #39334e;border-radius:9px;color:var(--purple);font:400 24px var(--display);background:#151322;flex:0 0 auto}.metric strong{font:700 26px var(--display);display:block;line-height:1.2}.metric small{display:block;font:600 9px var(--mono);letter-spacing:.04em;color:#757e90;margin-top:5px}.section{padding:83px 0 0}.section-heading{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:32px}.section-heading .eyebrow{margin-bottom:11px}.section-heading h2{font:700 clamp(29px,3vw,43px)/1.2 var(--display);letter-spacing:-.04em;margin:0 0 9px}.section-heading h2 span{color:var(--purple)}.section-heading p{color:#9298ab;font-size:13px;line-height:1.6;margin:0}.section-aside{font:700 9px var(--mono);letter-spacing:.06em;color:#717a8d;margin-bottom:5px;white-space:nowrap}.section-aside span{color:var(--purple);font-size:18px;margin-left:7px}.app-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.app-card{background:linear-gradient(155deg,#141620,#0f111a);border:1px solid #2a2b3b;border-radius:12px;min-height:259px;padding:22px 21px 0;display:flex;flex-direction:column;transition:transform .2s,border-color .2s}.app-card:hover{border-color:#64558d;transform:translateY(-3px)}.app-card.featured{background:radial-gradient(ellipse at top right,#39285280,transparent 63%),linear-gradient(155deg,#1b1930,#11131e);border-color:#7657ab}.app-card-top{display:flex;justify-content:space-between;align-items:flex-start}.app-logo{width:43px;height:43px;border:1px solid #494054;background:#272131;border-radius:10px;display:grid;place-items:center;font:700 22px var(--mono);color:#bca0ff}.app-ruby{color:#d9c1ff;background:#362247;border-color:#70508f}.app-ares{color:#f7b28d;background:#39271e;border-color:#795036}.app-argus{color:#8cd7dd;background:#193339;border-color:#39636c}.app-raven{color:#baa8fe;font-size:16px}.app-cerberus{color:#e6a2ba;background:#392635}.app-auditor{color:#a4e1b7;background:#1e322a}.app-crypto{color:#eacb7c;background:#3b331d}.status{font:700 8px var(--mono);letter-spacing:.06em;padding:7px 9px;border-radius:5px;border:1px solid #333849;color:#8b91a1;display:flex;align-items:center;gap:7px}.status-live{background:#1c33263b;color:#b9f394;border-color:#3c6b50}.status-live i{width:5px;height:5px;border-radius:50%;background:var(--lime)}.app-card-body{padding:22px 0 20px;flex:1}.app-card-body small{font:600 9px var(--mono);letter-spacing:.03em;color:#848399}.app-card-body h3{font:700 23px var(--display);letter-spacing:-.02em;margin:7px 0 10px;display:flex;justify-content:space-between;align-items:center}.app-card-body h3 span{font-size:17px;color:#606175}.app-card-body p{font:500 12px/1.65 var(--body);color:#9798a9;margin:0}.app-card-bottom{border-top:1px solid #303042;min-height:51px;display:flex;justify-content:space-between;align-items:center;gap:10px;font:600 9px var(--mono);color:#777b91;letter-spacing:.02em}.app-card-bottom a{color:#c6f38d}.app-card-bottom b{font-size:17px;font-weight:500;padding-left:3px}.app-muted{color:#717286}.game-section{padding-top:94px}.game-beta{border:1px solid #466344;background:#19291e;color:#a6d2a1;padding:10px 14px;border-radius:7px;font:700 9px var(--mono);display:flex;align-items:center;gap:11px;white-space:nowrap}.game-beta b{color:#e0e8d9}.game-app{border:1px solid #343246;border-radius:13px;background:#0d1019;overflow:hidden;box-shadow:0 25px 70px #0005}.game-top{display:flex;justify-content:space-between;align-items:center;padding:0 20px;min-height:54px;background:#141521;border-bottom:1px solid #2a2b3b}.game-top-id{font:700 11px var(--mono);color:#e5d9ff;display:flex;align-items:center;gap:10px;letter-spacing:.03em}.game-brand-icon{color:#b393fd;font-size:21px}.slash{color:#694d9b;margin:0 7px}.game-top-right{display:flex;align-items:center;gap:19px}.engine-status{font:600 9px var(--mono);color:#929caf;display:flex;align-items:center;gap:9px}.engine-status i{background:#b4b3c8;box-shadow:none}.engine-status.is-ready{color:#bdf77c}.engine-status.is-ready i{background:var(--lime);box-shadow:0 0 8px #bdf77c77}.engine-status.is-error{color:#e5a7a7}.engine-status.is-error i{background:#f18191}.reset-button{border:0;background:none;color:#9d9da9;font:600 9px var(--mono);letter-spacing:.04em;padding:8px}.reset-button:hover{color:#fff}.game-strip{min-height:94px;padding:18px 23px;display:flex;justify-content:space-between;gap:20px;align-items:center;background:#10121d}.player-display{display:flex;align-items:center;gap:12px}.player-avatar{height:44px;width:44px;border:1px solid #6a5696;background:linear-gradient(135deg,#443366,#251e3c);display:grid;place-items:center;border-radius:9px;color:#e4d9ff;font:700 22px var(--display)}.player-display small,.game-strip-stats small{font:600 9px var(--mono);color:#687089;display:block;margin-bottom:6px}.player-display strong,.game-strip-stats strong{font:700 14px var(--display);letter-spacing:.015em;display:block}.edit-name{background:none;border:0;color:#9e91c1;font-size:19px}.game-strip-stats{display:flex;gap:34px}.game-strip-stats strong span{color:#88879c;font-size:11px}.campaign-progress{height:3px;background:#272939}.progress-bar{height:100%;width:0;background:linear-gradient(90deg,#9273ea,#c4f785);transition:width .4s}.game-workspace{display:grid;grid-template-columns:195px minmax(240px,.9fr) minmax(310px,1.16fr);min-height:600px}.mission-sidebar{border-right:1px solid #262a39;background:#10131d;display:flex;flex-direction:column;min-width:0}.mission-list-title{padding:23px 15px 19px;font:700 10px var(--mono);color:#d9d4e5;letter-spacing:.04em}.mission-list-title span{display:block;margin-top:7px;color:#6c7389;font:500 9px var(--mono)}.mission-list{flex:1;overflow-y:auto;max-height:620px;padding:0 8px 10px}.mission-item{display:flex;align-items:center;text-align:left;gap:10px;width:100%;padding:12px 7px;border:1px solid transparent;border-radius:6px;background:none;color:#8b91a5;font-size:11px;transition:background .15s;cursor:pointer}.mission-item:hover:not(:disabled){background:#1b1c2a;color:#e5dafa}.mission-item.active{background:#2a213e;border-color:#53416d;color:#e8d7ff}.mission-item:disabled{opacity:.45;cursor:not-allowed}.mission-number{font:700 10px var(--mono);width:24px;height:24px;border:1px solid #444255;border-radius:6px;display:grid;place-items:center;flex:0 0 auto}.mission-item.active .mission-number{background:#6949a3;border-color:#9673d6;color:white}.mission-item.done .mission-number{color:var(--lime);border-color:#567248;background:#1d2c20}.mission-text{display:block;line-height:1.3;flex:1}.mission-locked{font:700 9px var(--mono);color:#545b6a}.mission-sidebar-footer{font:600 9px var(--mono);letter-spacing:.02em;color:#747389;border-top:1px solid #272a37;padding:19px 13px}.mission-main{padding:24px 22px;min-width:0;background:#11131d}.mission-heading{display:flex;align-items:center;justify-content:space-between;gap:15px;color:#a78ded;font:700 9px var(--mono);letter-spacing:.04em}.mission-heading span:last-child{color:#606d85}.mission-main h3{font:700 23px/1.25 var(--display);letter-spacing:-.025em;margin:24px 0 11px}.mission-scene{font:500 12px/1.7 var(--body);color:#9ea2b4;margin:0 0 25px}.theory-box{background:#171925;border:1px solid #2e3144;border-radius:8px;padding:16px}.theory-label,.task-label{font:700 10px var(--mono);color:#bba6ff;letter-spacing:.02em}.theory-box p,.mission-task p{font:500 11.5px/1.75 var(--body);color:#c6c4d3;margin:11px 0 14px}.example-code{background:#0b0d16;border:1px solid #252837;border-radius:7px;padding:12px;font:500 11px/1.7 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;color:#afe7ac;margin:0}.mission-task{padding:23px 2px 11px}.task-label{color:#baf38c}.mission-task p{font-weight:650;font-size:12px;color:#eeeaf6}.mission-toolbar{display:flex;gap:10px;flex-wrap:wrap}.help-button{border:0;background:none;padding:8px 0;color:#aa9ad9;font:700 9px var(--mono);white-space:nowrap}.help-button:hover{color:#d6c3ff}.helper-message{color:#d5c2ff;background:#211b32;border:1px solid #46355e;border-radius:7px;font:500 11px/1.75 var(--mono);padding:10px;margin:12px 0 0;white-space:pre-wrap;overflow-wrap:anywhere;display:none}.helper-message.visible{display:block}.editor-main{background:#090b12;display:flex;flex-direction:column;min-width:0;border-left:1px solid #272a3b}.editor-header{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #262938;min-height:45px;padding:0 13px;background:#11131b}.editor-tab{font:600 10px var(--mono);display:block;background:#181825;color:#c6b7fc;padding:13px 14px;border-right:1px solid #302d3f;border-top:2px solid #ab86fc}.editor-lang{color:#6b7589;font:600 9px var(--mono)}.editor-body{min-height:314px;display:flex;align-items:stretch;background:repeating-linear-gradient(to bottom,#10121b 0,#10121b 25px,#0d0e16 25px,#0d0e16 50px);padding:16px 0 12px;flex:1}.line-numbers{font:500 12px/25px var(--mono);color:#515772;padding:0 13px 0 16px;border-right:1px solid #282b3d;white-space:pre;text-align:right;user-select:none}#code-editor{width:100%;min-height:280px;resize:vertical;border:0;outline:0;background:transparent;color:#e5e7f0;font:500 12px/25px var(--mono);padding:0 14px;tab-size:2;overflow:auto;white-space:pre;caret-color:var(--lime)}#code-editor::placeholder{color:#616a7a}.editor-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 13px 15px;background:#11131b}.editor-shortcut{color:#6d7485;font:600 9px var(--mono)}.btn-run{min-height:38px;font-size:10px}.terminal-header{min-height:38px;display:flex;align-items:center;justify-content:space-between;background:#171a23;border-top:1px solid #2a2d3b;border-bottom:1px solid #292c3a;padding:0 15px}.terminal-header span{font:700 10px var(--mono);color:#aaa9b9;display:flex;align-items:center;gap:9px}.terminal-header button{font:700 9px var(--mono);color:#757c8e;border:0;background:none}.terminal-header button:hover{color:white}.terminal-output{min-height:135px;max-height:240px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;padding:16px;color:#b8dbb7;font:500 11px/1.7 var(--mono);background:#0a0c11}.terminal-output.error{color:#edaaaa}.terminal-output.success{color:#bdf77c}.editor-warning{padding:10px 13px;border-top:1px solid #2e302e;color:#7c8291;font:500 9px/1.55 var(--mono);background:#11131b}.game-bottom{background:#151621;border-top:1px solid #292b38;padding:16px 20px;display:flex;justify-content:space-between;gap:12px;color:#788095;font:600 9px var(--mono)}.game-bottom b{color:#af9bd9}.game-note{margin-top:16px;border:1px solid #292b3a;border-radius:9px;padding:18px 20px;display:flex;gap:15px;background:#11131b}.game-note>span{font-size:22px;color:#ac8cef}.game-note p{font:500 12px/1.6 var(--body);color:#9299a9;margin:0}.game-note a{color:#c6ee9e;font:700 10px var(--mono);margin-left:5px}.method-section{padding-bottom:74px}.method-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.method-item{padding:23px 20px;background:#12141e;border:1px solid #2a2c3b;border-radius:10px;min-height:190px}.method-num{font:700 10px var(--mono);color:#b89ff7;display:block;margin-bottom:30px}.method-item strong{font:700 17px var(--display);display:block}.method-item p{font:500 12px/1.7 var(--body);color:#959aab;margin-top:11px}.closing-banner{border:1px solid #484263;border-radius:12px;margin-top:23px;background:radial-gradient(circle at 85% 25%,#4f3b8147,transparent 45%),linear-gradient(110deg,#1b1930,#12131d);min-height:190px;padding:26px 33px;display:flex;flex-direction:column;align-items:flex-start}.closing-banner>span{font:700 10px var(--mono);color:#ba9ef6}.closing-banner>span b{color:#7c7298;margin-left:10px}.closing-banner p{font:600 clamp(19px,2.5vw,29px)/1.3 var(--display);letter-spacing:-.03em;margin:17px 0}.closing-banner p em{font-style:normal;color:#c5aaee}.closing-banner a{color:var(--lime);font:700 10px var(--mono);margin-top:auto}.footer{border-top:1px solid #292c38;display:flex;justify-content:space-between;gap:10px;padding:26px 0 39px;font:600 9px var(--mono);color:#727687}.footer b{color:#d3c0f8}.footer span{color:#565f73}.name-dialog{position:fixed;border:1px solid #7556ab;background:linear-gradient(155deg,#201b2f,#10131c);color:white;border-radius:15px;padding:0;width:min(450px,calc(100vw - 24px));box-shadow:0 40px 130px #000d}.name-dialog::backdrop{background:#05050ad1;backdrop-filter:blur(6px)}.name-dialog form{padding:30px}.dialog-kicker{font:700 10px var(--mono);color:#b99ffc}.name-dialog h2{font:700 28px var(--display);letter-spacing:-.03em;margin:16px 0 8px}.name-dialog p{font:500 13px/1.7 var(--body);color:#a6a7bb;margin-bottom:22px}.name-dialog label{font:700 10px var(--mono);color:#b9adcf;display:block;margin-bottom:9px}.name-dialog input{background:#0b0e17;width:100%;border:1px solid #5b5171;border-radius:8px;padding:14px;color:white;outline:0}.dialog-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:22px}.dialog-actions .btn{min-height:41px}.dialog-actions .btn-ghost{border-color:#424052}@media(max-width:1330px){.app-shell{grid-template-columns:205px minmax(0,1fr)}.sidebar{padding-left:9px;padding-right:9px}.brand{gap:7px}.brand-wordmark strong{font-size:17px}.content-wrap{padding:0 4%}.topbar{padding:0 4%}.game-workspace{grid-template-columns:163px minmax(220px,1fr) minmax(285px,1.15fr)}.mission-list-title{font-size:9px}.game-strip-stats{gap:17px}}@media(max-width:1120px){.hero{min-height:440px}.hero h1{font-size:50px}.hero-art{height:385px}.ring-one{width:330px;height:330px}.ring-two{width:268px;height:268px}.ring-three{width:205px;height:205px}.wolf-figure{width:205px;height:245px}.hero-art-caption{display:none}.app-grid{grid-template-columns:repeat(2,1fr)}.game-workspace{grid-template-columns:170px minmax(0,1fr)}.editor-main{grid-column:2;min-height:490px;border-top:1px solid #282b3b}.mission-main{grid-column:2}.mission-sidebar{grid-row:1 / 3}.mission-list{max-height:none}.editor-body{min-height:240px}.method-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:800px){.app-shell{display:block}.sidebar{position:relative;width:100%;height:auto;display:block;padding:15px 20px;border-bottom:1px solid #292b39;border-right:0}.brand{padding:0 0 12px}.brand-mark{width:34px;height:40px;flex-basis:34px}.brand-wordmark strong{font-size:18px}.nav-group-label,.sidebar-spacer,.sidebar-bottom{display:none}.side-nav{display:flex;flex-wrap:wrap;gap:6px}.nav-link{padding:0 10px;font-size:11px;height:37px}.nav-link .nav-icon{font-size:16px;width:auto}.topbar{position:relative;height:52px}.content-wrap{padding:0 20px}.hero{grid-template-columns:1fr;min-height:auto;gap:0}.hero-copy{padding:50px 0 8px}.hero-art{height:270px;max-width:470px;width:100%;margin:auto}.hero h1{font-size:clamp(43px,8vw,60px)}.wolf-figure{height:210px;width:195px}.ring-one{width:260px;height:260px}.ring-two{width:212px;height:212px}.ring-three{width:160px;height:160px}.hero-art-bottom{bottom:12px}.metrics{grid-template-columns:repeat(2,1fr)}.metric:nth-child(2){border-right:0}.metric{padding:17px 12px}.metric:nth-child(3),.metric:nth-child(4){border-top:1px solid #292b39}.metric:first-child{padding-left:12px}.section{padding-top:60px}.game-section{padding-top:66px}.footer{flex-direction:column;line-height:1.6}.game-workspace{grid-template-columns:minmax(0,1fr)}.mission-sidebar{grid-column:1;grid-row:auto;border-right:0;border-bottom:1px solid #282a38}.mission-list{display:flex;flex-wrap:nowrap;overflow-x:auto;max-height:none;padding:0 10px 12px}.mission-item{flex:0 0 130px}.mission-sidebar-footer{display:none}.mission-main,.editor-main{grid-column:1}.mission-main{padding:23px}.editor-main{border-left:0}.game-strip{padding:15px;flex-wrap:wrap}.game-strip-stats{width:100%;justify-content:space-between}.section-aside{display:none}}@media(max-width:550px){.nav-link{font-size:0;gap:5px}.nav-link .nav-icon{font-size:18px}.nav-count,.nav-dot{display:none}.nav-link.active{font-size:11px}.topbar-right{gap:10px}.topbar-divider{display:none}.breadcrumbs{font-size:8px}.breadcrumbs span{margin:0 4px}.hero-actions{flex-direction:column;align-items:stretch}.hero-actions .btn{justify-content:space-between}.app-grid,.method-grid{grid-template-columns:1fr}.metric{gap:9px}.metric-icon{width:30px;height:30px;font-size:18px}.metric strong{font-size:21px}.metric small{font-size:8px}.section-heading h2{font-size:30px}.game-beta{display:none}.game-top{padding:0 12px}.game-top-id{font-size:9px}.game-top-right{gap:4px}.engine-status{font-size:0}.engine-status i{font-size:8px}.reset-button{font-size:8px}.game-strip-stats{gap:8px}.level-display{display:none}.editor-shortcut{font-size:8px}.btn-run{padding:0 10px;font-size:9px}.game-bottom{flex-direction:column}.closing-banner{padding:22px}}
+
+/* VULPES-77: terminal educacional simulado; estilos isolados do Ruby Protocol. */
+.vulpes-section{--v77:#70e5cf;--v77-soft:#86dcd1;--v77-bg:#091419;--v77-edge:#25434b}.vulpes-section .section-heading h2 span{color:var(--v77)}.vulpes-section .section-heading .eyebrow{color:var(--v77)}.vulpes-tag{font:700 9px var(--mono);letter-spacing:.05em;color:#87daca;border:1px solid #23554c;background:#11352e;padding:12px 14px;border-radius:8px;white-space:nowrap}.vulpes-tag i{width:7px;height:7px;border-radius:50%;background:#78e9c8;display:inline-block;margin-right:8px;box-shadow:0 0 10px #7efbd7aa}.vulpes-catalog-card{border-color:#2c776c!important;background:radial-gradient(ellipse at 95% 0%,#17473f70,transparent 60%),linear-gradient(150deg,#132225,#0d151b)!important}.app-vulpes{color:#82e5d5;background:#153e3d;border:1px solid #308274}.vulpes-shell{border:1px solid #376b65;border-radius:14px;overflow:hidden;background:var(--v77-bg);box-shadow:0 18px 90px #0004}.vulpes-toolbar{background:#101e23;padding:15px 19px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--v77-edge)}.vulpes-brand{display:flex;align-items:center;gap:13px;min-width:0}.vulpes-glyph{display:grid;place-items:center;border:1px solid #3a8273;border-radius:9px;width:38px;height:38px;color:#91e8cf;background:#16332e;font:700 29px var(--mono)}.vulpes-brand strong{font:700 12px var(--mono);letter-spacing:.035em;color:#c6ffea;display:block}.vulpes-brand strong span{color:#64bdb1}.vulpes-brand small{color:#688d91;font:600 8px var(--mono);letter-spacing:.09em;display:block;margin-top:7px}.vulpes-toolbar-actions{display:flex;align-items:center;gap:15px}.vulpes-online{font:700 9px var(--mono);color:#85e5ba;white-space:nowrap}.vulpes-text-button{background:none;border:0;color:#9aa6ad;font:700 9px var(--mono);letter-spacing:.05em;padding:7px 0}.vulpes-text-button:hover{color:#b4ffe6}.vulpes-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid #254046;background:#122027}.vulpes-stats>div{padding:18px 21px;border-right:1px solid #2b444a}.vulpes-stats>div:last-child{border-right:0}.vulpes-stats small{color:#759097;display:block;font:700 9px var(--mono);margin-bottom:7px}.vulpes-stats strong{display:block;color:#b6f5df;font:700 15px var(--display);word-break:break-word}.vulpes-progress{height:4px;background:#0e2428}.vulpes-progress>span{height:100%;width:0;display:block;background:linear-gradient(90deg,#37b4a9,#bdf77c);transition:width .35s}.vulpes-layout{display:grid;grid-template-columns:270px minmax(0,1fr)}.vulpes-intel{padding:22px 20px;background:#111b21;border-right:1px solid #274045}.vulpes-intel-label{font:700 9px var(--mono);color:#73dcca;letter-spacing:.08em;margin:0 0 12px}.vulpes-intel h3{font:700 18px var(--display);color:#ebfff5;margin:0 0 13px}.vulpes-intel>p{color:#a3b4b8;font:500 12px/1.75 var(--body);margin:0 0 23px}.vulpes-node{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #2d3b42}.vulpes-node>span{font:700 20px var(--mono);color:#5dbbaf}.vulpes-node b{font:700 11px var(--mono);display:block;color:#ceddda}.vulpes-node small{font:500 10px var(--mono);color:#65878a}.vulpes-stages{margin:0 0 15px;padding:0;list-style:none;display:grid;gap:8px;counter-reset:v77}.vulpes-stages li{font:600 11px var(--body);color:#86999f;padding:10px 11px;border:1px solid #2c3b42;border-radius:7px;counter-increment:v77}.vulpes-stages li:before{content:'0' counter(v77) ' / ';font:700 9px var(--mono);color:#65877f}.vulpes-stages li.active{border-color:#3d9086;color:#b4f3e4;background:#183534}.vulpes-stages li.completed{color:#92cbaf}.vulpes-stages li.completed:before{content:'✓ / ';color:#a2eac0}.vulpes-intel .vulpes-caution{color:#7f9ca0;border-top:1px solid #2b3f44;padding-top:15px;font:500 10px/1.6 var(--mono);margin-top:23px}.vulpes-terminal-panel{display:flex;flex-direction:column;min-width:0;background:repeating-linear-gradient(180deg,#071319 0,#071319 3px,#071418 3px,#071418 6px)}.vulpes-terminal-head{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;background:#15272c;border-bottom:1px solid #254046}.vulpes-terminal-head>div{display:flex;align-items:center;gap:6px}.vulpes-terminal-head b{font:600 10px var(--mono);color:#849fa2;margin-left:12px}.vulpes-led{width:8px;height:8px;display:inline-block;border-radius:50%}.vulpes-led.red{background:#e06a78}.vulpes-led.yellow{background:#e0b96a}.vulpes-led.green{background:#59ce96}.vulpes-terminal-log{min-height:440px;max-height:570px;overflow-y:auto;padding:24px 23px;display:flex;flex-direction:column;gap:9px;font:500 12px/1.7 var(--mono);color:#b7ddcf;white-space:pre-wrap;overflow-wrap:anywhere;scrollbar-color:#2f695f transparent}.vulpes-line{white-space:pre-wrap;overflow-wrap:anywhere}.vulpes-line.system{color:#80dbcb}.vulpes-line.command{color:#edf6f4}.vulpes-line.command:before{content:'vulpes77@nexus:$ ';color:#83eac6}.vulpes-line.warn{color:#edbc7f}.vulpes-line.bad{color:#ee9191}.vulpes-line.ok{color:#b8f683}.vulpes-prompt{display:flex;align-items:center;gap:10px;border-top:1px solid #2d5250;background:#122329;padding:12px 14px}.vulpes-prompt label{font:600 11px var(--mono);color:#91e7c9;white-space:nowrap}.vulpes-prompt label span{color:#f5f9ef}.vulpes-prompt input{background:#09181c;border:1px solid #305452;border-radius:7px;color:#e5fff6;font:500 12px var(--mono);min-width:0;flex:1;padding:13px}.vulpes-prompt input::placeholder{color:#567878}.vulpes-send{background:#a6f0bb;color:#09271e;border:0;border-radius:7px;padding:13px 14px;font:800 10px var(--mono);white-space:nowrap}.vulpes-send:hover{background:#d0ffd8}.vulpes-shortcuts{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:13px 16px;border-top:1px solid #203b40;background:#0c1c21}.vulpes-shortcuts>span{font:700 9px var(--mono);color:#64888a;margin-right:3px}.vulpes-shortcuts button{padding:6px 10px;border:1px solid #35615c;background:#182e32;color:#a0e3ce;font:600 10px var(--mono);border-radius:5px}.vulpes-shortcuts button:hover{border-color:#83d9ba;background:#29433f}.vulpes-terminal-foot{border-top:1px solid #1f393c;padding:12px 18px;color:#658388;font:600 9px var(--mono);letter-spacing:.035em}.vulpes-terminal-foot span{padding:0 9px;color:#36685d}.vulpes-source-note{font:500 11px/1.8 var(--body);color:#8c9da0;padding:14px 2px}.vulpes-source-note b{color:#b9e8dc}@media(max-width:1150px){.vulpes-layout{grid-template-columns:220px minmax(0,1fr)}.vulpes-intel{padding:19px 13px}}@media(max-width:820px){.vulpes-layout{grid-template-columns:minmax(0,1fr)}.vulpes-intel{border-right:0;border-bottom:1px solid #294a48}.vulpes-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.vulpes-stats>div:nth-child(2){border-right:0}.vulpes-stats>div:nth-child(-n+2){border-bottom:1px solid #294348}.vulpes-tag{display:none}.vulpes-intel .vulpes-caution{margin-bottom:0}.vulpes-terminal-log{min-height:320px;max-height:430px}}@media(max-width:550px){.vulpes-toolbar{align-items:flex-start;flex-direction:column}.vulpes-toolbar-actions{width:100%;justify-content:space-between}.vulpes-brand strong{font-size:11px}.vulpes-stats>div{padding:13px 15px}.vulpes-terminal-log{padding:16px 13px;font-size:11px}.vulpes-prompt{flex-wrap:wrap}.vulpes-prompt label{font-size:10px}.vulpes-prompt input{flex:1 1 100%;order:3}.vulpes-send{order:2;margin-left:auto}.vulpes-shortcuts{gap:6px}.vulpes-terminal-foot{font-size:8px;line-height:1.8}}
+
+
+/* VISUAL FIX 0.3 — avoids panel overflow on real narrow devices. */
+html,body{max-width:100%;}
+.main-content,.content-wrap,.section,.game-section,.game-app,.game-workspace,
+.mission-main,.editor-main,.vulpes-section,.vulpes-shell,.vulpes-layout,
+.vulpes-terminal-panel,.vulpes-intel{min-width:0;max-width:100%;}
+.vulpes-line,.vulpes-terminal-log,.terminal-output,.example-code{
+  overflow-wrap:anywhere;word-break:normal;
+}
+.vulpes-prompt input{min-width:0;}
+.vulpes-source-note{overflow-wrap:anywhere;}
+@media(max-width:800px){
+  .vulpes-section .section-heading{gap:14px;}
+  .vulpes-tag{white-space:normal;line-height:1.5;}
+}
+@media(max-width:550px){
+  .vulpes-toolbar{align-items:flex-start;}
+  .vulpes-brand strong{overflow-wrap:anywhere;}
+  .vulpes-prompt{flex-wrap:wrap;gap:9px;}
+  .vulpes-prompt label{flex-basis:100%;}
+  .vulpes-prompt input{flex:1 1 120px;}
+  .vulpes-send{flex:0 0 auto;}
+  .vulpes-terminal-log{min-height:270px;}
+  .game-top,.game-strip,.vulpes-toolbar{gap:12px;}
+}
+
+</style>
+  
+  
+  
+</head>
+<body>
+  <div class="ambient-grid" aria-hidden="true"></div>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegação principal">
+      <a class="brand" href="#inicio" aria-label="WolfPack, início">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 11 28 22 40 16 52 22 67 11 62 40 70 56 56 61 45 74 40 64 35 74 24 61 10 56 18 40Z" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="m25 37 11 7-12 3M55 37 44 44l12 3M31 56l9 6 9-6M35 49h10l-5 6Z" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="m20 19 7 10-5 9m38-19-7 10 5 9" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <span class="brand-wordmark"><strong>WOLFPACK</strong><small>THE WORKSHOP</small></span>
+      </a>
+      <div class="nav-group-label">PLATAFORMA</div>
+      <nav class="side-nav">
+        <a href="#inicio" class="nav-link active" data-nav="inicio"><span class="nav-icon">⌂</span> Visão geral</a>
+        <a href="#aplicacoes" class="nav-link" data-nav="aplicacoes"><span class="nav-icon">▦</span> Aplicações <span class="nav-count">08</span></a>
+        <a href="#jogar" class="nav-link" data-nav="jogar"><span class="nav-icon">⌘</span> Ruby Protocol <span class="nav-dot"></span></a>
+        <a href="#vulpes" class="nav-link" data-nav="vulpes"><span class="nav-icon">⌁</span> VULPES-77 <span class="nav-dot"></span></a>
+        <a href="#metodo" class="nav-link" data-nav="metodo"><span class="nav-icon">◇</span> Nosso método</a>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-bottom">
+        <div class="sidebar-pulse"><span class="pulse-dot"></span> SISTEMAS OPERACIONAIS</div>
+        <div class="sidebar-card"><span class="side-kicker">TRANSMISSÃO 001</span><p>"Conhecimento não é privilégio. É ferramenta."</p><span class="side-signature">— KINGMAKER</span></div>
+        <div class="sidebar-version">WOLFPACK OS <span>v0.3.0</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar"><div class="breadcrumbs">WOLFPACK <span>/</span> THE WORKSHOP <span>/</span> <b id="breadcrumb-current">OVERVIEW</b></div><div class="topbar-right"><span class="mini-online"><i></i> LIVE BUILD</span><span class="topbar-divider"></span><span class="top-avatar" aria-label="WolfPack">W</span></div></header>
+      <div class="content-wrap">
+        <section id="inicio" class="hero section-anchor" aria-labelledby="hero-title">
+          <div class="hero-copy"><div class="eyebrow"><span class="eyebrow-line"></span> THE WORKSHOP / KINGMAKER PROJECT</div><div class="hero-label"><span class="pulse-dot"></span> INICIALIZAÇÃO CONCLUÍDA <span class="hero-label-code">[SYS.001]</span></div><h1 id="hero-title">O futuro se<br><em>escreve</em> em código<span class="hero-period">.</span></h1><p>Uma academia, uma oficina, uma matilha. Aprenda Ruby no Protocol, investigue o Incident Zero no VULPES-77 e evolua uma missão de cada vez.</p><div class="hero-actions"><a class="btn btn-primary" href="#jogar">▶ &nbsp;INICIAR PROTOCOLO <span>↗</span></a><a class="btn btn-ghost" href="#aplicacoes">EXPLORAR PROJETOS <span>↘</span></a></div><div class="hero-footnote"><span class="hero-dash">–––</span> CONSTRUA. EXECUTE. ENTENDA. EVOLUA.</div></div>
+          <div class="hero-art" aria-hidden="true"><div class="hero-ring ring-one"></div><div class="hero-ring ring-two"></div><div class="hero-ring ring-three"></div><div class="hero-art-caption art-left">PACKET_01 <span>OK</span><br>LEARNING_MODE <span>ON</span></div><div class="wolf-figure"><svg viewBox="0 0 260 310" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M53 13 96 55l31-12 34 13 47-43-9 88 27 61-31 24-31 55-33 52-35-52-30-54-31-24 27-62Z" stroke="#b5a9ff" stroke-width="3" stroke-linejoin="round"/><path d="m53 13 55 106 19-76 25 77 56-107M80 87l-15 75 53 39 13 92 13-92 51-39-14-75M65 162l53 39-25 14m102-53-51 39 25 14M96 55l-16 32 51 35 30-66M118 201l13 27 13-27M108 119l23 18 21-17" stroke="#7262cf" stroke-width="2" stroke-linejoin="round"/><path d="m82 149 34 11-15 10-19-7Zm98 0-34 11 15 10 19-7Z" fill="#cbfa87"/><path d="m110 229 21 15 19-15" stroke="#c9c0ff" stroke-width="3"/><path d="m131 244-5 17m5-17 6 17" stroke="#7262cf" stroke-width="2"/></svg></div><div class="art-orb"></div><div class="hero-art-caption art-right">WOLF PROTOCOL<br><span>CONNECTED ▣</span></div><div class="hero-art-bottom">WOLFPACK / 001 <span>//</span> ACCESS GRANTED</div></div>
+        </section>
+
+        <section class="metrics" aria-label="Números da plataforma"><div class="metric"><span class="metric-icon">◈</span><div><strong>08</strong><small>PROJETOS NA OFICINA</small></div></div><div class="metric"><span class="metric-icon">⌘</span><div><strong>12</strong><small>MISSÕES EM RUBY</small></div></div><div class="metric"><span class="metric-icon">⚡</span><div><strong>1.500</strong><small>XP NAS CAMPANHAS</small></div></div><div class="metric"><span class="metric-icon">◎</span><div><strong>∞</strong><small>POSSIBILIDADES</small></div></div></section>
+
+        <section id="aplicacoes" class="section section-anchor"><div class="section-heading"><div><div class="eyebrow">/ 01 — NOSSOS PROJETOS</div><h2>Arsenal da <span>matilha.</span></h2><p>Uma plataforma. Diferentes caminhos. Um propósito: aprender construindo.</p></div><span class="section-aside">EXPLORE O ECOSSISTEMA <span>↘</span></span></div>
+          <div class="app-grid">
+            <article class="app-card featured"><div class="app-card-top"><span class="app-logo app-ruby">◆</span><span class="status status-live"><i></i> JOGÁVEL</span></div><div class="app-card-body"><small>LINGUAGEM / TERMINAL GAME</small><h3>Ruby Protocol <span>↗</span></h3><p>Aprenda Ruby em 12 missões. Escreva código, resolva desafios e desbloqueie sua evolução.</p></div><div class="app-card-bottom"><span>12 MISSÕES · 4 ATOS</span><a href="#jogar" aria-label="Jogar Ruby Protocol">ENTRAR NO JOGO <b>→</b></a></div></article>
+            <article class="app-card vulpes-catalog-card"><div class="app-card-top"><span class="app-logo app-vulpes">⌁</span><span class="status status-live"><i></i> JOGÁVEL</span></div><div class="app-card-body"><small>CYBERSEC / TERMINAL OPS SIMULADO</small><h3>VULPES-77 <span>↗</span></h3><p>INCIDENT ZERO: investigue um beacon, correlacione logs e contenha um host em uma rede inteiramente fictícia.</p></div><div class="app-card-bottom"><span>03 OPERAÇÕES · 300 XP</span><a href="#vulpes" aria-label="Jogar VULPES-77">ABRIR TERMINAL <b>→</b></a></div></article>
+            <article class="app-card"><div class="app-card-top"><span class="app-logo app-ares">{ }</span><span class="status status-soon">LABORATÓRIO</span></div><div class="app-card-body"><small>LINGUAGEM / C</small><h3>ARES <span>↗</span></h3><p>Programação de redes, sockets e engenharia de sistemas em C.</p></div><div class="app-card-bottom"><span>THE WORKSHOP</span><span class="app-muted">EM PREPARAÇÃO</span></div></article>
+            <article class="app-card"><div class="app-card-top"><span class="app-logo app-argus">◉</span><span class="status status-soon">LABORATÓRIO</span></div><div class="app-card-body"><small>LINGUAGEM / PYTHON</small><h3>ARGUS <span>↗</span></h3><p>Automações, análise de dados e observabilidade orientada a segurança.</p></div><div class="app-card-bottom"><span>THE WORKSHOP</span><span class="app-muted">EM PREPARAÇÃO</span></div></article>
+            <article class="app-card"><div class="app-card-top"><span class="app-logo app-raven">&lt;/&gt;</span><span class="status status-soon">LABORATÓRIO</span></div><div class="app-card-body"><small>LINGUAGEM / RUBY</small><h3>RAVEN <span>↗</span></h3><p>DSLs, automação e construção de ferramentas com a expressividade de Ruby.</p></div><div class="app-card-bottom"><span>THE WORKSHOP</span><span class="app-muted">EM PREPARAÇÃO</span></div></article>
+            <article class="app-card"><div class="app-card-top"><span class="app-logo app-cerberus">⌬</span><span class="status status-soon">ORQUESTRAÇÃO</span></div><div class="app-card-body"><small>SISTEMAS / ARQUITETURA</small><h3>CERBERUS <span>↗</span></h3><p>Integre módulos e organize fluxos de trabalho do ecossistema Workshop.</p></div><div class="app-card-bottom"><span>THE WORKSHOP</span><span class="app-muted">EM PREPARAÇÃO</span></div></article>
+            <article class="app-card"><div class="app-card-top"><span class="app-logo app-auditor">≋</span><span class="status status-soon">INTEGRAÇÃO FUTURA</span></div><div class="app-card-body"><small>CIBERSEGURANÇA / HTTP</small><h3>HTTP Auditor <span>↗</span></h3><p>Descoberta passiva, limites de escopo e análise de evidências HTTP.</p></div><div class="app-card-bottom"><span>UTILITÁRIO EXISTENTE</span><span class="app-muted">WEB EM BREVE</span></div></article>
+            <article class="app-card"><div class="app-card-top"><span class="app-logo app-crypto">◇</span><span class="status status-soon">AULA EM BREVE</span></div><div class="app-card-body"><small>CRIPTOGRAFIA / LAB</small><h3>Crypto Lab <span>↗</span></h3><p>Experimentos com hashes, colisões e a anatomia interna do SHA-256.</p></div><div class="app-card-bottom"><span>THE WORKSHOP</span><span class="app-muted">EM PREPARAÇÃO</span></div></article>
+          </div>
+        </section>
+
+        <section id="jogar" class="section game-section section-anchor"><div class="section-heading"><div><div class="eyebrow">/ 02 — APRENDA JOGANDO</div><h2>Ruby <span>Protocol.</span></h2><p>O primeiro portão está aberto. O código que você escreve decide se a missão continua.</p></div><div class="game-beta"><span class="pulse-dot"></span> THE AWAKENING <b>v0.1</b></div></div>
+          <div class="game-app">
+            <div class="game-top"><div class="game-top-id"><span class="game-brand-icon">◆</span><span>WOLFPACK<span class="slash">//</span>RUBY PROTOCOL</span></div><div class="game-top-right"><span id="engine-status" class="engine-status"><i></i> MOTOR: SOB DEMANDA</span><button class="reset-button" type="button" id="reset-progress" title="Recomeçar campanha">↺ REINICIAR</button></div></div>
+            <div class="game-strip"><div class="player-display"><span class="player-avatar">W</span><div><small>IDENTIDADE DA MATILHA</small><strong id="player-name">RECRUTA</strong></div><button id="edit-name" type="button" class="edit-name" aria-label="Alterar codinome">✎</button></div><div class="game-strip-stats"><div><small>EXPERIÊNCIA</small><strong id="xp-value">0 <span>XP</span></strong></div><div><small>MISSÕES</small><strong id="completed-value">0 <span>/ 12</span></strong></div><div class="level-display"><small>PATENTE</small><strong id="rank-value">RECRUTA</strong></div></div></div>
+            <div class="campaign-progress"><div class="progress-bar" id="progress-bar"></div></div>
+            <div class="game-workspace">
+              <aside class="mission-sidebar"><div class="mission-list-title">MAPA DA CAMPANHA <span>12 CAPÍTULOS</span></div><div id="mission-list" class="mission-list" aria-label="Lista de missões"></div><div class="mission-sidebar-footer">◈ &nbsp; DISCIPLINA • LÓGICA • EVOLUÇÃO</div></aside>
+              <div class="mission-main"><div class="mission-heading"><span id="mission-act">ATO I — O DESPERTAR</span><span id="mission-count">MISSÃO 01 / 12</span></div><h3 id="mission-title">Carregando campanha...</h3><p class="mission-scene" id="mission-scene"></p><div class="theory-box"><span class="theory-label">⌁ CONCEITO DO DIA</span><p id="mission-theory"></p><pre id="mission-example" class="example-code"></pre></div><div class="mission-task"><span class="task-label">↳ SUA MISSÃO</span><p id="mission-task"></p></div><div class="mission-toolbar"><button type="button" class="help-button" id="hint-btn">✧ VER DICA</button><button type="button" class="help-button" id="example-btn">⊞ CARREGAR EXEMPLO</button><button type="button" class="help-button" id="solution-btn">◫ VER SOLUÇÃO</button></div><p id="helper-message" class="helper-message" aria-live="polite"></p></div>
+              <div class="editor-main"><div class="editor-header"><div class="editor-tabs"><span class="editor-tab active">◆ <span id="editor-tab-name">missao_01.rb</span></span></div><span class="editor-lang">RUBY / WASM</span></div><div class="editor-body"><div class="line-numbers" id="line-numbers" aria-hidden="true">01</div><textarea id="code-editor" spellcheck="false" aria-label="Editor de código Ruby" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="# Escreva seu código aqui..."></textarea></div><div class="editor-actions"><span class="editor-shortcut">CTRL + ENTER PARA EXECUTAR</span><button type="button" id="run-btn" class="btn btn-primary btn-run">▶ EXECUTAR CÓDIGO</button></div><div class="terminal-header"><span><i></i> TERMINAL / RESULTADO</span><button id="clear-output" type="button">LIMPAR ↺</button></div><pre id="terminal-output" class="terminal-output" aria-live="polite">wolfpack@workshop:~$ ruby missao_01.rb
+
+> Aguardando comando...</pre><div class="editor-warning">⚠ Ruby executado no navegador por WebAssembly. Para esta versão, use somente código próprio. Requer internet para carregar o motor.</div></div>
+            </div><div class="game-bottom"><span>◉ PROGRESSO SALVO NESTE NAVEGADOR</span><span>THE WORKSHOP <b>×</b> KINGMAKER</span></div>
+          </div>
+          <div class="game-note"><span>⌁</span><p>Prefere o terminal do Linux? O jogo original continua disponível. <a href="./downloads/wolfpack-ruby-protocol-v0.1.zip" download>BAIXAR VERSÃO CLI ↗</a></p></div>
+        </section>
+
+        <section id="vulpes" class="section section-anchor vulpes-section" aria-labelledby="vulpes-title">
+          <div class="section-heading"><div><div class="eyebrow">/ 03 — TERMINAL OPS • REDE SIMULADA</div><h2 id="vulpes-title">VULPES<span>-77.</span></h2><p>INCIDENT ZERO // O ECO FANTASMA. Investigue. Interprete. Contenha. Toda a operação acontece dentro do navegador.</p></div><div class="vulpes-tag"><i></i> LABORATÓRIO SIMULADO · ZERO SCANS REAIS</div></div>
+          <div class="vulpes-shell">
+            <div class="vulpes-toolbar"><div class="vulpes-brand"><span class="vulpes-glyph">⌁</span><div><strong>VULPES-77 <span>// INCIDENT ZERO</span></strong><small>THE WORKSHOP / TERMINAL OPS / v0.1.0 RUBY SOURCE</small></div></div><div class="vulpes-toolbar-actions"><span class="vulpes-online">● SIMULADOR ATIVO</span><button id="v77-restart" class="vulpes-text-button" type="button">↺ REINICIAR CAMPANHA</button></div></div>
+            <div class="vulpes-stats"><div><small>OPERAÇÃO ATUAL</small><strong id="v77-stage">01 / 03</strong></div><div><small>PONTUAÇÃO</small><strong id="v77-score">0 / 300 XP</strong></div><div><small>PATENTE</small><strong id="v77-rank">RECRUTA</strong></div><div><small>ESTADO DA REDE</small><strong id="v77-network">MONITORANDO</strong></div></div>
+            <div class="vulpes-progress" aria-hidden="true"><span id="v77-progress"></span></div>
+            <div class="vulpes-layout">
+              <aside class="vulpes-intel" aria-label="Briefing da campanha"><div class="vulpes-intel-label">◈ DOSSIÊ / INCIDENT ZERO</div><h3 id="v77-mission-title">01 — O ECO FANTASMA</h3><p id="v77-mission-brief">Investigando transmissão inesperada em WEB-01.</p><div class="vulpes-intel-label">OBJETIVO</div><p id="v77-objective">Localizar, decodificar e reportar o beacon.</p><div class="vulpes-intel-label">TOPOLOGIA FICTÍCIA</div><div id="v77-nodes" aria-live="polite"></div><div class="vulpes-intel-label">PROGRESSO DAS OPERAÇÕES</div><ol class="vulpes-stages" id="v77-stages"><li>O Eco Fantasma</li><li>Sombras nos Logs</li><li>Silêncio Operacional</li></ol><p class="vulpes-caution">Laboratório inteiramente virtual. Nenhum comando é executado no seu sistema; nenhum host real é acessado.</p></aside>
+              <div class="vulpes-terminal-panel"><div class="vulpes-terminal-head"><div><span class="vulpes-led red"></span><span class="vulpes-led yellow"></span><span class="vulpes-led green"></span><b id="v77-terminal-context">nexus$</b></div><button type="button" id="v77-clear" class="vulpes-text-button">LIMPAR TELA ↺</button></div><div class="vulpes-terminal-log" id="v77-output" role="log" aria-label="Saída do terminal VULPES-77" aria-live="polite" aria-relevant="additions text"><div class="vulpes-line">Inicializando ambiente simulado...</div></div><form class="vulpes-prompt" id="v77-form" autocomplete="off"><label id="v77-prompt-label" for="v77-input">vulpes77@nexus$</label><input id="v77-input" type="text" aria-label="Digite um comando no terminal VULPES-77" autocomplete="off" spellcheck="false" maxlength="240" placeholder="digite help para começar"><button class="vulpes-send" type="submit">EXECUTAR ↵</button></form><div class="vulpes-shortcuts"><span>ATALHOS:</span><button type="button" data-v77-cmd="help">help</button><button type="button" data-v77-cmd="status">status</button><button type="button" data-v77-cmd="scan">scan</button><button type="button" data-v77-cmd="ls">ls</button><button type="button" data-v77-cmd="hint">hint</button></div><div class="vulpes-terminal-foot">↑ ↓ HISTÓRICO DE COMANDOS <span>·</span> ENTER PARA EXECUTAR <span>·</span> PROGRESSO LOCAL</div></div>
+            </div>
+          </div><p class="vulpes-source-note">Esta edição é uma <b>adaptação fiel do motor Ruby original v0.1.0</b>, convertida para JavaScript para jogar no navegador. As missões, hosts, evidências, regras e pontuação foram exportados diretamente do projeto original; nenhuma operação de rede real é executada. <a href="./downloads/vulpes77-terminal-v0.1-original.zip" download>BAIXAR VULPES-77 ORIGINAL (RUBY) ↗</a></p>
+        </section>
+
+        <section id="metodo" class="section section-anchor method-section"><div class="section-heading"><div><div class="eyebrow">/ 04 — MAIS QUE UM TUTORIAL</div><h2>Forjados no <span>processo.</span></h2><p>Cada desafio abre uma porta. Cada erro mostra um caminho. Cada conquista é sua.</p></div></div><div class="method-grid"><div class="method-item"><span class="method-num">01 / ENTENDER</span><strong>Aprenda um conceito.</strong><p>Uma explicação clara com exemplos práticos. Sem pular etapas.</p></div><div class="method-item"><span class="method-num">02 / CONSTRUIR</span><strong>Escreva a solução.</strong><p>Abra o terminal, experimente, erre e aprimore seu raciocínio.</p></div><div class="method-item"><span class="method-num">03 / VALIDAR</span><strong>Teste de verdade.</strong><p>O interpretador Ruby avalia seu programa em cenários diferentes.</p></div><div class="method-item"><span class="method-num">04 / EVOLUIR</span><strong>Desbloqueie o próximo.</strong><p>Acumule experiência e avance por quatro atos da campanha.</p></div></div><div class="closing-banner"><span>WOLFPACK MANIFESTO <b>001</b></span><p>Não ensinamos pessoas a seguir instruções.<br><em>Ensinamos pessoas a criar possibilidades.</em></p><a href="#jogar">JUNTE-SE À MATILHA ↗</a></div></section>
+        <footer class="footer"><div><b>WOLFPACK</b> / THE WORKSHOP <span>·</span> KINGMAKER</div><span>BUILD 0.3.0 · VISUAL FIX — FEITO PARA QUEM NÃO PARA DE APRENDER.</span></footer>
+      </div>
+    </main>
+  </div>
+  <dialog id="name-dialog" class="name-dialog"><form method="dialog" id="name-form"><div class="dialog-kicker">WOLFPACK / IDENTITY</div><h2>Como a matilha te chama?</h2><p>Escolha seu codinome. Seu progresso ficará salvo neste navegador.</p><label for="codename-input">SEU CODINOME</label><input id="codename-input" name="codename" minlength="2" maxlength="24" required placeholder="Ex: Ghostwire" autocomplete="off"><div class="dialog-actions"><button class="btn btn-ghost" value="cancel" type="button" id="cancel-name">CANCELAR</button><button class="btn btn-primary" value="save" id="save-name">CONFIRMAR ↗</button></div></form></dialog>
+  <script id="embedded-lessons" type="application/json">[{"id":1,"act":"ATO I — O DESPERTAR","title":"O primeiro uivo | puts","scene":"O terminal de Kingmaker está apagado. Uma mensagem precisa acender a tela.","theory":"Ruby executa instruções de cima para baixo. puts exibe texto no terminal e termina com uma quebra de linha. Strings ficam entre aspas.","example":"puts \"A matilha está online\"","task":"Mostre exatamente: A matilha despertou!","hint":"Use puts seguido de uma String entre aspas.","solution":"puts \"A matilha despertou!\"","requirements":[{"pattern":"\\bputs\\b","message":"Use puts para escrever no terminal."}],"cases":[{"input":"","output":"A matilha despertou!\n"}]},{"id":2,"act":"ATO I — O DESPERTAR","title":"Identidade | variáveis e interpolação","scene":"O sistema exige o codinome de quem lidera a incursão.","theory":"Uma variável guarda um valor: codinome = \"Kingmaker\". Em uma String com aspas duplas, #{...} insere o resultado de uma expressão. A variável não precisa de tipo declarado.","example":"nome = \"Raven\"\nputs \"Lobo: #{nome}\"","task":"Crie a variável codinome com o valor \"Kingmaker\" e exiba: Lobo: Kingmaker. Use interpolação.","hint":"Duas linhas: atribua codinome; depois use puts \"Lobo: #{codinome}\".","solution":"codinome = \"Kingmaker\"\nputs \"Lobo: #{codinome}\"","requirements":[{"pattern":"\\bcodinome\\b","message":"Crie/use a variável codinome."},{"pattern":"\\#\\{","message":"Use interpolação #{...}."}],"cases":[{"input":"","output":"Lobo: Kingmaker\n"}]},{"id":3,"act":"ATO I — O DESPERTAR","title":"Energia | números e operações","scene":"ARES precisa calcular a energia restante do gerador.","theory":"Inteiros (Integer) permitem operações como +, -, * e /. O operador = atribui; puts pode imprimir um número diretamente.","example":"energia = 10\ncusto = 3\nputs energia - custo  # 7","task":"Defina energia = 20 e custo = 7. Exiba a energia restante (13) realizando a subtração.","hint":"Defina duas variáveis e use puts energia - custo.","solution":"energia = 20\ncusto = 7\nputs energia - custo","requirements":[{"pattern":"\\benergia\\b","message":"Use a variável energia."},{"pattern":"\\bcusto\\b","message":"Use a variável custo."},{"pattern":"-","message":"Faça a operação de subtração."}],"cases":[{"input":"","output":"13\n"}]},{"id":4,"act":"ATO I — O DESPERTAR","title":"Portaria | entrada de dados","scene":"ARGUS recebe o próximo integrante. O terminal deve responder a qualquer nome.","theory":"gets lê uma linha de STDIN. chomp remove a quebra de linha; uma String pode ser interpolada para compor uma resposta. Cada teste envia um nome diferente.","example":"nome = gets.chomp\nputs \"Olá, #{nome}!\"","task":"Leia um nome e imprima: Bem-vindo, NOME! (substituindo NOME pelo valor recebido).","hint":"nome = gets.chomp; depois puts com interpolação.","solution":"nome = gets.chomp\nputs \"Bem-vindo, #{nome}!\"","requirements":[{"pattern":"\\bgets\\b","message":"Leia a entrada com gets."},{"pattern":"\\.chomp\\b","message":"Remova a quebra de linha com chomp."}],"cases":[{"input":"Argus\n","output":"Bem-vindo, Argus!\n"},{"input":"Raven\n","output":"Bem-vindo, Raven!\n"}]},{"id":5,"act":"ATO II — A TRAVESSIA","title":"O portão | if e else","scene":"O portão só abre se a energia for de pelo menos 10 unidades.","theory":"if executa um bloco quando a condição é verdadeira. else cobre o caso contrário; end fecha o bloco. gets.to_i transforma a entrada em número inteiro. \u003e= significa maior ou igual.","example":"vida = gets.to_i\nif vida \u003e= 5\n  puts \"SEGUIR\"\nelse\n  puts \"PARAR\"\nend","task":"Leia energia. Se for \u003e= 10, imprima PORTAO ABERTO; senão, RECUAR.","hint":"energia = gets.to_i; if energia \u003e= 10 ... else ... end.","solution":"energia = gets.to_i\nif energia \u003e= 10\n  puts \"PORTAO ABERTO\"\nelse\n  puts \"RECUAR\"\nend","requirements":[{"pattern":"\\bif\\b","message":"Use if para verificar a condição."},{"pattern":"\\belse\\b","message":"Inclua o caso contrário com else."},{"pattern":"\\bgets\\b","message":"Leia a energia informada."}],"cases":[{"input":"9\n","output":"RECUAR\n"},{"input":"10\n","output":"PORTAO ABERTO\n"},{"input":"20\n","output":"PORTAO ABERTO\n"}]},{"id":6,"act":"ATO II — A TRAVESSIA","title":"Marcha | repetição com times","scene":"Três passos coordenados abrem caminho até a torre.","theory":"3.times executa um bloco três vezes. do |indice| recebe o contador, começando em zero. end encerra o bloco. A interpolação pode mostrar cada passo.","example":"2.times do |i|\n  puts \"Passo #{i + 1}\"\nend","task":"Use 3.times para imprimir três linhas: Passo 1, Passo 2 e Passo 3.","hint":"3.times do |i|; puts \"Passo #{i + 1}\"; end.","solution":"3.times do |i|\n  puts \"Passo #{i + 1}\"\nend","requirements":[{"pattern":"\\.times\\b","message":"Repita usando .times."},{"pattern":"\\bdo\\b","message":"Abra o bloco com do."}],"cases":[{"input":"","output":"Passo 1\nPasso 2\nPasso 3\n"}]},{"id":7,"act":"ATO II — A TRAVESSIA","title":"Esquadrão | arrays","scene":"A unidade ARGUS está na segunda posição da formação.","theory":"Array é uma lista ordenada: [\"ARES\", \"ARGUS\", \"RAVEN\"]. O índice começa em 0; logo [1] acessa o segundo elemento.","example":"equipe = [\"Lobo\", \"Raposa\"]\nputs equipe[0]  # Lobo","task":"Crie a lista [\"ARES\", \"ARGUS\", \"RAVEN\"] e imprima ARGUS acessando a posição [1].","hint":"lobos = [\"ARES\", \"ARGUS\", \"RAVEN\"]; puts lobos[1].","solution":"lobos = [\"ARES\", \"ARGUS\", \"RAVEN\"]\nputs lobos[1]","requirements":[{"pattern":"\\[[\\s\\S]*?\\]","message":"Crie/use um Array."},{"pattern":"\\[1\\]","message":"Use o índice [1]."}],"cases":[{"input":"","output":"ARGUS\n"}]},{"id":8,"act":"ATO II — A TRAVESSIA","title":"Telemetria | hashes e símbolos","scene":"CERBERUS registrou um pacote com nome e estado da unidade.","theory":"Hash associa chaves a valores. Em { nome: \"ARGUS\" }, nome: é uma chave do tipo Symbol. Para buscar seu valor, usamos hash[:nome].","example":"sensor = { nome: \"RAVEN\", status: \"OK\" }\nputs sensor[:nome]  # RAVEN","task":"Crie o Hash sensor = { nome: \"ARGUS\", status: \"ATIVO\" } e imprima o valor de :status.","hint":"puts sensor[:status] acessa o valor do Hash.","solution":"sensor = { nome: \"ARGUS\", status: \"ATIVO\" }\nputs sensor[:status]","requirements":[{"pattern":"\\bstatus\\s*:","message":"Crie a chave status:."},{"pattern":"\\[:status\\]","message":"Acesse o Hash pela chave :status."}],"cases":[{"input":"","output":"ATIVO\n"}]},{"id":9,"act":"ATO III — O CÓDIGO DA MATILHA","title":"Patrulha | each e blocos","scene":"O sistema precisa conferir cada unidade sem repetir código.","theory":".each percorre os elementos de uma coleção. O bloco do |lobo| ... end recebe um elemento de cada vez. A variável lobo existe dentro do bloco.","example":"[\"A\", \"B\"].each do |item|\n  puts \"ID: #{item}\"\nend","task":"Percorra [\"ARES\", \"ARGUS\", \"RAVEN\"] com .each e imprima OK: ARES, OK: ARGUS, OK: RAVEN (uma por linha).","hint":"lobos.each do |lobo|; puts \"OK: #{lobo}\"; end.","solution":"lobos = [\"ARES\", \"ARGUS\", \"RAVEN\"]\nlobos.each do |lobo|\n  puts \"OK: #{lobo}\"\nend","requirements":[{"pattern":"\\.each\\b","message":"Use .each para percorrer a lista."},{"pattern":"\\bdo\\b","message":"Use um bloco do ... end."}],"cases":[{"input":"","output":"OK: ARES\nOK: ARGUS\nOK: RAVEN\n"}]},{"id":10,"act":"ATO III — O CÓDIGO DA MATILHA","title":"Selo | métodos","scene":"Kingmaker exige uma rotina reutilizável para autenticar os codinomes.","theory":"def nome(parametro) define um método. A última expressão é retornada automaticamente. .upcase cria uma versão da String em maiúsculas. end encerra o método.","example":"def grito(nome)\n  \"AUUU, #{nome.upcase}\"\nend\nputs grito(\"raven\")","task":"Crie def selo(nome) que retorna \"Selo: NOME_EM_MAIÚSCULAS\". Leia nome com gets.chomp e imprima o retorno do método.","hint":"def selo(nome); \"Selo: #{nome.upcase}\"; end. Depois: puts selo(gets.chomp).","solution":"def selo(nome)\n  \"Selo: #{nome.upcase}\"\nend\nputs selo(gets.chomp)","requirements":[{"pattern":"\\bdef\\s+selo\\b","message":"Declare o método selo com def."},{"pattern":"\\.upcase\\b","message":"Use upcase para converter o nome."},{"pattern":"\\bgets\\b","message":"Leia o nome enviado."}],"cases":[{"input":"raven\n","output":"Selo: RAVEN\n"},{"input":"Kingmaker\n","output":"Selo: KINGMAKER\n"}]},{"id":11,"act":"ATO III — O CÓDIGO DA MATILHA","title":"O lobo | classes e objetos","scene":"A matilha ganha uma representação própria no sistema.","theory":"class define um modelo de objeto. initialize é chamado ao criar um objeto com .new. @nome é uma variável de instância, acessível pelos métodos do objeto.","example":"class Lobo\n  def initialize(nome)\n    @nome = nome\n  end\n  def chamar\n    \"Oi, #{@nome}\"\n  end\nend\nputs Lobo.new(\"ARES\").chamar","task":"Crie a classe Lobo: initialize(nome) armazena @nome; apresentar retorna \"Eu sou NOME\". Leia nome e imprima Lobo.new(nome).apresentar.","hint":"class Lobo; def initialize(nome); @nome = nome; end; def apresentar; \"Eu sou #{@nome}\"; end; end.","solution":"class Lobo\n  def initialize(nome)\n    @nome = nome\n  end\n\n  def apresentar\n    \"Eu sou #{@nome}\"\n  end\nend\n\nnome = gets.chomp\nputs Lobo.new(nome).apresentar","requirements":[{"pattern":"\\bclass\\s+Lobo\\b","message":"Declare class Lobo."},{"pattern":"\\bdef\\s+initialize\\b","message":"Use initialize no construtor."},{"pattern":"@nome\\b","message":"Armazene o estado em @nome."},{"pattern":"\\.new\\b","message":"Instancie o objeto com .new."}],"cases":[{"input":"Raven\n","output":"Eu sou Raven\n"},{"input":"Argus\n","output":"Eu sou Argus\n"}]},{"id":12,"act":"ATO FINAL — KINGMAKER","title":"Protocolo WolfPack | missão integrada","scene":"A torre caiu. Para reconstruir o canal, una entrada, métodos, condição e coleções.","theory":"Um programa Ruby pode combinar os conceitos aprendidos. Aqui você lê duas entradas, classifica um valor com if, monta uma lista e imprime um relatório com .join.","example":"modulos = [\"ARES\", \"ARGUS\"]\nputs modulos.join(\", \")  # ARES, ARGUS","task":"Leia duas linhas: codinome e energia. Defina um método avaliar(energia) usando if/else: \u003e=10 retorna PRONTO, caso contrário RECARREGAR. Crie um Array [\"ARES\", \"ARGUS\", \"RAVEN\"] e imprima três linhas: LOBO: NOME | UNIDADES: ARES, ARGUS, RAVEN | STATUS: RESULTADO (cada | representa uma quebra de linha).","hint":"Use gets.chomp para nome, gets.to_i para energia; modulos.join(\", \"); e puts \"STATUS: #{avaliar(energia)}\".","solution":"def avaliar(energia)\n  if energia \u003e= 10\n    \"PRONTO\"\n  else\n    \"RECARREGAR\"\n  end\nend\n\nnome = gets.chomp\nenergia = gets.to_i\nmodulos = [\"ARES\", \"ARGUS\", \"RAVEN\"]\nputs \"LOBO: #{nome}\"\nputs \"UNIDADES: #{modulos.join(\", \")}\"\nputs \"STATUS: #{avaliar(energia)}\"","requirements":[{"pattern":"\\bdef\\s+avaliar\\b","message":"Defina o método avaliar."},{"pattern":"\\bif\\b","message":"Use if para checar energia."},{"pattern":"\\belse\\b","message":"Use else para o outro caso."},{"pattern":"\\.join\\b","message":"Use join para formatar a lista."},{"pattern":"\\bgets\\b","message":"Leia os dados de entrada."}],"cases":[{"input":"Raven\n15\n","output":"LOBO: Raven\nUNIDADES: ARES, ARGUS, RAVEN\nSTATUS: PRONTO\n"},{"input":"Wolf\n5\n","output":"LOBO: Wolf\nUNIDADES: ARES, ARGUS, RAVEN\nSTATUS: RECARREGAR\n"},{"input":"Kingmaker\n10\n","output":"LOBO: Kingmaker\nUNIDADES: ARES, ARGUS, RAVEN\nSTATUS: PRONTO\n"}]}]</script>
+  <script id="embedded-ruby-worker" type="text/plain">
+// ruby.wasm roda dentro de um Web Worker para não bloquear a interface.
+// Não é um sandbox de segurança para código de terceiros. Não exponha dados sensíveis no origin.
+// Versões fixadas, evitando dependência de "latest".
+import { DefaultRubyVM } from 'https://cdn.jsdelivr.net/npm/@ruby/wasm-wasi@2.10.1/dist/browser/+esm';
+
+const WASM_URL = 'https://cdn.jsdelivr.net/npm/@ruby/3.3-wasm-wasi@2.10.1/dist/ruby+stdlib.wasm';
+let compiledModule;
+
+function b64(text) {
+  const bytes = new TextEncoder().encode(text);
+  let binary = '';
+  for (let i = 0; i < bytes.length; i += 16384) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + 16384));
+  }
+  return btoa(binary);
+}
+
+async function getModule() {
+  if (!compiledModule) {
+    self.postMessage({ type: 'status', message: 'Carregando o interpretador Ruby 3.3 (primeira execução)...' });
+    const response = await fetch(WASM_URL);
+    if (!response.ok) throw new Error(`Não foi possível carregar o interpretador: HTTP ${response.status}`);
+    const buffer = await response.arrayBuffer();
+    compiledModule = await WebAssembly.compile(buffer);
+  }
+  return compiledModule;
+}
+
+function norm(text) {
+  return String(text).replace(/\r\n/g, '\n').replace(/\n$/, '');
+}
+
+async function runCase(module, source, input) {
+  const { vm } = await DefaultRubyVM(module);
+  const encodedSource = b64(source);
+  const encodedInput = b64(input);
+  // Transferência Base64: nunca concatenar código do jogador diretamente na expressão hospedeira.
+  // StringIO substitui a entrada e a saída globais durante a avaliação.
+  const script = `
+require 'base64'
+require 'stringio'
+require 'json'
+__wp_source__ = Base64.strict_decode64('${encodedSource}')
+__wp_stdin__ = Base64.strict_decode64('${encodedInput}')
+__wp_output__ = StringIO.new
+__wp_error__ = StringIO.new
+$stdin = StringIO.new(__wp_stdin__)
+$stdout = __wp_output__
+$stderr = __wp_error__
+begin
+  TOPLEVEL_BINDING.eval(__wp_source__, 'wolfpack_mission.rb', 1)
+rescue Exception => e
+  __wp_error__.puts "#{e.class}: #{e.message}"
+end
+$stdout = STDOUT
+$stderr = STDERR
+JSON.generate({output: __wp_output__.string, error: __wp_error__.string})
+`;
+  const result = vm.eval(script);
+  const data = JSON.parse(result.toString());
+  const maxSize = 16000;
+  return {
+    output: data.output.length > maxSize ? data.output.slice(0, maxSize) : data.output,
+    error: data.error.length > maxSize ? data.error.slice(0, maxSize) : data.error,
+    exceeded: data.output.length > maxSize || data.error.length > maxSize
+  };
+}
+
+self.onmessage = async event => {
+  if (event.data?.type !== 'run') return;
+  const { code, cases } = event.data;
+  try {
+    if (typeof code !== 'string' || code.length > 12000) throw new Error('Código muito longo (máximo 12.000 caracteres).');
+    const module = await getModule();
+    for (let index = 0; index < cases.length; index++) {
+      self.postMessage({ type: 'case-start', index });
+      const result = await runCase(module, code, cases[index].input);
+      if (result.error) {
+        self.postMessage({ type: 'result', success: false, index, reason: 'O Ruby encontrou um erro:', actual: result.error });
+        return;
+      }
+      if (result.exceeded) {
+        self.postMessage({ type: 'result', success: false, index, reason: 'Saída excedeu o limite de 16 mil caracteres.', actual: result.output });
+        return;
+      }
+      if (norm(result.output) !== norm(cases[index].output)) {
+        self.postMessage({ type: 'result', success: false, index, reason: 'A saída do programa ainda não corresponde ao desafio.', actual: result.output, expected: cases[index].output });
+        return;
+      }
+    }
+    self.postMessage({ type: 'result', success: true, count: cases.length });
+  } catch (error) {
+    self.postMessage({ type: 'fatal', message: String(error?.message || error) });
+  }
+};
+
+</script>
+  <script type="module" id="wolfpack-app-bundle">
+// Pacote web independente de caminhos de assets. Fonte editável em js/.
+
+let _embeddedRubyWorkerURL = null;
+function getRubyWorkerURL(){
+  // Same-origin file is the reliable path for Cloudflare Workers/Pages.
+  // Inline Blob is a fallback for local file previews.
+  if(location.protocol === "https:" || location.protocol === "http:") return new URL("./js/ruby-worker.js",location.href).href;
+  if(!_embeddedRubyWorkerURL){
+    const source = document.getElementById('embedded-ruby-worker')?.textContent;
+    if(!source) throw new Error('Motor Ruby ausente do arquivo HTML.');
+    _embeddedRubyWorkerURL = URL.createObjectURL(new Blob([source],{type:'text/javascript'}));
+  }
+  return _embeddedRubyWorkerURL;
+}
+
+{
+// VULPES-77 / lógica exportada do Ruby original
+// Gerado de source/vulpes77/lib/vulpes77.rb por export_vulpes.rb
+const DATA = {
+  "version": "0.1.0",
+  "network": {
+    "10.77.0.1": {
+      "name": "GATEWAY",
+      "ports": {
+        "443": "edge-dashboard",
+        "53": "dns-snapshot"
+      }
+    },
+    "10.77.0.12": {
+      "name": "WEB-01",
+      "ports": {
+        "80": "public-site",
+        "8080": "telemetry-console"
+      }
+    },
+    "10.77.0.23": {
+      "name": "LOG-01",
+      "ports": {
+        "9200": "log-archive"
+      }
+    },
+    "10.77.0.44": {
+      "name": "SEC-CTRL",
+      "ports": {
+        "8443": "response-console"
+      }
+    }
+  },
+  "port_order": {
+    "10.77.0.1": [
+      443,
+      53
+    ],
+    "10.77.0.12": [
+      80,
+      8080
+    ],
+    "10.77.0.23": [
+      9200
+    ],
+    "10.77.0.44": [
+      8443
+    ]
+  },
+  "files": {
+    "10.77.0.1:443": {
+      "welcome.txt": "[EDGE] Gateway de treinamento. Nenhuma conexão externa é realizada.\nAtivos: WEB-01, LOG-01, SEC-CTRL.\n"
+    },
+    "10.77.0.1:53": {
+      "zones.txt": "web-01.lab 10.77.0.12\nlog-01.lab 10.77.0.23\nsec-ctrl.lab 10.77.0.44\n"
+    },
+    "10.77.0.12:80": {
+      "index.html": "<h1>NEXUS LAB</h1>\n<!-- O servidor de telemetria responde em :8080 -->\n"
+    },
+    "10.77.0.12:8080": {
+      "readme.txt": "WEB-01 / telemetria\nO identificador de uma transmissão suspeita está codificado em Base64.\nUse 'cat traffic.log' e 'decode b64 <valor>'.\n",
+      "traffic.log": "02:13:52 GET /health code=200\n02:14:07 POST /telemetry destination=203.0.113.7 beacon_id_b64=TklHSFRKQVI= code=202\n02:14:09 GET /health code=200\n",
+      "notes.txt": "203.0.113.0/24 é um bloco reservado para documentação.\nEsta telemetria, assim como os hosts, é completamente fictícia.\n"
+    },
+    "10.77.0.23:9200": {
+      "readme.txt": "[IR] Alerta: WEB-01 apresentou egress suspeito às 02:14:07.\nCorrelacione o event_id de egress.log com auth.log.\nEnvie o nome da conta responsável, não o ID.\n",
+      "auth.log": "02:13:43 user=ana src=10.77.0.81 event_id=E-105 result=ok\n02:13:59 user=svc-bridge src=10.77.0.99 event_id=E-441 result=ok\n02:14:01 user=svc-backup src=10.77.0.71 event_id=E-883 result=ok\n",
+      "egress.log": "02:14:07 host=WEB-01 destination=203.0.113.7 event_id=E-441 verdict=alert\n02:17:22 host=GATEWAY destination=198.51.100.3 event_id=E-883 verdict=allow\n"
+    },
+    "10.77.0.44:8443": {
+      "runbook.txt": "RUNBOOK DE RESPOSTA - NEXUS LAB\n1. Identifique o host impactado em incident.json.\n2. Isole apenas o host comprometido: contain <IP>.\n3. Registre o ticket: submit <ticket>.\nA quarentena é somente uma mudança no estado deste jogo.\n",
+      "incident.json": "{\n  \"ticket\": \"IR-2607\",\n  \"severity\": \"high\",\n  \"host\": \"10.77.0.12\",\n  \"actor\": \"svc-bridge\",\n  \"required_action\": \"isolate_host\"\n}",
+      "dashboard.txt": "SEGMENTO NEXUS\nWEB-01: incidente aberto\nLOG-01: preservado para análise\nGATEWAY: operação normal\n"
+    }
+  },
+  "missions": [
+    {
+      "title": "01 / O ECO FANTASMA",
+      "lead": "Uma transmissão inesperada saiu do servidor WEB-01.\\nEncontre o identificador secreto do beacon sem sair da rede simulada.",
+      "target": "Localizar e decodificar o beacon_id; enviar o codinome.",
+      "hint": "scan 10.77.0.12 -> connect 10.77.0.12:8080 -> cat traffic.log -> decode b64 <token>",
+      "answer": "NIGHTJAR",
+      "unlock": [
+        "10.77.0.1",
+        "10.77.0.12"
+      ],
+      "outro": "Beacon identificado! Agora precisamos atribuir a atividade a uma identidade."
+    },
+    {
+      "title": "02 / SOMBRAS NOS LOGS",
+      "lead": "A equipe SOC recuperou dois arquivos de eventos.\\nCorrelacione a transmissão suspeita com a autenticação que a precedeu.",
+      "target": "Encontrar a conta relacionada ao evento suspeito e enviar o nome da conta.",
+      "hint": "scan 10.77.0.23 -> connect 10.77.0.23:9200 -> cat egress.log -> grep E-441 auth.log",
+      "answer": "svc-bridge",
+      "unlock": [
+        "10.77.0.1",
+        "10.77.0.12",
+        "10.77.0.23"
+      ],
+      "outro": "A identidade foi correlacionada. Um último passo: contenção responsável."
+    },
+    {
+      "title": "03 / SILÊNCIO OPERACIONAL",
+      "lead": "O atacante ainda pode estar ativo no host comprometido.\\nLeia o runbook e isole somente a máquina afetada.\\nDepois registre o ticket de incidente.",
+      "target": "Conter o host correto e submeter o ID do ticket.",
+      "hint": "scan 10.77.0.44 -> connect 10.77.0.44:8443 -> cat incident.json -> contain 10.77.0.12 -> submit IR-2607",
+      "answer": "IR-2607",
+      "unlock": [
+        "10.77.0.1",
+        "10.77.0.12",
+        "10.77.0.23",
+        "10.77.0.44"
+      ],
+      "outro": "INCIDENTE CONTIDO. A rede NEXUS está novamente sob controle."
+    }
+  ]
+};
+
+/**
+ * VULPES-77 WEB: port controlado do motor do jogo Ruby 0.1.0.
+ * Fonte de verdade: ../source/vulpes77/lib/vulpes77.rb e export_vulpes.rb.
+ * Tudo aqui é uma simulação em memória: scan/connect/contain jamais fazem I/O de rede.
+ */
+
+
+const VULPES_VERSION = DATA.version;
+const MISSIONS = DATA.missions;
+const NETWORK = DATA.network;
+const FILES = DATA.files;
+const MAX_JOURNAL = 40;
+
+const empty = () => ({
+  version: VULPES_VERSION, mission_index: 0, score: 0, penalty: 0,
+  hint_used: false, contained: false, scanned: [], session: null, journal: []
+});
+const clamp = (n, a, b) => Math.max(a, Math.min(b, Number.isFinite(Number(n)) ? Math.trunc(Number(n)) : a));
+const reply = (text, kind = 'info') => ({text, kind});
+
+/** Subconjunto de Shellwords.split: aspas simples/duplas e escapes, sem shell real. */
+function splitShellWords(line) {
+  const result = [];
+  let word = '', active = false, quote = null;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (quote === "'") {
+      if (c === "'") quote = null;
+      else word += c;
+    } else if (quote === '"') {
+      if (c === '"') quote = null;
+      else if (c === '\\' && i + 1 < line.length && ['\\', '"', '$', '`', '\n'].includes(line[i + 1])) {
+        const next = line[++i]; if (next !== '\n') word += next;
+      } else word += c;
+    } else if (/\s/.test(c)) {
+      if (active) {result.push(word); word = ''; active = false;}
+    } else if (c === '"' || c === "'") {
+      quote = c; active = true;
+    } else if (c === '\\') {
+      if (i + 1 >= line.length) throw new Error('escape no final da entrada');
+      word += line[++i]; active = true;
+    } else {word += c; active = true;}
+  }
+  if (quote) throw new Error('aspas não fechadas');
+  if (active) result.push(word);
+  return result;
+}
+
+class VulpesGame {
+  constructor(saved = null) {this.state = empty(); if (saved) this.restore(saved);}
+  get missionIndex() {return this.state.mission_index;}
+  get score() {return this.state.score;}
+  get complete() {return this.missionIndex >= MISSIONS.length;}
+  get mission() {return MISSIONS[this.missionIndex] ?? null;}
+  get rank() {
+    return this.score >= 270 ? 'VULPES OPERATOR' : this.score >= 210 ? 'SENIOR ANALYST' : this.score >= 150 ? 'THREAT HUNTER' : 'SOC RECRUIT';
+  }
+  get prompt() {
+    const s = this.state.session;
+    const context = s ? `${NETWORK[s.host].name}:${s.port}` : 'nexus';
+    return `vulpes77@${context}$ `;
+  }
+  get intro() {
+    if (this.complete) return `Operação NEXUS concluída. Pontuação: ${this.score}/300. Digite 'status', 'novo' ou 'sair'.`;
+    const m = this.mission;
+    return `${m.title}\n${m.lead.replaceAll('\\n', '\n')}\n\nOBJETIVO: ${m.target}\nDigite 'help' para conhecer os comandos.`;
+  }
+  reset() {this.state = empty(); return reply(`Nova operação iniciada.\n\n${this.intro}`, 'success');}
+  snapshot() {return JSON.parse(JSON.stringify(this.state));}
+  /** Importação defensiva do save do navegador; preserva bloqueios do jogo Ruby. */
+  restore(raw) {
+    try {
+      if (!raw || typeof raw !== 'object' || raw.version !== VULPES_VERSION) return false;
+      if (!Number.isInteger(raw.mission_index) || raw.mission_index < 0 || raw.mission_index > MISSIONS.length) return false;
+      const idx = raw.mission_index;
+      const unlocked = idx < MISSIONS.length ? MISSIONS[idx].unlock : [];
+      const scanned = Array.isArray(raw.scanned) ? [...new Set(raw.scanned.filter(ip => typeof ip === 'string' && unlocked.includes(ip)))] : [];
+      let session = null;
+      if (raw.session && typeof raw.session === 'object' && scanned.includes(raw.session.host)) {
+        const port = Number(raw.session.port);
+        if (Number.isInteger(port) && Object.hasOwn(NETWORK[raw.session.host].ports, String(port))) session = {host:raw.session.host, port};
+      }
+      this.state = {
+        version: VULPES_VERSION, mission_index: idx,
+        score: clamp(raw.score, 0, 300), penalty: clamp(raw.penalty, 0, 100),
+        hint_used: raw.hint_used === true,
+        contained: idx === 2 && raw.contained === true,
+        scanned, session,
+        journal: Array.isArray(raw.journal) ? raw.journal.filter(e => typeof e === 'string').slice(-MAX_JOURNAL).map(s => s.slice(0, 240)) : []
+      };
+      return true;
+    } catch {return false;}
+  }
+  addJournal(note) {this.state.journal.push(`M${this.missionIndex+1}: ${note}`); this.state.journal = this.state.journal.slice(-MAX_JOURNAL);}
+  serviceFiles() {const s = this.state.session; return s ? FILES[`${s.host}:${s.port}`] : null;}
+  status() {
+    if (this.complete) return reply(`CAMPANHA CONCLUÍDA\nPontuação: ${this.score}/300 | Rank: ${this.rank}\nUse novo para jogar novamente.`, 'success');
+    return reply(`${this.mission.title}\nOBJETIVO: ${this.mission.target}\nPontos acumulados: ${this.score}\nPontos possíveis nesta missão: ${Math.max(100 - this.state.penalty, 0)}\nHost em sessão: ${this.state.session?.host ?? 'nenhum'}\nIsolamento WEB-01: ${this.state.contained ? 'sim' : 'não'}`);
+  }
+  map() {
+    const rows = Object.entries(NETWORK).map(([ip, node]) => {
+      const lock = this.mission.unlock.includes(ip) ? 'ONLINE' : 'BLOQUEADO';
+      return `${ip.padEnd(13)} ${node.name.padEnd(10)} [${lock}]`;
+    });
+    return reply(`NEXUS / SEGMENTO DE TREINAMENTO\n${rows.join('\n')}\nNenhum endereço corresponde a um alvo real.`);
+  }
+  scan(args) {
+    if (args.length !== 1) return reply('Uso: scan <IP> (veja map)', 'error');
+    const ip = args[0], node = NETWORK[ip];
+    if (!node) return reply('Host não existe na topologia virtual.', 'error');
+    if (!this.mission.unlock.includes(ip)) return reply('Acesso ao segmento ainda bloqueado nesta missão.', 'error');
+    if (!this.state.scanned.includes(ip)) this.state.scanned.push(ip);
+    this.addJournal(`SCAN ${node.name} ${ip}`);
+    return reply(`${node.name} (${ip})\n${DATA.port_order[ip].map(port => `${port}/tcp open ${node.ports[port]}`).join('\n')}`, 'success');
+  }
+  connect(args) {
+    if (args.length !== 1) return reply('Uso: connect <IP>:<porta>', 'error');
+    const match = /^(\d+\.\d+\.\d+\.\d+):(\d{1,5})$/.exec(args[0]);
+    if (!match) return reply('Destino inválido. Ex.: connect 10.77.0.12:8080', 'error');
+    const ip = match[1], port = Number(match[2]);
+    if (!this.mission.unlock.includes(ip)) return reply('Host bloqueado ou desconhecido.', 'error');
+    if (!this.state.scanned.includes(ip)) return reply('Primeiro faça scan no host.', 'error');
+    const node = NETWORK[ip];
+    if (!node || !Object.hasOwn(node.ports, String(port))) return reply('Porta não disponível nesse host virtual.', 'error');
+    this.state.session = {host:ip, port};
+    this.addJournal(`CONNECT ${node.name}:${port}`);
+    return reply(`Conectado a ${node.name} / ${node.ports[port]}. Use ls ou cat.`, 'success');
+  }
+  disconnect() {this.state.session = null; return reply('Sessão encerrada.');}
+  ls() {
+    const files = this.serviceFiles();
+    if (!files) return reply('Não há sessão ativa. Use connect.', 'error');
+    return reply(`ARQUIVOS DISPONÍVEIS\n${Object.keys(files).sort().join('\n')}`);
+  }
+  cat(args) {
+    if (args.length !== 1) return reply('Uso: cat <arquivo>', 'error');
+    if (!this.state.session) return reply('Conecte-se a um serviço antes.', 'error');
+    const content = this.serviceFiles()?.[args[0]];
+    if (content === undefined) return reply('Arquivo não encontrado no serviço atual.', 'error');
+    const s = this.state.session;
+    this.addJournal(`READ ${s.host}:${s.port}/${args[0]}`);
+    return reply(content);
+  }
+  grep(args) {
+    if (args.length !== 2) return reply('Uso: grep <texto> <arquivo>', 'error');
+    if (!this.state.session) return reply('Conecte-se a um serviço antes.', 'error');
+    const content = this.serviceFiles()?.[args[1]];
+    if (content === undefined) return reply('Arquivo não encontrado.', 'error');
+    const lines = content.split(/(?<=\n)/).filter(line => line.toLowerCase().includes(args[0].toLowerCase()));
+    this.addJournal(`GREP '${args[0].slice(0, 40)}' ${args[1]}`);
+    return reply(lines.length ? lines.join('') : 'Nenhuma correspondência.');
+  }
+  decode(args) {
+    if (args.length < 2) return reply('Uso: decode b64|hex <texto>', 'error');
+    const kind = args[0].toLowerCase(), token = args.slice(1).join(' ');
+    let bytes;
+    try {
+      if (kind === 'b64' || kind === 'base64') {
+        // Formato estrito, como Base64.strict_decode64 do Ruby.
+        if (!/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(token)) throw new Error('base64 inválido');
+        bytes = Uint8Array.from(atob(token), c => c.charCodeAt(0));
+        
+      } else if (kind === 'hex') {
+        const raw = token.replaceAll(' ', '');
+        if (!/^(?:[0-9a-fA-F]{2})*$/.test(raw)) throw new Error('hex inválido');
+        bytes = Uint8Array.from(raw.match(/.{2}/g) ?? [], pair => parseInt(pair, 16));
+      } else return reply('Formato aceito: b64 ou hex.', 'error');
+    } catch {return reply('Codificação inválida.', 'error');}
+    if (bytes.byteLength > 4096) return reply('Entrada excede o limite de 4096 bytes.', 'error');
+    let value;
+    try {
+      const decoded = new TextDecoder('utf-8', {fatal:true}).decode(bytes);
+      value = [...decoded].every(c => c === '\n' || c === '\r' || (c.codePointAt(0) >= 32 && c.codePointAt(0) !== 127))
+        ? decoded : Array.from(bytes, b=>b.toString(16).padStart(2,'0')).join('');
+    } catch {value = Array.from(bytes, b=>b.toString(16).padStart(2,'0')).join('');}
+    this.addJournal(`DECODE ${kind}`);
+    return reply(`Resultado: ${value}`, 'success');
+  }
+  async hash(args) {
+    if (args.length < 2 || args[0].toLowerCase() !== 'sha256') return reply('Uso: hash sha256 <texto>', 'error');
+    const text = args.slice(1).join(' ');
+    const encoded = new TextEncoder().encode(text);
+    if (encoded.byteLength > 4096) return reply('Texto longo demais (máximo 4096 bytes).', 'error');
+    try {
+      const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', encoded));
+      return reply(`SHA-256: ${Array.from(digest, b => b.toString(16).padStart(2,'0')).join('')}`);
+    } catch {return reply('SHA-256 não disponível neste navegador.', 'error');}
+  }
+  contain(args) {
+    if (args.length !== 1) return reply('Uso: contain <IP>', 'error');
+    if (this.missionIndex !== 2) return reply('Comando disponível apenas na missão 03.', 'error');
+    if (!this.state.session || this.state.session.host !== '10.77.0.44' || this.state.session.port !== 8443) return reply('Acesse primeiro o console SEC-CTRL:8443.', 'error');
+    if (args[0] !== '10.77.0.12') return reply('Este host não está autorizado no runbook. Nenhuma ação executada.', 'error');
+    if (this.state.contained) return reply('WEB-01 já está isolado.');
+    this.state.contained = true;
+    this.addJournal('CONTAIN WEB-01 (somente simulação)');
+    return reply('WEB-01 ISOLADO. Segmentação aplicada ao cenário fictício. Agora registre o ticket.', 'success');
+  }
+  submit(args) {
+    if (!args.length) return reply('Uso: submit <resposta>', 'error');
+    const answer = args.join(' ').trim();
+    if (answer.toLowerCase() !== this.mission.answer.toLowerCase()) {
+      this.state.penalty = Math.min(this.state.penalty + 5, 100);
+      this.addJournal('SUBMIT incorreto (-5 pts)');
+      return reply('Resposta não confere com as evidências. -5 pontos nesta missão.', 'error');
+    }
+    if (this.missionIndex === 2 && !this.state.contained) return reply('Antes de registrar o ticket, isole WEB-01 pelo console SEC-CTRL.', 'error');
+    const points = Math.max(100 - this.state.penalty, 0);
+    const name = this.mission.title, outro = this.mission.outro;
+    this.state.score += points;
+    this.addJournal(`COMPLETE ${name} +${points}`);
+    this.state.mission_index++;
+    this.state.penalty = 0;
+    this.state.hint_used = false;
+    this.state.contained = false;
+    this.state.scanned = [];
+    this.state.session = null;
+    if (!this.complete) return reply(`✓ ${outro}\n+${points} pontos | TOTAL ${this.score}/300\n\n${this.intro}`, 'success');
+    return reply(`✓ ${outro}\nMISSÃO FINALIZADA: ${name}\n+${points} pontos | TOTAL ${this.score}/300\n\n${this.ending()}`, 'win');
+  }
+  ending() {
+    return `╔══════════════════════════════════════════════════╗\n║           OPERAÇÃO NEXUS: CONCLUÍDA             ║\n╚══════════════════════════════════════════════════╝\nPONTUAÇÃO: ${this.score}/300 | PATENTE: ${this.rank}\nA ameaça foi descoberta, atribuída e contida.\nO melhor ataque? Às vezes, é uma boa investigação.\nDigite status para conferir ou novo para recomeçar.\n`;
+  }
+  hint() {
+    if (!this.state.hint_used) {this.state.penalty = Math.min(this.state.penalty + 15, 100); this.state.hint_used = true;}
+    return reply(`DICA: ${this.mission.hint}\n(Penalidade total nesta missão: -${this.state.penalty})`);
+  }
+  journal() {
+    const entries = this.state.journal.slice(-15);
+    return reply(entries.length ? `DIÁRIO DE OPERAÇÕES\n${entries.map((e,i) => `${String(i+1).padStart(2,' ')}. ${e}`).join('\n')}` : 'Diário ainda vazio.');
+  }
+  help() {
+    return reply(`COMANDOS DO TERMINAL (todos simulados)\n  help                       Mostra esta referência\n  map                        Mapa dos hosts do laboratório\n  scan <IP>                  Descobre serviços de um host fictício\n  connect <IP>:<porta>       Abre console do serviço\n  disconnect                 Encerra sessão atual\n  ls                         Lista arquivos do serviço\n  cat <arquivo>              Lê um arquivo\n  grep <texto> <arquivo>     Filtra linhas de um arquivo\n  decode b64 <texto>         Decodifica Base64\n  decode hex <texto>         Decodifica hexadecimal\n  hash sha256 <texto>        Calcula hash local\n  contain <IP>               Isola host virtual (na missão 03)\n  submit <resposta>          Entrega a solução da missão\n  hint                       Dica (-15 pontos na primeira vez)\n  status                     Mostra andamento/pontuação\n  journal                    Histórico recente de evidências\n  save                       Salva progresso\n  novo                       Reinicia toda a campanha\n  sair                       Salva e encerra\nDICA: espaços em argumentos? Use aspas, como grep "event_id=E-441" auth.log.\n`);
+  }
+  async perform(line) {
+    let args;
+    try {args = splitShellWords(String(line ?? '').trim());}
+    catch (e) {return reply(`Entrada inválida: ${e.message === 'aspas não fechadas' ? 'Unmatched quote: ' + JSON.stringify(String(line ?? '').trim()) : e.message}`, 'error');}
+    if (!args.length) return reply('Digite help para ver os comandos.');
+    const command = args.shift().toLowerCase();
+    if (command === 'novo') return this.reset();
+    if (['sair','exit','quit'].includes(command)) return reply('Fim de transmissão. O estado foi salvo.', 'quit');
+    if (this.complete && !['help','ajuda','status','journal','diario','save','salvar'].includes(command)) return reply('Comando indisponível após a conclusão. Use status, journal ou novo.');
+    switch (command) {
+      case 'help': case 'ajuda': return this.help();
+      case 'map': case 'mapa': return this.map();
+      case 'scan': return this.scan(args);
+      case 'connect': return this.connect(args);
+      case 'disconnect': case 'dc': return this.disconnect();
+      case 'ls': case 'dir': return this.ls();
+      case 'cat': return this.cat(args);
+      case 'grep': return this.grep(args);
+      case 'decode': return this.decode(args);
+      case 'hash': return this.hash(args);
+      case 'contain': return this.contain(args);
+      case 'submit': return this.submit(args);
+      case 'hint': case 'dica': return this.hint();
+      case 'status': return this.status();
+      case 'journal': case 'diario': return this.journal();
+      case 'save': case 'salvar': return reply('Progresso registrado neste navegador.', 'success');
+      default: return reply(`Comando desconhecido: ${command}. Digite help.`, 'error');
+    }
+  }
+}
+
+
+
+
+const STORAGE_KEY = 'wolfpack-workshop-vulpes77-web-v01';
+const $ = (selector) => document.querySelector(selector);
+const log = $('#v77-output');
+const form = $('#v77-form');
+const input = $('#v77-input');
+const hintPanel = $('#v77-objective');
+let history = [];
+let historyIndex = 0;
+let busy = false;
+
+function restore() {
+  try {return JSON.parse(localStorage.getItem(STORAGE_KEY));}
+  catch {return null;}
+}
+const game = new VulpesGame(restore());
+function persist() {
+  try {localStorage.setItem(STORAGE_KEY, JSON.stringify(game.snapshot()));}
+  catch { /* Navegação privada ou quota excedida: ainda jogável na sessão atual. */ }
+}
+function line(text, kind = 'info') {
+  const el = document.createElement('div');
+  el.className = `vulpes-line ${({success:'ok', win:'ok', error:'bad', quit:'warn', system:'system', command:'command'})[kind] ?? ''}`;
+  el.textContent = text; // Nunca interpretamos comandos/evidências como HTML.
+  log.append(el);
+  // Evita DOM ilimitado após muitas horas de uso.
+  while (log.childElementCount > 220) log.firstElementChild.remove();
+  log.scrollTop = log.scrollHeight;
+}
+function draw() {
+  const idx = game.missionIndex;
+  const mission = game.mission;
+  $('#v77-stage').textContent = game.complete ? '03 / 03 ✓' : `${String(idx+1).padStart(2,'0')} / 03`;
+  $('#v77-score').textContent = `${game.score} / 300 XP`;
+  $('#v77-rank').textContent = game.rank;
+  $('#v77-network').textContent = game.complete ? 'CONTIDA' : game.state.contained ? 'HOST ISOLADO' : 'MONITORANDO';
+  $('#v77-progress').style.width = `${idx / DATA.missions.length * 100}%`;
+  $('#v77-mission-title').textContent = mission ? mission.title : '✓ OPERAÇÃO NEXUS CONCLUÍDA';
+  $('#v77-mission-brief').textContent = mission ? mission.lead.replaceAll('\\n','\n') : 'A ameaça foi descoberta, atribuída e contida. Operação concluída.';
+  hintPanel.textContent = mission ? mission.target : `Campanha finalizada · patente ${game.rank}`;
+  const nodeList = $('#v77-nodes');
+  nodeList.replaceChildren();
+  for (const [ip, node] of Object.entries(DATA.network)) {
+    const div = document.createElement('div');
+    div.className = `vulpes-node ${mission?.unlock.includes(ip) ? 'unlocked' : 'locked'}`;
+    const emblem = document.createElement('span');
+    emblem.textContent = mission?.unlock.includes(ip) ? '◉' : '◇';
+    const body = document.createElement('div');
+    const label = document.createElement('b');label.textContent = node.name;
+    const desc = document.createElement('small');desc.textContent = `${ip} · ${mission?.unlock.includes(ip) ? 'ONLINE' : 'BLOQUEADO'}`;
+    body.append(label, desc);div.append(emblem, body);nodeList.append(div);
+  }
+  const stages = $('#v77-stages');
+  stages.replaceChildren();
+  DATA.missions.forEach((stage, i) => {
+    const item = document.createElement('li');
+    item.className = i < idx ? 'done' : i === idx ? 'current' : 'locked';
+    item.textContent = `${i < idx ? '✓ ' : ''}${stage.title.split(' / ')[1]}`;
+    stages.append(item);
+  });
+  const promptText = game.prompt.trim();
+  $('#v77-prompt-label').textContent = promptText;
+  $('#v77-terminal-context').textContent = promptText.replace('vulpes77@','');
+}
+async function execute(command) {
+  if (busy) return;
+  busy = true;
+  input.disabled = true;
+  try {
+    line(`${game.prompt}${command}`, 'command');
+    const result = await game.perform(command);
+    line(result.text, result.kind);
+    persist();
+    draw();
+  } catch (error) {
+    line(`Erro do motor local: ${error.message}`, 'error');
+  } finally {
+    busy = false;
+    input.disabled = false;
+    input.focus({preventScroll:true});
+  }
+}
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const command = input.value.trim();
+  if (!command) return;
+  history.push(command);
+  if (history.length > 100) history.shift();
+  historyIndex = history.length;
+  input.value = '';
+  execute(command);
+});
+input.addEventListener('keydown', (event) => {
+  if (event.key === 'ArrowUp') {
+    if (!history.length) return;
+    event.preventDefault();
+    historyIndex = Math.max(0, historyIndex - 1);
+    input.value = history[historyIndex];
+  } else if (event.key === 'ArrowDown') {
+    if (!history.length) return;
+    event.preventDefault();
+    historyIndex = Math.min(history.length, historyIndex + 1);
+    input.value = historyIndex === history.length ? '' : history[historyIndex];
+  }
+});
+$('#v77-clear').addEventListener('click', () => {
+  log.replaceChildren();
+  line('Tela limpa. Seu progresso continua salvo. Digite status para conferir.', 'system');
+  input.focus({preventScroll:true});
+});
+$('#v77-restart').addEventListener('click', () => {
+  if (!confirm('Recomeçar Incident Zero? A pontuação e o progresso salvos serão zerados.')) return;
+  const result = game.reset();
+  history = []; historyIndex = 0;
+  log.replaceChildren();
+  line(result.text, 'system');
+  draw();persist();
+  input.focus({preventScroll:true});
+});
+document.querySelectorAll('[data-v77-cmd]').forEach(button => {
+  button.addEventListener('click', () => {
+    input.value = button.dataset.v77Cmd;
+    input.focus({preventScroll:true});
+  });
+});
+
+log.replaceChildren();
+line('V U L P E S - 7 7\nINCIDENT ZERO // TERMINAL OPS\nTHE WORKSHOP · CYBERSEC LAB\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'system');
+line(`v${DATA.version} | Rede 100% simulada | Nenhuma chamada de rede real`, 'system');
+line(game.intro, 'info');
+draw();
+
+}
+{
+// RUBY PROTOCOL / 12 lições originais
+const STORAGE_KEY = 'wolfpack-workshop-ruby-v01';
+const $ = selector => document.querySelector(selector);
+const listEl = $('#mission-list');
+const editor = $('#code-editor');
+const output = $('#terminal-output');
+const runButton = $('#run-btn');
+const engineStatus = $('#engine-status');
+const messageEl = $('#helper-message');
+const nameDialog = $('#name-dialog');
+let lessons = [];
+let selected = 1;
+let busy = false;
+let currentWorker = null;
+let runTimer = null;
+let state = restore();
+
+function restore() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (saved && typeof saved === 'object') return {
+      name: typeof saved.name === 'string' ? saved.name : '',
+      completed: Array.isArray(saved.completed) ? saved.completed.filter(Number.isInteger) : [],
+      codes: saved.codes && typeof saved.codes === 'object' ? saved.codes : {}
+    };
+  } catch { /* localStorage pode estar indisponível */ }
+  return { name: '', completed: [], codes: {} };
+}
+function persist() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+  catch { /* Sem persistência neste modo do navegador */ }
+}
+function unlocked(id) { return id === 1 || state.completed.includes(id - 1) || state.completed.includes(id); }
+function isComplete(id) { return state.completed.includes(id); }
+function completedCount() { return lessons.filter(l => isComplete(l.id)).length; }
+function rank(n) { return n >= 12 ? 'KINGMAKER' : n >= 9 ? 'ALFA' : n >= 5 ? 'SENTINELA' : n >= 2 ? 'EXPLORADOR' : 'RECRUTA'; }
+function lessonTitle(l) { return l.title.split(' | ')[0]; }
+
+function updateHeader() {
+  const count = completedCount();
+  $('#player-name').textContent = state.name || 'RECRUTA';
+  $('#player-name').title = 'Clique no lápis para alterar';
+  $('#xp-value').innerHTML = `${count * 100} <span>XP</span>`;
+  $('#completed-value').innerHTML = `${count} <span>/ 12</span>`;
+  $('#rank-value').textContent = rank(count);
+  $('#progress-bar').style.width = `${count / 12 * 100}%`;
+}
+
+function renderMissionList() {
+  listEl.replaceChildren();
+  const acts = ['ATO I', 'ATO II', 'ATO III', 'ATO FINAL'];
+  for (const l of lessons) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = ['mission-item', l.id === selected ? 'active' : '', isComplete(l.id) ? 'done' : ''].join(' ');
+    const available = unlocked(l.id);
+    btn.disabled = !available || busy;
+    btn.title = available ? l.title : 'Conclua a missão anterior para desbloquear';
+    btn.setAttribute('aria-label', `Missão ${l.id}: ${lessonTitle(l)}${available ? '' : ' — bloqueada'}`);
+    const number = document.createElement('span');
+    number.className = 'mission-number';
+    number.textContent = isComplete(l.id) ? '✓' : String(l.id).padStart(2, '0');
+    const title = document.createElement('span');
+    title.className = 'mission-text';
+    title.textContent = lessonTitle(l);
+    const status = document.createElement('span');
+    status.className = 'mission-locked';
+    status.textContent = available ? (isComplete(l.id) ? '✓' : '›') : '⌑';
+    btn.append(number, title, status);
+    btn.addEventListener('click', () => selectMission(l.id));
+    listEl.append(btn);
+  }
+}
+
+function updateLineNumbers() {
+  const lineCount = Math.min(350, Math.max(1, editor.value.split('\n').length));
+  $('#line-numbers').textContent = Array.from({ length: lineCount }, (_, n) => String(n + 1).padStart(2, '0')).join('\n');
+}
+
+function showMessage(text) {
+  messageEl.textContent = text;
+  messageEl.classList.toggle('visible', Boolean(text));
+}
+function setOutput(text, kind = '') {
+  output.textContent = text;
+  output.className = `terminal-output ${kind}`;
+  output.scrollTop = output.scrollHeight;
+}
+function updateRunButton() {
+  const hasNext = isComplete(selected) && lessons.some(l => l.id === selected + 1);
+  runButton.textContent = busy ? '◌ EXECUTANDO...' : hasNext ? '→ PRÓXIMA MISSÃO' : isComplete(selected) ? '✓ REEXECUTAR' : '▶ EXECUTAR CÓDIGO';
+  runButton.disabled = busy;
+}
+function selectMission(id) {
+  if (busy || !unlocked(id)) return;
+  const lesson = lessons.find(l => l.id === id);
+  if (!lesson) return;
+  selected = id;
+  $('#mission-act').textContent = lesson.act;
+  $('#mission-count').textContent = `MISSÃO ${String(id).padStart(2, '0')} / 12`;
+  $('#mission-title').textContent = lessonTitle(lesson);
+  $('#mission-scene').textContent = lesson.scene;
+  $('#mission-theory').textContent = lesson.theory;
+  $('#mission-example').textContent = lesson.example;
+  $('#mission-task').textContent = lesson.task;
+  $('#editor-tab-name').textContent = `missao_${String(id).padStart(2, '0')}.rb`;
+  editor.value = state.codes[id] ?? `# Missão ${String(id).padStart(2, '0')} — ${lessonTitle(lesson)}\n`;
+  updateLineNumbers();
+  setOutput(`wolfpack@workshop:~$ ruby missao_${String(id).padStart(2, '0')}.rb\n\n> ${isComplete(id) ? 'Missão concluída. Pode revisar ou reexecutar.' : 'Aguardando seu código...'} `);
+  showMessage('');
+  renderMissionList();
+  updateRunButton();
+}
+function checkRequirements(code, lesson) {
+  if (!code.trim()) return 'O código está vazio.';
+  for (const { pattern, message } of lesson.requirements) {
+    if (!new RegExp(pattern).test(code)) return `Conceito ainda não aplicado: ${message}`;
+  }
+  return '';
+}
+function cancelWorker() {
+  if (runTimer) clearTimeout(runTimer);
+  runTimer = null;
+  if (currentWorker) currentWorker.terminate();
+  currentWorker = null;
+}
+function completeRun() {
+  busy = false;
+  cancelWorker();
+  renderMissionList();
+  updateRunButton();
+}
+function runChallenge({ retry = false } = {}) {
+  if (busy) return;
+  const lesson = lessons.find(l => l.id === selected);
+  if (!retry && isComplete(selected) && lessons.some(l => l.id === selected + 1)) {
+    selectMission(selected + 1);
+    return;
+  }
+  const code = editor.value;
+  const requirementsMessage = checkRequirements(code, lesson);
+  if (requirementsMessage) { setOutput(`✗ ${requirementsMessage}`, 'error'); return; }
+  if (code.length > 12000) { setOutput('✗ Código muito longo (máximo 12.000 caracteres).', 'error'); return; }
+  if (!state.name) {
+    openNameDialog();
+    setOutput('Escolha seu codinome e clique novamente em EXECUTAR CÓDIGO.');
+    return;
+  }
+  busy = true;
+  renderMissionList();
+  updateRunButton();
+  setOutput('> Inicializando o motor Ruby por WebAssembly...\n> A primeira carga precisa de internet e pode demorar alguns segundos.');
+  engineStatus.className = 'engine-status';
+  engineStatus.innerHTML = '<i></i> MOTOR: CARREGANDO';
+  try {
+    currentWorker = new Worker(getRubyWorkerURL(), { type: 'module' });
+    // O worker morre após o prazo: loops infinitos não travam o restante do site.
+    const scheduleTimeout = (ms, reason) => {
+      clearTimeout(runTimer);
+      runTimer = setTimeout(() => {
+        setOutput(`✗ ${reason}\n\nConfira loops e tente novamente.`, 'error');
+        completeRun();
+      }, ms);
+    };
+    scheduleTimeout(60000, 'O carregamento do interpretador excedeu 60 segundos. Verifique sua internet.');
+    currentWorker.onmessage = ({ data }) => {
+      if (data.type === 'status') {
+        setOutput(`> ${data.message}\n> O código não é enviado ao nosso servidor.`);
+      }
+      if (data.type === 'case-start') {
+        scheduleTimeout(7500, 'Execução excedeu 7,5 segundos para um caso de teste.');
+        setOutput(`> Ruby carregado.\n> Validando seu código...\n> Teste ${data.index + 1} de ${lesson.cases.length}`);
+      }
+      if (data.type === 'fatal') {
+        engineStatus.className = 'engine-status is-error';
+        engineStatus.innerHTML = '<i></i> MOTOR: INDISPONÍVEL';
+        setOutput(`✗ Não foi possível iniciar/executar Ruby.\n${data.message}\n\nConfirme sua conexão, o acesso ao CDN e tente novamente.`, 'error');
+        completeRun();
+      }
+      if (data.type === 'result') {
+        engineStatus.className = 'engine-status is-ready';
+        engineStatus.innerHTML = '<i></i> RUBY WASM: ONLINE';
+        if (data.success) {
+          const firstTime = !state.completed.includes(selected);
+          if (firstTime) state.completed.push(selected);
+          state.completed.sort((a,b) => a - b);
+          persist();
+          updateHeader();
+          const final = completedCount() === lessons.length;
+          setOutput(`✓ ${data.count} teste(s) passaram. Código validado!\n${firstTime ? '+100 XP — missão concluída.' : 'Missão já concluída — XP mantido.'}\n\n${final ? '👑 KINGMAKER PROTOCOL // UNLOCKED\nA matilha foi restaurada. Você concluiu a campanha!' : '✓ Próxima missão desbloqueada.'}`, 'success');
+        } else {
+          const actual = data.actual?.trim() || '(nada)';
+          const expected = data.expected?.trim();
+          setOutput(`✗ TESTE ${data.index + 1} NÃO PASSOU\n${data.reason}\n${expected === undefined ? '' : `\nEsperado:\n${expected}\n`}\nSeu programa:\n${actual}`, 'error');
+        }
+        completeRun();
+      }
+    };
+    currentWorker.onerror = (event) => {
+      engineStatus.className = 'engine-status is-error';
+      engineStatus.innerHTML = '<i></i> MOTOR: ERRO';
+      setOutput('✗ Erro ao carregar o motor Ruby. Confira a conexão com a internet ou tente outro navegador.\n\n' + (event.message || ''), 'error');
+      completeRun();
+    };
+    currentWorker.postMessage({ type: 'run', code, cases: lesson.cases });
+  } catch (err) {
+    setOutput(`✗ Navegador não permitiu iniciar o executor.\n${err.message}`, 'error');
+    completeRun();
+  }
+}
+
+function openNameDialog() {
+  $('#codename-input').value = state.name || '';
+  if (typeof nameDialog.showModal === 'function') nameDialog.showModal();
+  else { const nick = prompt('Escolha seu codinome de lobo:'); if (nick?.trim()) { state.name = nick.trim().slice(0,24); persist(); updateHeader(); } }
+}
+
+function setupEvents() {
+  editor.addEventListener('input', () => { state.codes[selected] = editor.value; persist(); updateLineNumbers(); });
+  editor.addEventListener('keydown', e => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const { selectionStart: s, selectionEnd: t } = editor;
+      editor.setRangeText('  ', s, t, 'end');
+      editor.dispatchEvent(new Event('input'));
+    }
+    if (e.key === 'Enter' && e.ctrlKey) { e.preventDefault(); runChallenge({ retry: true }); }
+  });
+  runButton.addEventListener('click', () => runChallenge());
+  $('#hint-btn').addEventListener('click', () => showMessage(`DICA: ${lessons[selected - 1].hint}`));
+  $('#example-btn').addEventListener('click', () => { editor.value = lessons[selected - 1].example; editor.dispatchEvent(new Event('input')); showMessage('Exemplo carregado no editor. Agora adapte-o à missão.'); editor.focus(); });
+  $('#solution-btn').addEventListener('click', () => {
+    if (confirm('Ver a solução completa? Você pode aprender mais tentando primeiro.')) showMessage(`SOLUÇÃO PARA ESTUDAR:\n${lessons[selected - 1].solution}`);
+  });
+  $('#clear-output').addEventListener('click', () => setOutput('wolfpack@workshop:~$\n> Terminal limpo.'));
+  $('#reset-progress').addEventListener('click', () => {
+    if (!confirm('Reiniciar todas as 12 missões e apagar seu XP e seus códigos salvos neste navegador?')) return;
+    cancelWorker(); busy = false;
+    state = { name: state.name, completed: [], codes: {} };
+    persist(); updateHeader(); selectMission(1);
+  });
+  $('#edit-name').addEventListener('click', openNameDialog);
+  $('#cancel-name').addEventListener('click', () => nameDialog.close());
+  $('#name-form').addEventListener('submit', event => {
+    const value = $('#codename-input').value.trim();
+    if (value.length < 2) { event.preventDefault(); $('#codename-input').setCustomValidity('Use pelo menos dois caracteres.'); $('#codename-input').reportValidity(); return; }
+    state.name = value.slice(0,24); persist(); updateHeader();
+  });
+  $('#codename-input').addEventListener('input', event => event.target.setCustomValidity(''));
+  const navItems = document.querySelectorAll('.nav-link');
+  const sectionNames = { inicio:'OVERVIEW', aplicacoes:'APPLICATIONS', jogar:'RUBY PROTOCOL', vulpes:'VULPES-77', metodo:'METHOD' };
+  const activateNav = () => {
+    const id = location.hash.slice(1) || 'inicio';
+    navItems.forEach(item => item.classList.toggle('active', item.dataset.nav === id));
+    $('#breadcrumb-current').textContent = sectionNames[id] || 'OVERVIEW';
+  };
+  window.addEventListener('hashchange', activateNav);
+  activateNav();
+}
+
+async function start() {
+  try {
+    lessons = JSON.parse(document.getElementById('embedded-lessons').textContent);
+    if (!Array.isArray(lessons) || lessons.length !== 12) throw new Error('Campanha incompleta.');
+    state.completed = state.completed.filter(n => lessons.some(l => l.id === n));
+    setupEvents();
+    updateHeader();
+    selectMission(lessons.find(l => unlocked(l.id) && !isComplete(l.id))?.id || 12);
+  } catch (error) {
+    $('#mission-title').textContent = 'Não foi possível carregar as missões';
+    setOutput(`✗ ${error.message}\n\nExecute o site por um servidor HTTP local (veja README.md).`, 'error');
+  }
+}
+start();
+
+}
+</script>
+</body>
+</html>

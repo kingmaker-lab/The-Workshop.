@@ -1,0 +1,25 @@
+
+/* VISUAL FIX 0.3 — avoids panel overflow on real narrow devices. */
+html,body{max-width:100%;}
+.main-content,.content-wrap,.section,.game-section,.game-app,.game-workspace,
+.mission-main,.editor-main,.vulpes-section,.vulpes-shell,.vulpes-layout,
+.vulpes-terminal-panel,.vulpes-intel{min-width:0;max-width:100%;}
+.vulpes-line,.vulpes-terminal-log,.terminal-output,.example-code{
+  overflow-wrap:anywhere;word-break:normal;
+}
+.vulpes-prompt input{min-width:0;}
+.vulpes-source-note{overflow-wrap:anywhere;}
+@media(max-width:800px){
+  .vulpes-section .section-heading{gap:14px;}
+  .vulpes-tag{white-space:normal;line-height:1.5;}
+}
+@media(max-width:550px){
+  .vulpes-toolbar{align-items:flex-start;}
+  .vulpes-brand strong{overflow-wrap:anywhere;}
+  .vulpes-prompt{flex-wrap:wrap;gap:9px;}
+  .vulpes-prompt label{flex-basis:100%;}
+  .vulpes-prompt input{flex:1 1 120px;}
+  .vulpes-send{flex:0 0 auto;}
+  .vulpes-terminal-log{min-height:270px;}
+  .game-top,.game-strip,.vulpes-toolbar{gap:12px;}
+}

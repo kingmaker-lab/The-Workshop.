@@ -1,0 +1,45 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'optparse'
+require_relative '../lib/vulpes77'
+
+options = { fresh: false, color: $stdout.tty? && !ENV.key?('NO_COLOR') }
+parser = OptionParser.new do |opts|
+  opts.banner = "Uso: ruby bin/vulpes77 [--new] [--no-color] [--save ARQUIVO]"
+  opts.on('--new', 'Recomeça a campanha do zero') { options[:fresh] = true }
+  opts.on('--no-color', 'Desliga as cores ANSI') { options[:color] = false }
+  opts.on('--save PATH', 'Caminho do salvamento JSON') { |path| options[:save_path] = path }
+  opts.on('-h', '--help', 'Mostra a ajuda do executável') { puts opts; exit 0 }
+end
+parser.parse!
+
+BANNER = <<~ASCII
+  ╔═══════════════════════════════════════════════════════════╗
+  ║                    V U L P E S - 7 7                      ║
+  ║               INCIDENT ZERO // TERMINAL OPS               ║
+  ║             THE WORKSHOP  •  CYBERSEC LAB                 ║
+  ╚═══════════════════════════════════════════════════════════╝
+ASCII
+
+def paint(text, code, enabled)
+  enabled ? "\e[#{code}m#{text}\e[0m" : text
+end
+
+game = Vulpes77::Game.new(**options.slice(:save_path, :fresh))
+puts paint(BANNER, '36;1', options[:color])
+puts paint("v#{Vulpes77::VERSION} | laboratório 100% virtual | nenhuma chamada de rede", '90', options[:color])
+puts
+puts game.intro
+puts
+
+loop do
+  print paint(game.prompt, '32;1', options[:color])
+  input = $stdin.gets
+  break if input.nil?
+  result = game.perform(input)
+  color = { success: '32', error: '31', win: '35;1', quit: '33' }.fetch(result.kind, '0')
+  puts paint(result.text, color, options[:color])
+  puts
+  break if result.kind == :quit
+end
