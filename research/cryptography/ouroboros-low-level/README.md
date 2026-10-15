@@ -83,6 +83,18 @@ Combina seed, serviço, epoch e contador; aplica uma etapa de `Ouroboros` e HKDF
 
 **Não passe segredos reais no terminal como parâmetros CLI**: histórico de shell e inspeção de processos podem revelá-los. O uso de HKDF é apropriado como derivação a partir de material de chave de alta entropia, mas **não substitui Argon2id para senhas humanas de baixa entropia**. Para uso pessoal, prefira gerenciadores de senha e mecanismos de derivação adequados.
 
+## Experimento 004 — ciclos, Floyd e Brent
+
+A análise independente de SHA-256 truncado agora possui um [experimento reproduzível em Python](./experiments/004-cycles/README.md), com implementação da busca de Floyd e Brent e enumeração completa de estados de 16 bits.
+
+- Estado de 16 bits: 6 ciclos; comprimentos `155, 31, 18, 7, 4, 1`; 1 ponto fixo.
+- Estado de 32 bits (mensagem `ouroboros`, seed `0x93DBF636`): pré-período de 115.659 passos e período de 19.959.
+- Comparação de custo: 610.539 avaliações com Floyd, 402.307 com Brent.
+
+As medições são sobre uma função de referência, **não** uma execução ou auditoria da implementação original C/Assembly.
+
+---
+
 ## 6. Próximas perguntas de pesquisa
 
 - Qual é o comportamento estatístico da transformação `ouroboros_step`?
