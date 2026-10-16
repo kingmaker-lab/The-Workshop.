@@ -95,6 +95,19 @@ As medições são sobre uma função de referência, **não** uma execução ou
 
 ---
 
+## Experimento 005 — sensibilidade à seed
+
+O [EXP-005](./experiments/005-initial-state-sensitivity/README.md) avalia a alteração de um único bit da seed na função de SHA-256 truncada estudada no EXP-004, distinguindo **ciclos compartilhados** de **colisões sincronizadas**.
+
+- **16 bits:** 4 das 16 seeds modificadas alcançaram o ciclo original; as demais chegaram a outros ciclos.
+- **32 bits:** 27 das 32 seeds modificadas alcançaram o ciclo original. As cinco restantes chegaram a um ciclo de 39.318 estados.
+- **Nenhuma colisão sincronizada** foi observada nas 48 comparações com as trajetórias originais.
+- Distância média de Hamming (transições 1 a 255): 8,06103 bits em 16 bits e 15,99473 bits em 32 bits.
+
+O script e seus testes são reproduzíveis em Python. O estudo **não** executa nem valida a implementação Assembly original.
+
+---
+
 ## 6. Próximas perguntas de pesquisa
 
 - Qual é o comportamento estatístico da transformação `ouroboros_step`?
