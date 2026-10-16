@@ -108,6 +108,19 @@ O script e seus testes são reproduzíveis em Python. O estudo **não** executa 
 
 ---
 
+## Experimento 006 — bacias de atração
+
+O [EXP-006](./experiments/006-attractor-basins/README.md) mapeia exaustivamente **65.536 estados** de cada uma de oito variantes da função `first16(SHA256(mensagem || estado_big_endian))`.
+
+- A mensagem `ouroboros` tem 6 ciclos; sua maior bacia reúne 40.691 estados (62,09%).
+- `wolfpack` apresenta 3 ciclos, sendo que 64.623 estados (98,61%) convergem para o mesmo ciclo.
+- `ares` apresenta 8 ciclos, com maior bacia de 28.932 estados (44,15%).
+- O percentual de pares de estados que chegam ao mesmo ciclo após alteração de um bit foi comparado ao esperado de dois estados independentes no mesmo grafo.
+
+Código e testes de referência reproduzíveis em Python, sem dependências externas. **Não é uma avaliação de segurança da implementação C/Assembly.**
+
+---
+
 ## 6. Próximas perguntas de pesquisa
 
 - Qual é o comportamento estatístico da transformação `ouroboros_step`?
