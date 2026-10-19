@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "module": "cerberus-core",
+  "updated_at": "2026-10-19",
+  "projects": [
+    {
+      "id": "ares",
+      "name": "ARES Protocol",
+      "category": "systems",
+      "status": "public",
+      "url": "https://workshop-labs.pages.dev/projects/ares/",
+      "integration": "external_link"
+    },
+    {
+      "id": "crypto",
+      "name": "Crypto Lab",
+      "category": "cryptography",
+      "status": "public",
+      "url": "https://wolfpack-crypto.pages.dev/",
+      "integration": "external_link"
+    },
+    {
+      "id": "wolfpack",
+      "name": "WolfPack OS",
+      "category": "learning_platform",
+      "status": "public",
+      "url": "https://wolfpack.wolfpackworkshop.workers.dev/",
+      "integration": "external_link"
+    },
+    {
+      "id": "cerberus",
+      "name": "Cerberus",
+      "category": "integration",
+      "status": "online",
+      "url": "https://cerberus.wolfpackworkshop.workers.dev/",
+      "integration": "public_catalog"
+    }
+  ]
+}
