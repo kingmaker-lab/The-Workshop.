@@ -3,12 +3,14 @@
 #include "ares_http_parser.h"
 #include <arpa/inet.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <netinet/in.h>
 #include <signal.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
@@ -47,10 +49,12 @@ static int deadline_expired(const struct timespec *start)
 static void send_error(int fd, int status)
 {
     ares_response response;
+    ares_response_init(&response);
     ares_error(status, &response);
     (void)ares_write_response(fd, &response, 0);
+    ares_response_destroy(&response);
 }
-static void handle_client(int fd)
+static void handle_client(int fd, int public_fd)
 {
     if (!set_timeouts(fd)) return;
     struct timespec started;
@@ -84,9 +88,11 @@ static void handle_client(int fd)
                 return;
             }
             ares_response response;
-            ares_route(&parser.request, &response);
+            ares_response_init(&response);
+            ares_route(public_fd, &parser.request, &response);
             (void)ares_write_response(fd, &response,
                     strcmp(parser.request.method, "HEAD") == 0);
+            ares_response_destroy(&response);
             return;
         }
         if (result == ARES_TOO_LARGE || result == ARES_TOO_MANY_HEADERS)
@@ -101,12 +107,22 @@ static void handle_client(int fd)
 int ares_serve(uint16_t port)
 {
     if (signals_init() < 0) { perror("sigaction"); return 1; }
+    /* Trusted, process-local static directory (never chosen by clients). */
+    int public_fd = open("public", O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC);
+    if (public_fd < 0) { perror("open public/"); return 1; }
+    struct stat root_stat;
+    if (fstat(public_fd, &root_stat) < 0 || !S_ISDIR(root_stat.st_mode)) {
+        fprintf(stderr, "Public root is not a directory\n");
+        close(public_fd);
+        return 1;
+    }
     int listener = socket(AF_INET, SOCK_STREAM, 0);
-    if (listener < 0) { perror("socket"); return 1; }
+    if (listener < 0) { perror("socket"); close(public_fd); return 1; }
     int reuse = 1;
     if (setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse)) != 0) {
         perror("SO_REUSEADDR");
         close(listener);
+        close(public_fd);
         return 1;
     }
     struct sockaddr_in local;
@@ -118,15 +134,17 @@ int ares_serve(uint16_t port)
         listen(listener, BACKLOG) != 0) {
         perror("bind/listen");
         close(listener);
+        close(public_fd);
         return 1;
     }
     socklen_t length = sizeof(local);
     if (getsockname(listener, (struct sockaddr *)&local, &length) != 0) {
         perror("getsockname");
         close(listener);
+        close(public_fd);
         return 1;
     }
-    printf("ARES v0.3 listening on http://127.0.0.1:%u\n", (unsigned)ntohs(local.sin_port));
+    printf("ARES v0.4 listening on http://127.0.0.1:%u\n", (unsigned)ntohs(local.sin_port));
     fflush(stdout);
     while (active) {
         int client = accept(listener, NULL, NULL);
@@ -134,11 +152,13 @@ int ares_serve(uint16_t port)
             if (errno == EINTR) continue;
             perror("accept");
             close(listener);
+            close(public_fd);
             return 1;
         }
-        handle_client(client);
+        handle_client(client, public_fd);
         close(client);
     }
     close(listener);
+    close(public_fd);
     return 0;
 }
