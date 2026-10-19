@@ -31,9 +31,9 @@
       "id": "cerberus",
       "name": "Cerberus",
       "category": "integration",
-      "status": "in_development",
-      "url": null,
-      "integration": "none"
+      "status": "online",
+      "url": "https://cerberus.wolfpackworkshop.workers.dev/",
+      "integration": "public_catalog"
     }
   ]
 }
