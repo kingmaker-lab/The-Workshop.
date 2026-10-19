@@ -18,7 +18,7 @@ Cerberus é o módulo de integração **não privilegiada** do ecossistema The W
 
 - Portal: `https://workshop-labs.pages.dev/`.
 - WolfPack OS: `https://wolfpack.wolfpackworkshop.workers.dev/`.
-- Ares: `https://ares-protocol.pages.dev/`.
+- Ares: `https://workshop-labs.pages.dev/projects/ares/`.
 - Crypto Lab: `https://wolfpack-crypto.pages.dev/`.
 - Metadados em `registry/projects.json`, com destinos HTTPS explícitos.
 - Links nativos HTML, sem iframe, redirecionador dinâmico, proxy, CORS de integração ou JavaScript remoto.
