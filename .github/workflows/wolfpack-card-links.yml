@@ -1,0 +1,26 @@
+name: WolfPack external card links
+on:
+  push:
+    branches: [main, feat/wolfpack-link-ares-cerberus]
+    paths:
+      - 'Ruby/wolfpack-the-workshop-web-v0.3-completo/wolfpack-workshop-web-v0.3/index.html'
+      - 'Ruby/wolfpack-the-workshop-web-v0.3-completo/wolfpack-workshop-web-v0.3/tests/test_card_links.py'
+      - '.github/workflows/wolfpack-card-links.yml'
+  pull_request:
+    paths:
+      - 'Ruby/wolfpack-the-workshop-web-v0.3-completo/wolfpack-workshop-web-v0.3/index.html'
+      - 'Ruby/wolfpack-the-workshop-web-v0.3-completo/wolfpack-workshop-web-v0.3/tests/test_card_links.py'
+      - '.github/workflows/wolfpack-card-links.yml'
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify links, accessibility and isolation
+        run: python -m unittest discover -s Ruby/wolfpack-the-workshop-web-v0.3-completo/wolfpack-workshop-web-v0.3/tests -p 'test_card_links.py' -v
