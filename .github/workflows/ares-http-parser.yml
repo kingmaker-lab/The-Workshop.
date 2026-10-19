@@ -1,0 +1,30 @@
+name: ARES HTTP Parser v0.2
+
+on:
+  push:
+    paths:
+      - "ares/http-parser/**"
+      - ".github/workflows/ares-http-parser.yml"
+  pull_request:
+    paths:
+      - "ares/http-parser/**"
+      - ".github/workflows/ares-http-parser.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  parser:
+    name: Build and test parser
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build and test
+        run: make -C ares/http-parser test
+      - name: Inspect sample request
+        run: make -C ares/http-parser demo
+      - name: Check clean build
+        run: make -C ares/http-parser clean
