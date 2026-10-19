@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ARES v0.4 — Static Files | The Workshop Labs</title>
+<meta name="description" content="ARES v0.4: arquivos estáticos em C com openat, O_NOFOLLOW, MIME types e testes contra path traversal, symlinks e arquivos especiais.">
+<meta name="theme-color" content="#0b0d0e">
+<link rel="canonical" href="https://workshop-labs.pages.dev/projects/ares/static-files/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/ares.css">
+<link rel="stylesheet" href="/assets/tcp.css">
+<script src="/assets/ares.js" defer></script>
+</head>
+<body><div class="topline"></div><div class="noise" aria-hidden="true"></div>
+<header class="header wrap" id="top">
+<a class="brand" href="/" aria-label="The Workshop Labs, início"><span class="mark" aria-hidden="true"><span>W</span></span><span class="brandcopy"><strong>THE WORKSHOP</strong><small>BUILD / BREAK / UNDERSTAND</small></span></a>
+<button class="menu" aria-controls="nav" aria-expanded="false">MENU ☰</button>
+<nav class="nav" id="nav" aria-label="Navegação principal">
+<a href="/">Labs</a><a href="/projects/ares/">ARES</a>
+<a href="/projects/ares/responses-routing/">v0.3</a>
+<a href="#security">Segurança</a>
+<a class="navcta" href="https://github.com/kingmaker-lab/The-Workshop./tree/main/ares/http-server" target="_blank" rel="noopener noreferrer">Código ↗</a>
+</nav></header>
+<main>
+<section class="wrap tcpintro">
+<div class="micro">// ARES — EXPERIMENT 004 / FILESYSTEM BOUNDARY</div>
+<h1>STATIC <em>FILES.</em><br>v0.4</h1>
+<div class="tcpstatus"><span class="pulse"></span> IMPLEMENTADO · 33 TESTES E2E · LOCALHOST ONLY</div>
+<p class="lead">Um servidor que lê arquivos precisa saber <span style="color:var(--accent)">quais jamais poderá abrir.</span></p>
+<p class="sublead">A próxima engrenagem do ARES: de uma rota HTTP a um descritor de arquivo seguro. Começamos com HTML, CSS e imagens, mas investigamos também traversal, symlinks, permissões, limites, MIME e a fronteira entre diretório público e filesystem.</p>
+<div class="actions"><a class="btn btnprimary" href="#pipeline">DESMONTAR O FLUXO ↓</a><a class="btn btnghost" href="https://github.com/kingmaker-lab/The-Workshop./blob/main/ares/http-server/README.md" target="_blank" rel="noopener noreferrer">ESTUDO NO GITHUB ↗</a></div>
+</section>
+<div class="stripe"><div class="wrap stripeinner"><div class="stripeitem"><b>01</b> OPENAT / FD RELATIVO</div><div class="stripeitem"><b>02</b> NO SYMLINKS</div><div class="stripeitem"><b>03</b> 256 KIB / FILE</div><div class="stripeitem"><b>04</b> 33 E2E TESTS</div></div></div>
+<section class="architecture tcpsection" id="pipeline">
+<div class="wrap"><div class="sectionhead"><div><div class="micro">// 01 — FILE RESOLUTION</div><h2>Do URL ao arquivo.<br><em>Sem atalhos.</em></h2></div>
+<p class="sectionintro">O ARES não confia no caminho recebido. Primeiro valida cada componente. Depois percorre o filesystem a partir de um descritor autorizado, sem seguir links simbólicos.</p></div>
+<div class="pipeline"><div class="pipe"><small>01 / ROUTE</small><b>/static/*</b><span>GET / HEAD</span></div><div class="pipe"><small>02 / VALIDATE</small><b>Path rules</b><span>ASCII · sem .. / %</span></div><div class="pipe"><small>03 / RESOLVE</small><b>openat()</b><span>O_NOFOLLOW</span></div><div class="pipe"><small>04 / INSPECT</small><b>fstat()</b><span>regular · ≤256 KiB</span></div><div class="pipe"><small>05 / DELIVER</small><b>read/send</b><span>MIME + Content-Length</span></div></div>
+<p class="note">O diretório public/ é a única origem autorizada e precisa ser administrado como conteúdo confiável. Não existe upload público nesta versão. A URL não é decodificada; formatos ambíguos são recusados.</p></div>
+</section>
+<section class="section wrap" id="demo">
+<div class="sectionhead"><div><div class="micro">// 02 — WORKBENCH</div><h2>Compile. Execute.<br><em>Observe.</em></h2></div>
+<p class="sectionintro">Faça os experimentos no Linux. Esta página é uma documentação pública no Cloudflare Pages; o servidor HTTP em C roda somente no seu computador, em loopback.</p></div>
+<div class="tcplab"><div class="codebox"><div class="codebar"><span>TERMINAL A / HTTP SERVER</span></div>
+<pre>cd ares/http-server
+make
+make run
+
+# ARES v0.4 listening on:
+# http://127.0.0.1:8080</pre></div>
+<div class="codebox"><div class="codebar"><span>TERMINAL B / STATIC FILES</span></div>
+<pre>curl -i http://127.0.0.1:8080/static/index.html
+curl -i http://127.0.0.1:8080/static/assets/site.css
+curl -I http://127.0.0.1:8080/static/index.html
+
+# status 200, tipo MIME, comprimento...</pre></div></div>
+<div class="actions" style="margin-top:26px"><a class="btn btnprimary" href="https://github.com/kingmaker-lab/The-Workshop./blob/main/ares/http-server/src/static_files.c" target="_blank" rel="noopener noreferrer">LER STATIC_FILES.C ↗</a><a class="btn btnghost" href="https://github.com/kingmaker-lab/The-Workshop./tree/main/ares/http-server/public" target="_blank" rel="noopener noreferrer">VER PUBLIC/ ↗</a></div>
+</section>
+<section class="section wrap" style="padding-top:0">
+<div class="sectionhead"><div><div class="micro">// 03 — SECURITY BY DESIGN</div><h2>O que a v0.4 <em>recusa.</em></h2></div><p class="sectionintro">Três fronteiras explícitas: sintaxe dos caminhos, estrutura do filesystem e volume de dados retornado.</p></div>
+<div class="grid3">
+<article class="feature"><span class="number">01 / PATH TRAVERSAL</span><span class="icon">↛</span><h3>Fora da raiz, não.</h3><p>Rejeita ../, caminhos codificados, barra invertida, componentes vazios, arquivos ocultos e URLs com query na rota estática.</p></article>
+<article class="feature"><span class="number">02 / DESCRIPTORS</span><span class="icon">⊗</span><h3>Sem seguir symlinks.</h3><p>openat() percorre cada componente com O_NOFOLLOW. fstat() aceita somente arquivos regulares; diretórios e FIFOs não são servidos.</p></article>
+<article class="feature"><span class="number">03 / RESOURCE BOUNDS</span><span class="icon">≦</span><h3>Limites verificáveis.</h3><p>Extensões MIME permitidas explicitamente, arquivos de até 256 KiB, leitura em blocos de 16 KiB e Content-Length calculado por fstat().</p></article>
+</div></section>
+<section class="architecture tcpsection" id="security">
+<div class="wrap"><div class="sectionhead"><div><div class="micro">// 04 — SECURITY RELEASE GATE</div><h2>33 testes.<br><em>Zero promessas vazias.</em></h2></div><p class="sectionintro">Compilação C17 e testes com sockets reais, incluindo ASan e UBSan. Segurança é um processo contínuo — não existe avaliação única que garanta ausência de vulnerabilidades.</p></div>
+<div class="tcplab"><div class="tcpresult"><strong>33 / 33 ✓</strong><p>TESTES E2E LOCAIS PASSARAM<br>ASAN + UBSAN — SEM FALHAS DETECTADAS<br>TRAVERSAL / SYMLINK / FIFO / MIME / HEAD<br>REGRESSÕES DA v0.3 COBERTAS</p></div>
+<div class="tcpwarning"><strong>DECISÃO: LAB ONLY</strong><p>O servidor ainda é bloqueante, fala um subconjunto do HTTP/1.1, não possui TLS nem limitação real de concorrência. public/ deve ser confiável: sem uploads de usuários. O executável C não está publicado na internet.</p>
+<a class="tcplink" href="https://github.com/kingmaker-lab/The-Workshop./blob/main/docs/security-reviews/ares-v0.4-2026-10-19.md" target="_blank" rel="noopener noreferrer">ABRIR RELATÓRIO DE SEGURANÇA ↗</a></div></div>
+<div class="tcptestgrid" style="margin-top:25px"><span>Traversal ../</span><span>Percent encoding</span><span>Symlink escape</span><span>FIFO rejection</span><span>MIME allowlist</span><span>HEAD responses</span><span>Size boundary</span><span>HTTP regressions</span></div>
+</div></section>
+<section class="section wrap"><div class="sectionhead"><div><div class="micro">// 05 — NEXT MILESTONE</div><h2>v0.5 — <em>Concurrency.</em></h2></div>
+<p class="sectionintro">Agora vamos investigar o limite de atender um cliente por vez: epoll, sockets não bloqueantes, filas, backpressure e clientes lentos. Sem declarar produção antes da auditoria.</p></div>
+<div class="actions"><a class="btn btnprimary" href="/projects/ares/">VOLTAR AO ARES ↗</a><a class="btn btnghost" href="https://github.com/kingmaker-lab/The-Workshop./blob/main/docs/SECURITY_RELEASE_GATE.md" target="_blank" rel="noopener noreferrer">REGRA DE SEGURANÇA ↗</a></div></section>
+</main>
+<footer class="footer wrap"><div class="footerhero"><div><div class="micro">// THE WORKSHOP — BUILD. BREAK. UNDERSTAND. REBUILD.</div><h2>Sem atalhos.<br><span>Sem caixa-preta.</span></h2></div><a class="btn btnghost" href="#top">VOLTAR AO TOPO ↑</a></div>
+<div class="footerbottom"><span>© 2026 THE WORKSHOP · WOLFPACK / KINGMAKER<br>ARES v0.4 — LABORATÓRIO LOCAL / DOCUMENTAÇÃO PÚBLICA.</span><span>RELEASE GATE: SECURITY FIRST<br><a href="/">WORKSHOP LABS ↗</a></span></div></footer>
+</body></html>
