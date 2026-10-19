@@ -1,0 +1,63 @@
+name: WolfPack OS v0.4.1 LIVE smoke
+on:
+  push:
+    branches: [main, feat/wolfpack-v041-full-release-20261019]
+    paths:
+      - '.github/workflows/wolfpack-v041-live-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Verify public deployment, security headers and all assets
+        env:
+          TARGET: 'https://wolfpack.wolfpackworkshop.workers.dev'
+        run: |
+          python - <<'PY'
+          import urllib.request, urllib.error, hashlib, io, zipfile, os, time
+          url=os.environ['TARGET']
+          def get(path,method='GET'):
+              req=urllib.request.Request(url+path,method=method,headers={'User-Agent':'The-Workshop-Release-Smoke/1.0','Cache-Control':'no-cache'})
+              with urllib.request.urlopen(req,timeout=25) as r:
+                  return r.status, r.headers, r.read()
+          status,h,html=get('/?release=v041-final-20261019')
+          assert status==200, status
+          assert b'ACESSAR ARES' in html, 'ARES CTA missing'
+          assert b'ABRIR CERBERUS' in html, 'CERBERUS CTA missing'
+          assert b'ARQUITETURA DE SOFTWARE' in html, 'Cerberus category missing'
+          assert b'https://workshop-labs.pages.dev/projects/ares/' in html
+          assert b'https://cerberus.wolfpackworkshop.workers.dev/' in html
+          assert b'id="raven-drift-engine"' in html
+          assert b'id="embedded-lessons"' in html
+          csp=h.get('Content-Security-Policy','')
+          assert 'sha256-' in csp and "frame-ancestors 'none'" in csp, csp
+          assert h.get('X-Content-Type-Options')=='nosniff'
+          assert h.get('Referrer-Policy')=='no-referrer'
+          print('PASS HTML, ARES, CERBERUS, RAVEN, CSP and headers')
+          files={
+           '/js/ruby-worker.js':'325c63f24f6fd69090794b72af164c56c1f2b46c2df12dfd4a0b711ae23e67d3',
+           '/downloads/raven-ruby-v0.1-original.zip':'ab3afe7a51cbf62fd1e2a5ff8a17797e00678370f4070e843afb032ecb5a82ac',
+           '/downloads/vulpes77-terminal-v0.1-original.zip':'106738b06d7adda787ad3526f0fc1fb3b53aeeaf783c93da8cdbbad179acf245',
+           '/downloads/wolfpack-ruby-protocol-v0.1.zip':'7d41e5747111cc1159cd947e8613d16893b042b9bd36bd1d3e2dc89fbfe3c054',
+          }
+          for path,expected in files.items():
+              st,h,data=get(path)
+              assert st==200,(path,st)
+              got=hashlib.sha256(data).hexdigest()
+              assert got==expected,(path,got,expected)
+              if path.endswith('.zip'):
+                  assert zipfile.is_zipfile(io.BytesIO(data)),path
+              print('PASS',path,len(data),got[:16])
+          hs,hh,_=get('/','HEAD')
+          assert hs==200 and int(hh['content-length'])>100000
+          try:get('/.env')
+          except urllib.error.HTTPError as e:assert e.code==404
+          else:raise AssertionError('unknown path not rejected')
+          try:get('/','POST')
+          except urllib.error.HTTPError as e:assert e.code==405
+          else:raise AssertionError('POST not rejected')
+          print('PASS HEAD, 404, 405')
+          PY
