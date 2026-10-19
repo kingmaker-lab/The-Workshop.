@@ -1,19 +1,37 @@
-# ARES Site — The Workshop
+# The Workshop Labs — Site / Portal
 
-Landing page do projeto **ARES** no Cloudflare Pages.
+**Build. Break. Understand. Rebuild.**
 
-- URL: https://workshop-labs.pages.dev/
-- Alias: https://workshop-labs.pages.dev/projects/ares/
-- Arquivo de implantação: \`_worker.js\` (Cloudflare Pages Advanced Mode).
-- Stack: HTML, CSS e JavaScript sem dependências.
-- O projeto ARES ainda está em desenvolvimento. O exemplo de terminal é uma **simulação conceitual**, não um servidor C em execução.
+O site principal é a porta de entrada para os laboratórios do The Workshop.
 
-## Desenvolvimento local
+## Endereços
 
-Use Wrangler com o arquivo \`_worker.js\` em um diretório de output do Pages; ou faça uma requisição ao Worker por meio do ambiente local suportado pelo Wrangler.
+| Rota | Destino | Descrição |
+| --- | --- | --- |
+| [workshop-labs.pages.dev](https://workshop-labs.pages.dev/) | Portal / hub | Diretório dos projetos |
+| [/projects/ares/](https://workshop-labs.pages.dev/projects/ares/) | ARES | Página técnica do servidor HTTP em C |
+| [/projects/crypto/](https://workshop-labs.pages.dev/projects/crypto/) | Crypto Labs | Redireciona para o projeto Crypto |
+| [wolfpack-crypto.pages.dev](https://wolfpack-crypto.pages.dev/) | Crypto Labs | Site próprio de estudos e experimentos de criptografia |
+
+O ARES está **em desenvolvimento**. O terminal na página é uma demonstração conceitual; não significa que exista um servidor HTTP escrito em C atendendo requisições públicas.
+
+## Fontes do site
+
+- `hub.html`: conteúdo da home / hub.
+- `hub.css`: estilo da home.
+- `_worker.js`: Cloudflare Pages Advanced Mode — contém o hub, a página do ARES e o roteamento.
+
+A versão publicada do hub está incorporada em `_worker.js`. Após editar os arquivos-fonte do hub, sincronize suas alterações com as constantes `HUB_HTML` e `HUB_CSS` do Worker antes do deploy.
+
+## Rotas do Pages Worker
+
+- `/` → home dos laboratórios
+- `/projects/ares/` e `/ares/` → ARES
+- `/projects/crypto/`, `/crypto/`, `/crypto-labs/` → redirecionamento ao Crypto Labs
+- `/assets/hub.css`, `/assets/ares.css`, `/assets/ares.js`, `/favicon.svg` → recursos locais
 
 ## Deploy
 
-No Cloudflare Pages, projeto \`workshop-labs\`, faça Direct Upload de um diretório contendo \`_worker.js\` na raiz. O ambiente de produção responde aos caminhos \`/\`, \`/ares/\` e \`/projects/ares/\`.
+No Cloudflare Pages, utilize o projeto existente `workshop-labs` e publique um diretório contendo `_worker.js` na raiz via Direct Upload. O Worker serve HTML e CSS, sem dependências externas.
 
-Não confundir a landing page (Cloudflare Pages) com o futuro servidor HTTP escrito em C, que precisará de um host Linux separado para executar sockets POSIX.
+**Importante:** Pages hospeda a apresentação do ARES, não o executável C17/POSIX. O servidor HTTP do ARES precisará de um host Linux separado, de auditoria e de uma configuração segura antes de qualquer implantação de produção.
