@@ -23,7 +23,6 @@ jobs:
         run: |
           python - <<'PY'
           from playwright.sync_api import sync_playwright
-          import hashlib, urllib.request
           base='https://wolfpack.wolfpackworkshop.workers.dev'
           with sync_playwright() as p:
             browser=p.chromium.launch(headless=True)
@@ -64,10 +63,21 @@ jobs:
             '/downloads/vulpes77-terminal-v0.1-original.zip':'106738b06d7adda787ad3526f0fc1fb3b53aeeaf783c93da8cdbbad179acf245',
             '/downloads/wolfpack-ruby-protocol-v0.1.zip':'7d41e5747111cc1159cd947e8613d16893b042b9bd36bd1d3e2dc89fbfe3c054'
           }
-          for path,expected in assets.items():
-            with urllib.request.urlopen(base+path,timeout=20) as r:
-              assert r.status==200
-              h=hashlib.sha256(r.read()).hexdigest()
-              assert h==expected,(path,h,expected)
-          print('PASS: 4 original non-HTML assets unchanged byte-for-byte (SHA-256).')
+          with sync_playwright() as p:
+            browser=p.chromium.launch(headless=True)
+            page=browser.new_page()
+            page.goto(base+'/?assets-check=v042',wait_until='domcontentloaded',timeout=30000)
+            for path,expected in assets.items():
+              result=page.evaluate("""async (p) => {
+                const r=await fetch(p,{cache:'no-store'});
+                if(!r.ok) return {status:r.status};
+                const b=await r.arrayBuffer();
+                const d=await crypto.subtle.digest('SHA-256',b);
+                return {status:r.status,sha:[...new Uint8Array(d)].map(v=>v.toString(16).padStart(2,'0')).join(''),size:b.byteLength};
+              }""",path)
+              assert result['status']==200,(path,result)
+              assert result['sha']==expected,(path,result['sha'],expected)
+              print('PASS ASSET',path,result['size'])
+            browser.close()
+          print('PASS: 4 original non-HTML assets unchanged byte-for-byte (browser SHA-256).')
           PY
