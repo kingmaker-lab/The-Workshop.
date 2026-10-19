@@ -29,7 +29,7 @@ function assertHeaders(response) {
 test("home and all ARES labs serve HTML with defense headers", async () => {
   const paths = [
     "/", "/projects/ares/", "/projects/ares/tcp-foundation/",
-    "/projects/ares/http-parser/", "/projects/ares/responses-routing/"
+    "/projects/ares/http-parser/", "/projects/ares/responses-routing/", "/projects/ares/static-files/", "/projects/ares/static-files/"
   ];
   for (const path of paths) {
     const r = await request(path);
@@ -104,6 +104,15 @@ test("Crypto Labs redirect uses fixed trusted target", async () => {
     assert.equal(r.headers.get("location"), "https://wolfpack-crypto.pages.dev/");
     assertHeaders(r);
   }
+});
+
+test("v0.4 static files is documentation, not C file-serving on Cloudflare", async () => {
+  const doc = await request("/projects/ares/static-files/");
+  assert.equal(doc.status, 200);
+  assert.match(await doc.text(), /33 \/ 33/);
+  const noCExecutable = await request("/static/index.html");
+  assert.equal(noCExecutable.status, 404);
+  assertHeaders(noCExecutable);
 });
 
 test("no secrets or dynamic script execution patterns in Worker source", () => {
