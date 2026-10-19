@@ -1,0 +1,28 @@
+name: WolfPack Ruby CSP security and regression gate
+on:
+  push:
+    branches: [main, fix/wolfpack-ruby-worker-v041-20261019]
+    paths:
+      - 'web/wolfpack-os-v041-edge/worker.mjs'
+      - 'web/wolfpack-os-v041-edge/worker.test.mjs'
+      - 'web/wolfpack-os-v041-edge/worker.csp.test.mjs'
+      - '.github/workflows/wolfpack-ruby-fix.yml'
+  pull_request:
+    paths:
+      - 'web/wolfpack-os-v041-edge/**'
+      - '.github/workflows/wolfpack-ruby-fix.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate syntax
+        run: node --check web/wolfpack-os-v041-edge/worker.mjs
+      - name: Assert CSP, script integrity, download hashes and routes
+        run: node --test web/wolfpack-os-v041-edge/worker.test.mjs web/wolfpack-os-v041-edge/worker.csp.test.mjs
