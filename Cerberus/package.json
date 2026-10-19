@@ -1,0 +1,1 @@
+{"name":"cerberus-software-architecture-lab","version":"0.2.0","private":true,"type":"module","scripts":{"test":"node --test worker.test.mjs"},"engines":{"node":">=20"}}

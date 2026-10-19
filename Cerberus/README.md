@@ -1,57 +1,48 @@
-# CERBERUS — Workshop Integration & Governance
+# 🐺 CERBERUS — Software Architecture Lab
 
 > **Build. Break. Understand. Rebuild.**
 
-Cerberus é o módulo de integração **não privilegiada** do ecossistema The Workshop. Nesta fase, ele é um catálogo declarativo com regras de governança, não um agente com acesso a credenciais, redes internas ou ferramentas administrativas.
+**Cerberus é o módulo de arquitetura de software do The Workshop.** Investigamos estruturas, fronteiras, padrões e decisões arquiteturais através de estudos comparativos e experimentos reproduzíveis. **Não é** um sistema de orquestração, um gateway de autenticação, um produto de governança, nem o hub oficial dos demais projetos.
 
-## Módulos planejados
+## Trilha de pesquisa
 
-| Módulo | Escopo | Fase |
+| Ciclo | Tema | Situação |
 |---|---|---|
-| CERBERUS-CORE | registro de aplicações, metadados e versionamento | fase 1 |
-| CERBERUS-GATE | links fixos, allowlist de destinos e navegação acessível | fase 1 |
-| CERBERUS-SENTRY | verificação de cabeçalhos e regressões pós-deploy | fase 1 (testes) |
-| CERBERUS-STATUS | indicadores de saúde com coleta somente autorizada, posteriormente | planejado |
-| CERBERUS-ORCHESTRATOR | automação entre módulos, autenticação e permissões explícitas | futuro, fora do escopo |
+| CERBERUS 01 | Fundamentos, atributos de qualidade, acoplamento, coesão, trade-offs | estudo introdutório publicado |
+| CERBERUS 02 | Arquitetura em camadas, Clean Architecture, Hexagonal | planejado |
+| CERBERUS 03 | Monólitos modulares, microsserviços e sistemas distribuídos | planejado |
+| CERBERUS 04 | SOLID, design patterns, DDD, C4 e ADRs | planejado |
+| CERBERUS 05 | Resiliência, escalabilidade, observabilidade, performance e segurança por design | planejado |
 
-## Contratos da fase 1
+## Método
 
-- Portal: `https://workshop-labs.pages.dev/`.
-- WolfPack OS: `https://wolfpack.wolfpackworkshop.workers.dev/`.
-- Ares: `https://workshop-labs.pages.dev/projects/ares/`.
-- Crypto Lab: `https://wolfpack-crypto.pages.dev/`.
-- Metadados em `registry/projects.json`, com destinos HTTPS explícitos.
-- Links nativos HTML, sem iframe, redirecionador dinâmico, proxy, CORS de integração ou JavaScript remoto.
-- O catálogo **não** autentica usuários e **não** transmite estado, progresso, tokens ou dados de laboratório entre origens.
-- Cada aplicativo mantém seu próprio ciclo de deploy e fronteira de confiança.
+**Contexto → Hipótese → Alternativas → Implementação → Métricas → Decisão (ADR).**
 
-## Diretórios
+Não adotaremos dogmas arquiteturais. Cada experimento deverá declarar requisitos, restrições, limites conhecidos, dados observados e critérios de decisão. Um protótipo não é evidência definitiva de escalabilidade ou segurança.
 
-```text
-Cerberus/
-├── README.md
-├── registry/projects.json
-└── docs/SECURITY.md
-web/workshop-labs/
-├── _worker.js
-├── README.md
-└── tests/smoke.test.mjs
-```
+## Primeira bancada: CERBERUS 01 — monólito modular versus microsserviços
 
-## Roadmap de integração
+Cenário hipotético: serviço de reservas, equipe de três pessoas, orçamento limitado, baixa escala inicial. Escolha arquitetural é documentada como **hipótese condicionada ao contexto**. O experimento propõe métricas de latência p95, falhas, custo de operação e complexidade de deploy. A página não alega que esses números já foram medidos.
 
-1. Mostrar WolfPack OS no portal como terceiro laboratório, com link externo seguro.
-2. Manter Ares e Crypto Lab funcionando nos URLs anteriores.
-3. Formalizar catálogo, cabeçalhos defensivos e smoke tests.
-4. No futuro, adicionar indicadores de status, sem executar scans nem coletar dados sem autorização.
-5. Só criar orquestração com modelos explícitos de identidade, autorização, auditoria e limites.
+- Página: https://cerberus.wolfpackworkshop.workers.dev/labs/01
+- Documento: [ADR 0001](docs/ADR-0001-modular-monolith.md).
+- Portal: https://cerberus.wolfpackworkshop.workers.dev/
 
-## Publicação oficial — 19/10/2026
+## Implementação pública
 
-O **CERBERUS v0.1.0** foi implantado como Cloudflare Worker independente (sem bindings), acessível em https://cerberus.wolfpackworkshop.workers.dev/.
+Worker independente com HTML e CSS estáticos, sem JavaScript executado no cliente, sem cookies, sem bindings de acesso a serviços e sem proxy. Publicação não altera os deploys do Workshop Labs, Ares, Crypto Lab ou WolfPack OS.
 
-Rotas: `/` (catálogo), `/api/status` (status declarativo), `/api/projects` (registro público).
+- `/` — página principal do laboratório.
+- `/labs/01` — primeiro estudo.
+- `/api/status` — status **do portal**, não dos demais serviços.
+- `/api/modules` — trilha de módulos (somente leitura).
+- `/api/projects` — catálogo anterior mantido exclusivamente por compatibilidade.
 
-**Escopo ON:** o serviço de catálogo; não representa disponibilidade garantida dos outros laboratórios. A publicação não altera o deployment do `workshop-labs`. A integração visual de um card na página principal ainda requer atualização segura do deploy Pages existente e não deve ser considerada concluída.
+## Segurança e testes
 
-Fonte publicada: `Cerberus/worker.js`; validação prevista: `node --test Cerberus/worker.test.mjs` (Node 20+).
+- Modelagem: [docs/SECURITY.md](docs/SECURITY.md)
+- Arquitetura: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- Testes: `cd Cerberus && npm test` (Node.js >= 20).
+- Deploy: publicar `Cerberus/worker.js` no Worker `cerberus` com alterações versionadas e revisão de headers, disponibilidade e regressões.
+
+**Atenção:** `web/workshop-labs/_worker.js` é um protótipo antigo, não é o código de produção do Workshop Labs e não deve ser implantado em substituição ao portal existente.

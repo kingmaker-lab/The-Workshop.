@@ -1,14 +1,28 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import worker from './worker.js';
-const base = 'https://cerberus.wolfpackworkshop.workers.dev/';
-const send=(path='/',method='GET')=>worker.fetch(new Request(new URL(path,base),{method}));
-test('Cerberus home exposes absolute HTTPS links',async()=>{
- const r=await send();assert.equal(r.status,200);
- const html=await r.text();
- for(const host of ['https://wolfpack.wolfpackworkshop.workers.dev/','https://workshop-labs.pages.dev/projects/ares/','https://wolfpack-crypto.pages.dev/']) assert.ok(html.includes('href="'+host+'"'));
- assert.ok(html.includes('CERBERUS STATUS: ON'));assert.ok(!/<script\\b/i.test(html));assert.ok(!/<iframe\\b/i.test(html));
+const send=(path='/',method='GET')=>worker.fetch(new Request('https://cerberus.wolfpackworkshop.workers.dev'+path,{method}));
+test('public home belongs to software architecture',async()=>{
+ const r=await send();assert.equal(r.status,200);const html=await r.text();
+ for(const mark of ['arquitetura de software','CERBERUS STATUS: ON','CERBERUS_01','CERBERUS_05','href="/labs/01"'])assert.ok(html.includes(mark),mark);
+ for(const link of ['https://workshop-labs.pages.dev/projects/ares/','https://wolfpack-crypto.pages.dev/','https://wolfpack.wolfpackworkshop.workers.dev/'])assert.ok(html.includes('href="'+link+'"'));
+ assert.doesNotMatch(html,/<script\b/i);assert.doesNotMatch(html,/<iframe\b/i);
 });
-test('CSP and secure response headers',async()=>{const r=await send();const h=r.headers;for(const part of ["script-src 'none'","connect-src 'none'","frame-ancestors 'none'"])assert.ok(h.get('content-security-policy').includes(part));assert.equal(h.get('referrer-policy'),'no-referrer');assert.equal(h.get('x-content-type-options'),'nosniff');});
-test('health and project registry',async()=>{const s=await send('/api/status');assert.equal(s.status,200);assert.equal((await s.json()).status,'on');const r=await send('/api/projects');assert.equal(r.status,200);const d=await r.json();assert.equal(d.projects.length,4);assert.equal(d.projects.find(x=>x.id==='cerberus').status,'online');});
-test('method and unknown paths',async()=>{assert.equal((await send('/.env')).status,404);assert.equal((await send('/','POST')).status,405);const head=await send('/api/status','HEAD');assert.equal(head.status,200);assert.equal(await head.text(),'');});
+test('first experiment presents trade-offs and an ADR',async()=>{
+ const r=await send('/labs/01');assert.equal(r.status,200);const html=await r.text();
+ assert.match(html,/monólito modular/i);assert.match(html,/Microsserviços/i);assert.match(html,/ADR/);
+});
+test('security headers and strict method & route handling',async()=>{
+ const r=await send();const h=r.headers;
+ for(const fragment of ["script-src 'none'","frame-ancestors 'none'","connect-src 'none'"])assert.ok(h.get('content-security-policy').includes(fragment));
+ assert.equal(h.get('x-content-type-options'),'nosniff');assert.equal(h.get('x-frame-options'),'DENY');assert.equal(h.get('referrer-policy'),'no-referrer');
+ assert.equal((await send('/.env')).status,404);
+ const deny=await send('/','POST');assert.equal(deny.status,405);assert.equal(deny.headers.get('allow'),'GET, HEAD');
+ const head=await send('/labs/01','HEAD');assert.equal(head.status,200);assert.equal(await head.text(),'');
+});
+test('public API is architecture-oriented and backward compatible',async()=>{
+ const status=await (await send('/api/status')).json();assert.equal(status.status,'on');assert.equal(status.domain,'software_architecture');
+ const modules=await (await send('/api/modules')).json();assert.equal(modules.modules.length,5);assert.equal(modules.modules[0].status,'available');
+ const projects=await (await send('/api/projects')).json();assert.equal(projects.projects.length,4);
+ assert.equal(projects.projects.find(p=>p.id==='cerberus').category,'software_architecture');
+});

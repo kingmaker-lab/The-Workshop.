@@ -1,0 +1,27 @@
+name: Cerberus architecture safety gate
+on:
+  push:
+    branches: [main, fix/cerberus-software-architecture-20261019]
+    paths:
+      - 'Cerberus/**'
+      - '.github/workflows/cerberus-architecture.yml'
+  pull_request:
+    paths:
+      - 'Cerberus/**'
+      - '.github/workflows/cerberus-architecture.yml'
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: Cerberus/package.json
+      - name: Validate Cerberus contracts
+        working-directory: Cerberus
+        run: npm test

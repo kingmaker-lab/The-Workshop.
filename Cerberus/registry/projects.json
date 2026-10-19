@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "module": "cerberus-core",
+  "module": "the-workshop",
   "updated_at": "2026-10-19",
   "projects": [
     {
@@ -30,10 +30,10 @@
     {
       "id": "cerberus",
       "name": "Cerberus",
-      "category": "integration",
+      "category": "software_architecture",
       "status": "online",
       "url": "https://cerberus.wolfpackworkshop.workers.dev/",
-      "integration": "public_catalog"
+      "integration": "independent_lab"
     }
   ]
 }
