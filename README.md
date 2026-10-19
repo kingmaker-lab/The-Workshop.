@@ -147,6 +147,10 @@ Servidor HTTP/1.1 desenvolvido em **C** sobre sockets POSIX.
 
 **Experimento v0.2 — HTTP Parser:** [código, testes e documentação](ares/http-parser/README.md) · [página no Workshop Labs](https://workshop-labs.pages.dev/projects/ares/http-parser/). Parser de cabeçalhos HTTP/1.x em C17, com alimentação incremental, limites explícitos e validações; funciona offline, sem servidor de rede.
 
+**Experimento v0.3 — Responses & Routing:** [código e testes E2E](ares/http-server/README.md) · [página no Workshop Labs](https://workshop-labs.pages.dev/projects/ares/responses-routing/). Agora há servidor C integrado: TCP → Parser v0.2 → roteador → resposta HTTP. Executa **apenas em 127.0.0.1**. `make run-ares` aponta para ele.
+
+**Security Release Gate obrigatório:** [checklist permanente de segurança](docs/SECURITY_RELEASE_GATE.md). A cada implementação/deploy são exigidos testes do código, revisão dos headers e rotas do site, CI e registro de riscos. Execute `make check-security`.
+
 Explora conceitos como:
 
 - sockets;
