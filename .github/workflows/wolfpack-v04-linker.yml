@@ -1,0 +1,24 @@
+name: WolfPack v0.4 preserved-asset links
+on:
+  push:
+    branches: [main, feat/wolfpack-v04-safe-links-worker]
+    paths:
+      - "web/wolfpack-os-v04-linker/**"
+      - ".github/workflows/wolfpack-v04-linker.yml"
+  pull_request:
+    paths:
+      - "web/wolfpack-os-v04-linker/**"
+      - ".github/workflows/wolfpack-v04-linker.yml"
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Execute isolated asset and link contract tests
+        run: node --test web/wolfpack-os-v04-linker/worker.test.mjs
