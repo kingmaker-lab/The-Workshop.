@@ -1,4 +1,4 @@
-name: ARES v0.3 and Workshop Security
+name: ARES v0.4 and Workshop Security
 
 on:
   push:
@@ -26,7 +26,7 @@ permissions:
 
 jobs:
   c-integration:
-    name: C parser, TCP and v0.3 integration tests
+    name: C parser, TCP and v0.4 static files integration tests
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
@@ -34,7 +34,7 @@ jobs:
       - run: make test-ares-http
       - run: make test-ares-tcp
       - run: make test-ares-server
-      - name: Run ASan and UBSan on v0.3
+      - name: Run ASan and UBSan on v0.4
         run: |
           make -C ares/http-server clean
           make -C ares/http-server test CFLAGS='-std=c17 -O1 -g -Wall -Wextra -Wpedantic -Werror -fsanitize=address,undefined -fno-omit-frame-pointer' LDFLAGS='-fsanitize=address,undefined'
