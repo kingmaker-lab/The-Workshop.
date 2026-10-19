@@ -1,0 +1,53 @@
+name: WolfPack OS v0.4.1 browser acceptance
+on:
+  push:
+    branches: [main, feat/wolfpack-v041-full-release-20261019]
+    paths:
+      - '.github/workflows/wolfpack-v041-browser.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install browser
+        run: |
+          python -m pip install --disable-pip-version-check playwright==1.56.0
+          python -m playwright install chromium
+      - name: Verify live WolfPack interface and game bootstraps
+        run: |
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          url='https://wolfpack.wolfpackworkshop.workers.dev/?acceptance=v041-20261019'
+          with sync_playwright() as p:
+              browser=p.chromium.launch(headless=True)
+              page=browser.new_page(viewport={'width':1440,'height':900})
+              errors=[]
+              page.on('pageerror',lambda err: errors.append(str(err)))
+              resp=page.goto(url,wait_until='domcontentloaded',timeout=35000)
+              assert resp.status==200,resp.status
+              cards=page.locator('#aplicacoes .app-grid a.app-card')
+              assert cards.count()==2,cards.count()
+              assert cards.nth(0).get_attribute('href')=='https://workshop-labs.pages.dev/projects/ares/'
+              assert cards.nth(1).get_attribute('href')=='https://cerberus.wolfpackworkshop.workers.dev/'
+              page.wait_for_timeout(1000)
+              title=page.locator('#mission-title').inner_text()
+              assert 'O primeiro uivo' in title,title
+              page.locator('#v77-input').fill('status')
+              page.locator('#v77-form button[type="submit"]').click()
+              assert 'Pontos acumulados' in page.locator('#v77-output').inner_text()
+              assert page.locator('#raven-drift-count').inner_text().strip() in ('03','3')
+              assert not errors,errors
+              print('PASS desktop: navigation, Ruby Protocol, VULPES-77, RAVEN, no JS errors')
+              mobile=browser.new_page(viewport={'width':390,'height':844},device_scale_factor=1,is_mobile=True,has_touch=True)
+              mobile.goto(url,wait_until='domcontentloaded',timeout=35000)
+              assert mobile.locator('#aplicacoes a.app-card').count()==2
+              assert mobile.locator('#raven-drift-count').inner_text().strip() in ('03','3')
+              print('PASS mobile: cards and RAVEN initialized')
+              browser.close()
+          PY
