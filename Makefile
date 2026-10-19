@@ -1,5 +1,5 @@
-.PHONY: help setup build test test-ares test-argus test-raven \
-	run-ares run-argus run-raven clean status \
+.PHONY: help setup build test test-ares test-ares-tcp test-argus test-raven \
+	run-ares run-ares-tcp run-argus run-raven clean status \
 	build-local test-local run-local
 
 .DEFAULT_GOAL := help
@@ -25,10 +25,12 @@ help:
 	@echo "make setup       Install/setup project dependencies"
 	@echo "make build       Build all components"
 	@echo "make test        Run the complete test suite"
-	@echo "make test-ares   Run ARES tests"
+	@echo "make test-ares   Run ARES tests (HTTP + TCP Foundation)"
+	@echo "make test-ares-tcp  Run TCP Foundation integration tests"
 	@echo "make test-argus  Run ARGUS tests"
 	@echo "make test-raven  Run RAVEN tests"
 	@echo "make run-ares    Run ARES locally"
+	@echo "make run-ares-tcp Run isolated TCP v0.1 locally"
 	@echo "make run-argus   Run ARGUS locally"
 	@echo "make run-raven   Run RAVEN locally"
 	@echo "make clean       Remove generated artifacts"
@@ -68,6 +70,11 @@ else
 	$(MAKE) test-local
 endif
 
+	$(MAKE) -C ares/tcp-foundation test
+
+test-ares-tcp:
+	$(MAKE) -C ares/tcp-foundation test
+
 test-argus:
 	@echo "[ARGUS] Running Python tests..."
 	$(PYTHON) -m unittest discover -s argus/tests -v
@@ -87,6 +94,9 @@ else
 	$(MAKE) run-local
 endif
 
+run-ares-tcp:
+	$(MAKE) -C ares/tcp-foundation run
+
 run-argus:
 	$(PYTHON) -m argus.main serve
 
@@ -94,6 +104,7 @@ run-raven:
 	cd raven && bin/raven --rules rules --input samples/auth.jsonl
 
 clean:
+	$(MAKE) -C ares/tcp-foundation clean
 ifneq ($(strip $(ARES_MAKEFILE)),)
 	$(MAKE) -C ares clean
 endif
