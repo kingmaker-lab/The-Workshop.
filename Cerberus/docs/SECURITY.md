@@ -1,35 +1,34 @@
-# CERBERUS — Security review / 2026-10-19
+# Security Review — CERBERUS v0.2 / 2026-10-19
 
-## Modelo de ameaça
+## Escopo
 
-O portal é público e estático. Seu objetivo é facilitar navegação; jamais receber dados de login, executar comandos, acessar Worker APIs internas, fazer scans no navegador ou transferir dados entre aplicativos.
+Este documento cobre somente o laboratório público de arquitetura de software. Ele não garante a segurança do Ares, Crypto Lab ou WolfPack OS e não declara que os futuros experimentos de arquitetura estejam em produção.
 
-**Ativos:** integridade do conteúdo, reputação dos links, privacidade dos visitantes, disponibilidade, identidade das origens e isolamento entre projetos.
+## Modelo de ameaças
 
-**Riscos:** link malicioso, XSS em HTML, clickjacking, rastreamento por referrer, dependências de terceiros, regressões após deploy, exposição acidental de recursos administrativos e acoplamento que propague falhas.
+**Ativos:** integridade da documentação, disponibilidade do Worker, privacidade de visitantes, reputação dos links e integridade do repositório.
 
-## Controles implementados no portal candidato
+**Ameaças:** modificação indevida de conteúdo, XSS, clickjacking, open redirect, mistura de origem/credenciais, supply chain de frontend, exposição involuntária de rotas e regressões de deploy.
 
-- URLs HTTPS estáticas; não há parámetro de redirecionamento, `target` arbitrário, iframe, código de terceiros ou `eval`.
-- `Content-Security-Policy`: scripts e conexões proibidos, `frame-ancestors 'none'`, formulários e objetos proibidos, `base-uri 'none'`.
-- CSS inline autorizado explicitamente em `style-src 'unsafe-inline'`. Isso é uma concessão registrada para manter um documento autocontido; **não** habilitamos inline scripts.
-- `Referrer-Policy: no-referrer` e `referrerpolicy=no-referrer` nos links externos.
-- `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Permissions-Policy` restritiva, HTTPS e HSTS do subdomínio.
-- Somente `GET`/`HEAD`; `POST` retorna 405; caminhos desconhecidos retornam 404.
-- Sem storage, cookies, analytics, segredos, CORS permissivo ou chamadas externas no catálogo.
-- Respeito a `prefers-reduced-motion`; navegação por teclado e `aria-label` nos elementos de navegação.
-- Conteúdo estático, CSS local, JS zero e links diretos para menor latência.
+## Controles do Worker
 
-## Limites da avaliação
+- GET/HEAD somente, demais métodos 405 e rotas desconhecidas 404.
+- Sem scripts de cliente, bibliotecas externas, backend de escrita, formulários ou credenciais.
+- Links externos declarados em código, usando HTTPS, `rel="noopener noreferrer"` e `referrerpolicy="no-referrer"`.
+- CSP restritiva com `script-src 'none'`, `connect-src 'none'`, `frame-ancestors 'none'`, `form-action 'none'`, `object-src 'none'` e `base-uri 'none'`.
+- Exceção documentada: CSS embutido exige `style-src 'unsafe-inline'`, sem permissão de JavaScript embutido.
+- `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`, `Permissions-Policy`, HSTS.
+- Não usa cookies, segredo, token, KV, D1, R2 ou service bindings.
 
-O teste local verifica apenas a lógica do Worker. Segurança de cada laboratório, TLS efetivo, WAF, regras de DNS, SRI, políticas de build e headers realmente recebidos devem ser verificados em um deploy de preview e novamente após qualquer alteração em produção.
+## Gate de mudança
 
-## Gate a cada implantação
+1. Verificar escopo da alteração e impacto no site ativo.
+2. `cd Cerberus && npm test` (Node 20+).
+3. Conferir página inicial, primeiro experimento, `/api/status`, `/api/modules` e `/api/projects`.
+4. Inspecionar cabeçalhos efetivamente recebidos e links externos em deploy de preview/produção.
+5. Validar responsividade, navegação por teclado e funcionamento de recursos preservados.
+6. Confirmar rollback para versão anterior no dashboard.
 
-1. Confirmar que os destinos no registro pertencem ao projeto.
-2. Executar `node --test web/workshop-labs/tests/smoke.test.mjs`.
-3. Validar manualmente navegação, teclado, viewport móvel, cabeçalhos, status HTTP, latência e isolamento.
-4. Comparar comportamento e headers antes/depois (RAVEN pode auxiliar com snapshots autorizados).
-5. Manter possibilidade de rollback no Cloudflare Pages; não promover previews com falha.
+## Limites
 
-**Não declarar 'segurança garantida'**: é defesa em camadas e acompanhamento contínuo.
+Testes de unidade não verificam TLS, DNS, WAF, funcionalidades de outros Workers nem métricas reais de performance. Revisões de segurança são contínuas, não uma garantia absoluta.
