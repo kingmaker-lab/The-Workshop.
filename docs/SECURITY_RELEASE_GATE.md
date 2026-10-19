@@ -14,6 +14,19 @@
 8. **Post-deploy:** verify Cloudflare deployment status AND actual HTTP responses/security headers on public URLs. A successful deploy is not proof that pages work correctly.
 9. **Record:** scope, tests, results, risks, release decision, reviewer/date.
 
+## Static files and filesystem gate (v0.4 onward)
+
+For any implementation that reads from disk, in addition to the generic checks:
+
+- Verify the document root is trusted, least-privileged and not writable by unauthenticated clients.
+- Test dot segments, encoded traversal, backslashes, repeated separators, dotfiles and unusual filenames.
+- Use descriptor-relative resolution; reject symlinks in all path components; verify regular file type with fstat.
+- Reject FIFOs/devices and unknown MIME types; cap file bytes and validate Content-Length / HEAD.
+- Test races and disclosure at the filesystem boundary; document residual risk from bind mounts, hardlinks and files mutated after stat.
+- Reject or isolate uploaded/user-controlled active HTML, SVG and JavaScript.
+- Re-run the entire HTTP parser and server integration suite under ASan/UBSan.
+- Treat a build/test failure as a release blocker, and a skipped test as NOT VERIFIED rather than PASS.
+
 ## Release record template
 
     Version:
