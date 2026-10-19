@@ -1,0 +1,73 @@
+name: WolfPack Ruby 0.4.2 LIVE browser and integrity acceptance
+on:
+  push:
+    branches: [main, fix/wolfpack-ruby-worker-v041-20261019]
+    paths:
+      - '.github/workflows/wolfpack-ruby-live-042.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  accept:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          python -m pip install --disable-pip-version-check playwright==1.56.0
+          python -m playwright install chromium
+      - name: Actual Ruby compilation and execution with CSP enforced
+        run: |
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          import hashlib, urllib.request
+          base='https://wolfpack.wolfpackworkshop.workers.dev'
+          with sync_playwright() as p:
+            browser=p.chromium.launch(headless=True)
+            page=browser.new_page(viewport={'width':1440,'height':900})
+            failures=[]
+            page.on('pageerror',lambda e:failures.append(('javascript',str(e))))
+            page.on('requestfailed',lambda req:failures.append((req.failure,req.url)))
+            resp=page.goto(base+'/?ruby-live-v042',wait_until='domcontentloaded',timeout=30000)
+            assert resp.status==200
+            csp=resp.headers['content-security-policy']
+            assert "worker-src 'self' blob: https://cdn.jsdelivr.net" in csp, csp
+            assert "frame-ancestors 'none'" in csp
+            assert "'unsafe-eval'" not in csp
+            assert page.locator('#aplicacoes .app-grid a.app-card').count()==2
+            assert page.locator('a.app-card[href="https://workshop-labs.pages.dev/projects/ares/"]').count()==1
+            assert page.locator('a.app-card[href="https://cerberus.wolfpackworkshop.workers.dev/"]').count()==1
+            page.locator('#code-editor').fill('puts "A matilha despertou!"')
+            page.locator('#run-btn').click()
+            if page.locator('#name-dialog').is_visible():
+              page.locator('#codename-input').fill('FixVerifier')
+              page.locator('#save-name').click()
+              page.locator('#run-btn').click()
+            page.wait_for_function("""() => {const s=document.querySelector('#terminal-output')?.innerText||'';return s.includes('teste(s) passaram')||s.includes('Erro ao carregar')||s.includes('excedeu')||s.includes('NÃO PASSOU')}""",timeout=70000)
+            out=page.locator('#terminal-output').inner_text()
+            assert 'teste(s) passaram' in out,('Ruby failed:',out,failures)
+            assert '+100 XP' in out,out
+            assert not failures,failures
+            print('PASS: Ruby WASM compiled and 1 mission passed under strict CSP.')
+            page.locator('#v77-input').fill('status')
+            page.locator('#v77-form button[type="submit"]').click()
+            assert 'Pontos acumulados' in page.locator('#v77-output').inner_text()
+            assert page.locator('#raven-drift-count').inner_text().strip() in ('03','3')
+            print('PASS: VULPES-77 and RAVEN remain operational.')
+            browser.close()
+          assets={
+            '/js/ruby-worker.js':'325c63f24f6fd69090794b72af164c56c1f2b46c2df12dfd4a0b711ae23e67d3',
+            '/downloads/raven-ruby-v0.1-original.zip':'ab3afe7a51cbf62fd1e2a5ff8a17797e00678370f4070e843afb032ecb5a82ac',
+            '/downloads/vulpes77-terminal-v0.1-original.zip':'106738b06d7adda787ad3526f0fc1fb3b53aeeaf783c93da8cdbbad179acf245',
+            '/downloads/wolfpack-ruby-protocol-v0.1.zip':'7d41e5747111cc1159cd947e8613d16893b042b9bd36bd1d3e2dc89fbfe3c054'
+          }
+          for path,expected in assets.items():
+            with urllib.request.urlopen(base+path,timeout=20) as r:
+              assert r.status==200
+              h=hashlib.sha256(r.read()).hexdigest()
+              assert h==expected,(path,h,expected)
+          print('PASS: 4 original non-HTML assets unchanged byte-for-byte (SHA-256).')
+          PY
