@@ -18,6 +18,7 @@ Scope: secure static file resolution, MIME mapping, bounded file responses, regr
 | Cloudflare source security inspection | PASS (static review) | 18/18 checks: CSP, methods, links, routing, nofollow, response policy |
 | Cloudflare deploy | SUCCESS | Production deployment id 4ed1c8cd-444e-463e-84f9-22c7efa0fb74 |
 | Public v0.4 HTML rendering | PASS | Cloudflare Browser Rendering returned expected title, code link and security section (HTTP 200) |
+| Public ARES project home rendering | PASS | Cloudflare Browser Rendering HTTP 200, confirmed links v0.1/v0.2/v0.3/v0.4 |
 | Complete public security-header and route audit | NOT VERIFIED | Full live GET/HEAD/404/405/header survey not independently executed; local Worker static review and CI test authored, run not verified |
 | Public deployment of C binary | NOT AUTHORIZED | localhost only |
 
@@ -46,7 +47,7 @@ Scope: secure static file resolution, MIME mapping, bounded file responses, regr
 
 **ARES C v0.4: APPROVED ONLY FOR LOOPBACK LOCAL LAB. PUBLIC C SERVER: BLOCKED.**
 
-**Workshop Labs v0.4 documentation: deployed to Cloudflare Pages.** Source review 18/18 static checks, and v0.4 page HTML rendering checked successfully. Live response-header audit remains incomplete; do not imply full-site verification.
+**Workshop Labs v0.4 documentation: deployed to Cloudflare Pages.** Source review 18/18 static checks, and v0.4 page HTML rendering checked successfully. The ARES project home and v0.4 page loaded publicly. Live response-header audit remains incomplete; do not imply full-site verification.
 
 **Workshop Labs documentation:** may be published after regression checks. Fill Cloudflare deployment and public checks in this record following release.
 
