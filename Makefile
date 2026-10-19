@@ -1,6 +1,6 @@
-.PHONY: help setup build test test-ares test-ares-tcp test-ares-http test-argus test-raven \
-	run-ares run-ares-tcp run-ares-http-demo run-argus run-raven clean status \
-	build-local test-local run-local
+.PHONY: help setup build test test-ares test-ares-tcp test-ares-http test-ares-server test-argus test-raven \
+	run-ares run-ares-legacy run-ares-tcp run-ares-http-demo run-argus run-raven clean status \
+	build-local test-local run-local check-security
 
 .DEFAULT_GOAL := help
 
@@ -25,16 +25,19 @@ help:
 	@echo "make setup       Install/setup project dependencies"
 	@echo "make build       Build all components"
 	@echo "make test        Run the complete test suite"
-	@echo "make test-ares   Run ARES tests (HTTP + TCP Foundation + parser v0.2)"
+	@echo "make test-ares   Run legacy parser + TCP v0.1 + parser v0.2 + server v0.3"
 	@echo "make test-ares-tcp  Run TCP Foundation integration tests"
 	@echo "make test-ares-http Run HTTP Parser v0.2 tests"
+	@echo "make test-ares-server Run integrated v0.3 HTTP tests"
 	@echo "make test-argus  Run ARGUS tests"
 	@echo "make test-raven  Run RAVEN tests"
-	@echo "make run-ares    Run ARES locally"
+	@echo "make run-ares    Run HTTP server v0.3 locally"
+	@echo "make run-ares-legacy Run preserved root HTTP prototype"
 	@echo "make run-ares-tcp Run isolated TCP v0.1 locally"
 	@echo "make run-ares-http-demo Inspect an HTTP request offline (v0.2)"
 	@echo "make run-argus   Run ARGUS locally"
 	@echo "make run-raven   Run RAVEN locally"
+	@echo "make check-security Run ARES and website security tests"
 	@echo "make clean       Remove generated artifacts"
 	@echo "make status      Show Workshop component status"
 
@@ -54,11 +57,7 @@ setup:
 	cd raven && bundle install
 
 build:
-ifneq ($(strip $(ARES_MAKEFILE)),)
-	$(MAKE) -C ares
-else
-	$(MAKE) build-local
-endif
+	$(MAKE) -C ares/http-server all
 
 test: test-ares test-argus test-raven
 	@echo ""
@@ -74,12 +73,16 @@ endif
 
 	$(MAKE) -C ares/tcp-foundation test
 	$(MAKE) -C ares/http-parser test
+	$(MAKE) -C ares/http-server test
 
 test-ares-tcp:
 	$(MAKE) -C ares/tcp-foundation test
 
 test-ares-http:
 	$(MAKE) -C ares/http-parser test
+
+test-ares-server:
+	$(MAKE) -C ares/http-server test
 
 test-argus:
 	@echo "[ARGUS] Running Python tests..."
@@ -94,6 +97,9 @@ test-raven:
 	cd raven && bundle exec rspec
 
 run-ares:
+	$(MAKE) -C ares/http-server run
+
+run-ares-legacy:
 ifneq ($(strip $(ARES_MAKEFILE)),)
 	$(MAKE) -C ares run
 else
@@ -112,7 +118,12 @@ run-argus:
 run-raven:
 	cd raven && bin/raven --rules rules --input samples/auth.jsonl
 
+check-security:
+	$(MAKE) test-ares
+	node --test web/ares-site/tests/security.test.mjs
+
 clean:
+	$(MAKE) -C ares/http-server clean
 	$(MAKE) -C ares/http-parser clean
 	$(MAKE) -C ares/tcp-foundation clean
 ifneq ($(strip $(ARES_MAKEFILE)),)
@@ -126,7 +137,7 @@ status:
 	@echo ""
 	@echo "THE WORKSHOP"
 	@echo "============"
-	@echo "ARES      [ ACTIVE ]  C"
+	@echo "ARES      [ LAB v0.3 ]  C / TCP + HTTP"
 	@echo "ARGUS     [ ACTIVE ]  Python"
 	@echo "RAVEN     [ ACTIVE ]  Ruby"
 	@echo "CERBERUS  [ LOCKED ]  Integration"
