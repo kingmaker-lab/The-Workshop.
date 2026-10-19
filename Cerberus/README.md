@@ -45,3 +45,13 @@ web/workshop-labs/
 3. Formalizar catálogo, cabeçalhos defensivos e smoke tests.
 4. No futuro, adicionar indicadores de status, sem executar scans nem coletar dados sem autorização.
 5. Só criar orquestração com modelos explícitos de identidade, autorização, auditoria e limites.
+
+## Publicação oficial — 19/10/2026
+
+O **CERBERUS v0.1.0** foi implantado como Cloudflare Worker independente (sem bindings), acessível em https://cerberus.wolfpackworkshop.workers.dev/.
+
+Rotas: `/` (catálogo), `/api/status` (status declarativo), `/api/projects` (registro público).
+
+**Escopo ON:** o serviço de catálogo; não representa disponibilidade garantida dos outros laboratórios. A publicação não altera o deployment do `workshop-labs`. A integração visual de um card na página principal ainda requer atualização segura do deploy Pages existente e não deve ser considerada concluída.
+
+Fonte publicada: `Cerberus/worker.js`; validação prevista: `node --test Cerberus/worker.test.mjs` (Node 20+).
