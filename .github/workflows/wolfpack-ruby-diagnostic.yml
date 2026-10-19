@@ -1,0 +1,50 @@
+name: DIAGNOSTIC Ruby WASM runtime v0.4.1
+on:
+  push:
+    branches: [fix/wolfpack-ruby-worker-v041-20261019]
+    paths: ['.github/workflows/wolfpack-ruby-diagnostic.yml']
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          python -m pip install --disable-pip-version-check playwright==1.56.0
+          python -m playwright install chromium
+      - name: Execute Ruby WASM from public URL and collect diagnostics
+        run: |
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          from collections import Counter
+          import time
+          with sync_playwright() as p:
+            browser=p.chromium.launch(headless=True)
+            page=browser.new_page()
+            events=[]
+            page.on('console',lambda m: events.append(('console',m.type,m.text[:500])))
+            page.on('pageerror',lambda e:events.append(('pageerror',str(e)[:500])))
+            page.on('requestfailed',lambda r:events.append(('req_failed',r.url[:250],r.failure)))
+            page.on('response',lambda r: events.append(('http',r.status,r.url[:270])) if 'ruby' in r.url or 'jsdelivr' in r.url else None)
+            r=page.goto('https://wolfpack.wolfpackworkshop.workers.dev/?test=wasm-diagnostic-20261019',wait_until='domcontentloaded',timeout=30000)
+            print('home',r.status)
+            page.locator('#code-editor').fill('puts "A matilha despertou!"')
+            page.locator('#run-btn').click()
+            if page.locator('#name-dialog').is_visible():
+              page.locator('#codename-input').fill('ReleaseTester')
+              page.locator('#save-name').click()
+              page.locator('#run-btn').click()
+            try:
+              page.wait_for_function("""() => { const x=document.querySelector('#terminal-output')?.innerText||'';return x.includes('Erro ao carregar')||x.includes('MOTOR:')||x.includes('PASSOU')||x.includes('FALHOU')||x.includes('Erro')||x.includes('Parabéns')||x.includes('validado');}""",timeout=45000)
+            except Exception as exc:print('wait timeout',str(exc)[:200])
+            page.wait_for_timeout(4000)
+            print('terminal_text',repr(page.locator('#terminal-output').inner_text()[:1600]))
+            print('engine_status',repr(page.locator('.engine-status').first.inner_text()[:200]))
+            print('network_events:')
+            for e in events[-65:]:print(e)
+            browser.close()
+          PY
