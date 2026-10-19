@@ -1,0 +1,50 @@
+name: ARES v0.3 and Workshop Security
+
+on:
+  push:
+    paths:
+      - "ares/http-server/**"
+      - "ares/http-parser/**"
+      - "ares/tcp-foundation/**"
+      - "web/ares-site/**"
+      - "Makefile"
+      - "docs/SECURITY_RELEASE_GATE.md"
+      - ".github/workflows/ares-security.yml"
+  pull_request:
+    paths:
+      - "ares/http-server/**"
+      - "ares/http-parser/**"
+      - "ares/tcp-foundation/**"
+      - "web/ares-site/**"
+      - "Makefile"
+      - "docs/SECURITY_RELEASE_GATE.md"
+      - ".github/workflows/ares-security.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  c-integration:
+    name: C parser, TCP and v0.3 integration tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - run: make test-ares-http
+      - run: make test-ares-tcp
+      - run: make test-ares-server
+      - name: Run ASan and UBSan on v0.3
+        run: |
+          make -C ares/http-server clean
+          make -C ares/http-server test CFLAGS='-std=c17 -O1 -g -Wall -Wextra -Wpedantic -Werror -fsanitize=address,undefined -fno-omit-frame-pointer' LDFLAGS='-fsanitize=address,undefined'
+  web-security:
+    name: Cloudflare Pages security regression checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Node version
+        run: node --version
+      - name: Validate pages, methods, CSP, headers and redirects
+        run: node --test web/ares-site/tests/security.test.mjs
