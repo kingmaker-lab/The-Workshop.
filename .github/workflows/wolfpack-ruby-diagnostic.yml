@@ -8,7 +8,7 @@ permissions:
 jobs:
   diagnose:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 9
     steps:
       - uses: actions/setup-python@v5
         with:
@@ -16,35 +16,37 @@ jobs:
       - run: |
           python -m pip install --disable-pip-version-check playwright==1.56.0
           python -m playwright install chromium
-      - name: Execute Ruby WASM from public URL and collect diagnostics
+      - name: Compare CSP and bypass-CSP using actual Ruby mission execution
         run: |
           python - <<'PY'
           from playwright.sync_api import sync_playwright
-          from collections import Counter
-          import time
           with sync_playwright() as p:
             browser=p.chromium.launch(headless=True)
-            page=browser.new_page()
-            events=[]
-            page.on('console',lambda m: events.append(('console',m.type,m.text[:500])))
-            page.on('pageerror',lambda e:events.append(('pageerror',str(e)[:500])))
-            page.on('requestfailed',lambda r:events.append(('req_failed',r.url[:250],r.failure)))
-            page.on('response',lambda r: events.append(('http',r.status,r.url[:270])) if 'ruby' in r.url or 'jsdelivr' in r.url else None)
-            r=page.goto('https://wolfpack.wolfpackworkshop.workers.dev/?test=wasm-diagnostic-20261019',wait_until='domcontentloaded',timeout=30000)
-            print('home',r.status)
-            page.locator('#code-editor').fill('puts "A matilha despertou!"')
-            page.locator('#run-btn').click()
-            if page.locator('#name-dialog').is_visible():
-              page.locator('#codename-input').fill('ReleaseTester')
-              page.locator('#save-name').click()
+            for bypass in [False, True]:
+              page=browser.new_page()
+              page.set_default_timeout(20000)
+              if bypass: page.set_bypass_csp(True)
+              log=[]
+              page.on('console',lambda m:log.append(('console',m.type,m.text[:400])))
+              page.on('pageerror',lambda e:log.append(('pageerror',str(e)[:400])))
+              page.on('requestfailed',lambda r:log.append(('failed',r.url[:200],r.failure)))
+              page.on('worker',lambda w:log.append(('worker',w.url)))
+              page.on('response',lambda r:log.append(('http',r.status,r.url[:200])) if 'ruby' in r.url or 'jsdelivr' in r.url else None)
+              page.add_init_script("window.addEventListener('securitypolicyviolation',e=>console.error('CSP VIOLATION:',e.violatedDirective,e.blockedURI));")
+              home=page.goto('https://wolfpack.wolfpackworkshop.workers.dev/?diagnose=wasm-test-v2',wait_until='domcontentloaded',timeout=30000)
+              print('TEST',bypass,'HOME',home.status,'CSP',home.headers.get('content-security-policy','')[:900])
+              page.locator('#code-editor').fill('puts "A matilha despertou!"')
               page.locator('#run-btn').click()
-            try:
-              page.wait_for_function("""() => { const x=document.querySelector('#terminal-output')?.innerText||'';return x.includes('Erro ao carregar')||x.includes('MOTOR:')||x.includes('PASSOU')||x.includes('FALHOU')||x.includes('Erro')||x.includes('Parabéns')||x.includes('validado');}""",timeout=45000)
-            except Exception as exc:print('wait timeout',str(exc)[:200])
-            page.wait_for_timeout(4000)
-            print('terminal_text',repr(page.locator('#terminal-output').inner_text()[:1600]))
-            print('engine_status',repr(page.locator('.engine-status').first.inner_text()[:200]))
-            print('network_events:')
-            for e in events[-65:]:print(e)
+              if page.locator('#name-dialog').is_visible():
+                page.locator('#codename-input').fill('RubyTester')
+                page.locator('#save-name').click()
+                page.locator('#run-btn').click()
+              try:
+                page.wait_for_function("""() => { const x=document.querySelector('#terminal-output')?.innerText||'';return x.includes('Erro ao carregar') || x.includes('APROVADO') || x.includes('PARABÉNS') || x.includes('PASSOU') || x.includes('SUCESSO') || x.includes('FALHOU') || x.includes('CONCLUÍDA') || x.includes('excedeu') || x.includes('fatal');}""",timeout=50000)
+              except Exception as e:print('WAIT',str(e)[:120])
+              page.wait_for_timeout(1800)
+              print('OUTPUT',repr(page.locator('#terminal-output').inner_text()[:1200]))
+              for event in log[-35:]:print('EVENT',event)
+              page.close()
             browser.close()
           PY
