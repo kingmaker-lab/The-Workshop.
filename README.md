@@ -143,6 +143,8 @@ Alguns dos projetos e experimentos atualmente presentes no Workshop:
 
 Servidor HTTP/1.1 desenvolvido em **C** sobre sockets POSIX.
 
+**Experimento v0.1 — TCP Foundation:** [código, testes e documentação](ares/tcp-foundation/README.md) · [página no Workshop Labs](https://workshop-labs.pages.dev/projects/ares/tcp-foundation/). O laboratório TCP funciona somente em localhost; a implementação HTTP do diretório raiz permanece preservada e é um protótipo distinto.
+
 Explora conceitos como:
 
 - sockets;
