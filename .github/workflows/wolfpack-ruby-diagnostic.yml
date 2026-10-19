@@ -23,9 +23,9 @@ jobs:
           with sync_playwright() as p:
             browser=p.chromium.launch(headless=True)
             for bypass in [False, True]:
-              page=browser.new_page()
+              context=browser.new_context(bypass_csp=bypass)
+              page=context.new_page()
               page.set_default_timeout(20000)
-              if bypass: page.set_bypass_csp(True)
               log=[]
               page.on('console',lambda m:log.append(('console',m.type,m.text[:400])))
               page.on('pageerror',lambda e:log.append(('pageerror',str(e)[:400])))
@@ -48,5 +48,6 @@ jobs:
               print('OUTPUT',repr(page.locator('#terminal-output').inner_text()[:1200]))
               for event in log[-35:]:print('EVENT',event)
               page.close()
+              context.close()
             browser.close()
           PY
