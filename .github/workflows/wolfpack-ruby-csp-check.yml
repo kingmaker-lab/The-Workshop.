@@ -1,0 +1,56 @@
+name: Test minimal Ruby Worker CSP allowlist
+on:
+  push:
+    branches: [fix/wolfpack-ruby-worker-v041-20261019]
+    paths: ['.github/workflows/wolfpack-ruby-csp-check.yml']
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          python -m pip install --disable-pip-version-check playwright==1.56.0
+          python -m playwright install chromium
+      - name: Test root policy with worker-src CDN allowlist only
+        run: |
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          from urllib.parse import urlsplit
+          with sync_playwright() as p:
+            browser=p.chromium.launch(headless=True)
+            page=browser.new_page()
+            failures=[]
+            page.on('requestfailed',lambda r: failures.append((r.url[:180],r.failure)))
+            page.on('console',lambda m: failures.append(('console',m.text[:220])) if m.type=='error' else None)
+            def modify(route):
+              if urlsplit(route.request.url).path not in ('/','/index.html'):
+                return route.continue_()
+              response=route.fetch()
+              h=dict(response.headers)
+              policy=h.get('content-security-policy','')
+              assert "worker-src 'self' blob:" in policy
+              h['content-security-policy']=policy.replace("worker-src 'self' blob:","worker-src 'self' blob: https://cdn.jsdelivr.net")
+              print('modified_policy',h['content-security-policy'])
+              route.fulfill(response=response,headers=h)
+            page.route('https://wolfpack.wolfpackworkshop.workers.dev/**',modify)
+            r=page.goto('https://wolfpack.wolfpackworkshop.workers.dev/?ruby-csp-fix=1',wait_until='domcontentloaded',timeout=30000)
+            print('home',r.status)
+            page.locator('#code-editor').fill('puts "A matilha despertou!"')
+            page.locator('#run-btn').click()
+            if page.locator('#name-dialog').is_visible():
+              page.locator('#codename-input').fill('RubyTester')
+              page.locator('#save-name').click()
+              page.locator('#run-btn').click()
+            try:page.wait_for_function("""() => {const s=document.querySelector('#terminal-output')?.innerText||'';return s.includes('teste(s) passaram')||s.includes('Erro ao carregar')||s.includes('ERRO')||s.includes('excedeu');}""",timeout=70000)
+            except Exception as e:print('timeout',str(e)[:250])
+            out=page.locator('#terminal-output').inner_text()
+            print('OUTPUT:',repr(out[:1200]))
+            print('FAILED REQUESTS:',failures[-15:])
+            assert 'teste(s) passaram' in out, out
+            browser.close()
+          PY
