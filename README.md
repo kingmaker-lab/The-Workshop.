@@ -145,6 +145,8 @@ Servidor HTTP/1.1 desenvolvido em **C** sobre sockets POSIX.
 
 **Experimento v0.1 — TCP Foundation:** [código, testes e documentação](ares/tcp-foundation/README.md) · [página no Workshop Labs](https://workshop-labs.pages.dev/projects/ares/tcp-foundation/). O laboratório TCP funciona somente em localhost; a implementação HTTP do diretório raiz permanece preservada e é um protótipo distinto.
 
+**Experimento v0.2 — HTTP Parser:** [código, testes e documentação](ares/http-parser/README.md) · [página no Workshop Labs](https://workshop-labs.pages.dev/projects/ares/http-parser/). Parser de cabeçalhos HTTP/1.x em C17, com alimentação incremental, limites explícitos e validações; funciona offline, sem servidor de rede.
+
 Explora conceitos como:
 
 - sockets;
