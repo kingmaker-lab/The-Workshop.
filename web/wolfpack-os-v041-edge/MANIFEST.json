@@ -1,0 +1,39 @@
+{
+  "source_zip": "wolfpack-workshop-cloudflare-v0.4-raven.zip",
+  "output_zip": "wolfpack-workshop-cloudflare-v0.4.1-links.zip",
+  "source_index_sha256": "03d8d0e7d55803d5757394070789531cffcaccf7ff71c2e7895f5bd5e30e9224",
+  "patched_index_sha256": "1c9bcb38de1c93d786b7ee0ef135172aa934e772169736cffa034fa7507a6d0e",
+  "js_block_count": 5,
+  "js_blocks_unchanged": true,
+  "assets": {
+    "index.html": {
+      "size": 132926,
+      "sha256": "1c9bcb38de1c93d786b7ee0ef135172aa934e772169736cffa034fa7507a6d0e",
+      "manifest_hash": "1c9bcb38de1c93d786b7ee0ef135172a"
+    },
+    "js/ruby-worker.js": {
+      "size": 3858,
+      "sha256": "325c63f24f6fd69090794b72af164c56c1f2b46c2df12dfd4a0b711ae23e67d3",
+      "manifest_hash": "325c63f24f6fd69090794b72af164c56"
+    },
+    "downloads/raven-ruby-v0.1-original.zip": {
+      "size": 8795,
+      "sha256": "ab3afe7a51cbf62fd1e2a5ff8a17797e00678370f4070e843afb032ecb5a82ac",
+      "manifest_hash": "ab3afe7a51cbf62fd1e2a5ff8a17797e"
+    },
+    "downloads/vulpes77-terminal-v0.1-original.zip": {
+      "size": 13045,
+      "sha256": "106738b06d7adda787ad3526f0fc1fb3b53aeeaf783c93da8cdbbad179acf245",
+      "manifest_hash": "106738b06d7adda787ad3526f0fc1fb3"
+    },
+    "downloads/wolfpack-ruby-protocol-v0.1.zip": {
+      "size": 16274,
+      "sha256": "7d41e5747111cc1159cd947e8613d16893b042b9bd36bd1d3e2dc89fbfe3c054",
+      "manifest_hash": "7d41e5747111cc1159cd947e8613d168"
+    }
+  },
+  "cards": {
+    "ARES ↗": "https://workshop-labs.pages.dev/projects/ares/",
+    "CERBERUS ↗": "https://cerberus.wolfpackworkshop.workers.dev/"
+  }
+}
