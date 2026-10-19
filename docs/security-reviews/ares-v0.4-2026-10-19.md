@@ -15,9 +15,10 @@ Scope: secure static file resolution, MIME mapping, bounded file responses, regr
 | Intermediate/final symbolic-link escapes | PASS | tests/test_http_server.py |
 | FIFO, directories, unknown MIME and hidden items | PASS | tests/test_http_server.py |
 | File cap at 256 KiB, HEAD, MIME types | PASS | tests/test_http_server.py |
-| Cloudflare source security inspection | PENDING | run website test and pre-deployment review |
-| Cloudflare deploy | PENDING | fill after publication |
-| Public URL/headers verification | PENDING | fill after publication |
+| Cloudflare source security inspection | PASS (static review) | 18/18 checks: CSP, methods, links, routing, nofollow, response policy |
+| Cloudflare deploy | SUCCESS | Production deployment id 4ed1c8cd-444e-463e-84f9-22c7efa0fb74 |
+| Public v0.4 HTML rendering | PASS | Cloudflare Browser Rendering returned expected title, code link and security section (HTTP 200) |
+| Complete public security-header and route audit | NOT VERIFIED | Full live GET/HEAD/404/405/header survey not independently executed; local Worker static review and CI test authored, run not verified |
 | Public deployment of C binary | NOT AUTHORIZED | localhost only |
 
 ## Implemented boundaries
@@ -45,6 +46,12 @@ Scope: secure static file resolution, MIME mapping, bounded file responses, regr
 
 **ARES C v0.4: APPROVED ONLY FOR LOOPBACK LOCAL LAB. PUBLIC C SERVER: BLOCKED.**
 
+**Workshop Labs v0.4 documentation: deployed to Cloudflare Pages.** Source review 18/18 static checks, and v0.4 page HTML rendering checked successfully. Live response-header audit remains incomplete; do not imply full-site verification.
+
 **Workshop Labs documentation:** may be published after regression checks. Fill Cloudflare deployment and public checks in this record following release.
 
 Follow the permanent instructions in docs/SECURITY_RELEASE_GATE.md for every future implementation.
+
+## Additional local validation
+
+HTTP Parser v0.2 suite: 2747 assertions and 5 CLI tests passed. Additional controlled 500-connection GET test to /static/index.html: all succeeded, descriptor count remained 5 → 5; this is a regression check, not performance or DoS certification.
