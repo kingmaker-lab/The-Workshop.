@@ -19,6 +19,8 @@ O ARES está **em desenvolvimento**. O terminal na página é uma demonstração
 
 - `hub.html`: conteúdo da home / hub.
 - `hub.css`: estilo da home.
+- `tcp-foundation.html` e `tcp.css`: documentação/estilos da v0.1.
+- `http-parser.html` e `http-parser.css`: documentação/estilos da v0.2.
 - `_worker.js`: Cloudflare Pages Advanced Mode — contém o hub, a página do ARES e o roteamento.
 
 A versão publicada do hub está incorporada em `_worker.js`. Após editar os arquivos-fonte do hub, sincronize suas alterações com as constantes `HUB_HTML` e `HUB_CSS` do Worker antes do deploy.
@@ -27,8 +29,10 @@ A versão publicada do hub está incorporada em `_worker.js`. Após editar os ar
 
 - `/` → home dos laboratórios
 - `/projects/ares/` e `/ares/` → ARES
+- `/projects/ares/tcp-foundation/` → TCP Foundation v0.1
+- `/projects/ares/http-parser/` → HTTP Parser v0.2
 - `/projects/crypto/`, `/crypto/`, `/crypto-labs/` → redirecionamento ao Crypto Labs
-- `/assets/hub.css`, `/assets/ares.css`, `/assets/ares.js`, `/favicon.svg` → recursos locais
+- `/assets/hub.css`, `/assets/ares.css`, `/assets/tcp.css`, `/assets/http-parser.css`, `/assets/ares.js`, `/favicon.svg` → recursos locais
 
 ## Deploy
 
