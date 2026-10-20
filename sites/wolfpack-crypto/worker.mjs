@@ -10,7 +10,7 @@ export default {
    let path=url.pathname;
    if(path==="/index.html")path="/";
    if(path==="/experimentos")path="/experimentos/";
-   const match=/^\/experimentos\/(00[1-6])$/.exec(path);
+   const match=/^\/experimentos\/(00[1-7])$/.exec(path);
    if(match)path+="/";
    const found=Object.prototype.hasOwnProperty.call(pages,path);
    const info=found?meta[path]:{type:"text/html; charset=utf-8",status:404};
