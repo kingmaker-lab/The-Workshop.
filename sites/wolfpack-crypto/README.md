@@ -4,15 +4,16 @@ Site de pesquisa em criptografia do ecossistema The Workshop, publicado em **htt
 
 ## Arquivo de experimentos
 
-- [Experimentos 001–006](https://wolfpack-crypto.pages.dev/experimentos/)
+- [Experimentos 001–007](https://wolfpack-crypto.pages.dev/experimentos/)
 - [001 — Reversibilidade Feistel](https://wolfpack-crypto.pages.dev/experimentos/001/)
 - [002 — Análise diferencial](https://wolfpack-crypto.pages.dev/experimentos/002/)
 - [003 — DDT de 8 bits](https://wolfpack-crypto.pages.dev/experimentos/003/)
 - [004 — Ciclos, Floyd e Brent](https://wolfpack-crypto.pages.dev/experimentos/004/)
 - [005 — Sensibilidade às condições iniciais](https://wolfpack-crypto.pages.dev/experimentos/005/)
 - [006 — Bacias de atração](https://wolfpack-crypto.pages.dev/experimentos/006/)
+- [007 — Strict Avalanche Criterion (piloto)](https://wolfpack-crypto.pages.dev/experimentos/007/)
 
-Fonte dos experimentos: [Ouroboros Low Level](../../research/cryptography/ouroboros-low-level/README.md). Os EXP 004–006 incluem documentação e scripts reproduzíveis no GitHub. Os EXP 001–003 são fundamentos e provas conceituais; ainda não foram auditados como primitivas criptográficas.
+Fonte dos experimentos: [Ouroboros Low Level](../../research/cryptography/ouroboros-low-level/README.md). Os EXP 004–006 incluem documentação e scripts reproduzíveis no GitHub. Os EXP 001–003 são fundamentos e provas conceituais; o EXP 007 está em fase piloto de SAC/BIC. Nenhum dos experimentos constitui auditoria de primitiva criptográfica.
 
 ## Arquitetura
 
