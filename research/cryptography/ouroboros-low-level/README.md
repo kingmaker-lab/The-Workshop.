@@ -121,6 +121,19 @@ Código e testes de referência reproduzíveis em Python, sem dependências exte
 
 ---
 
+## Experimento 007 — Strict Avalanche Criterion (SAC)
+
+O [EXP-007](./experiments/007-strict-avalanche/README.md) estabelece um protocolo reproduzível para estudar **probabilidades individuais de alteração dos bits de saída**, dependência pareada entre bits (phi/BIC), e comparação com funções intencionalmente fracas.
+
+- Motores de referência: SHA-256 truncado em 16/32 bits, ARX reduzida de 8 bits e identidade.
+- Piloto amostral (4.096 pares por bit de entrada): 7,99222 bits diferentes em 16 bits e 16,00418 em 32 bits, em média. Esses valores **não** demonstram segurança criptográfica.
+- O programa exporta matriz SAC, resumos JSON/CSV e estatísticas exploratórias de correlação entre alterações dos bits.
+- **Pendente:** executar o `ouroboros_step` real em C/Assembly após obter código-fonte e vetores de teste verificáveis.
+
+Status: **protocolo criado, piloto executado; análise em andamento**.
+
+---
+
 ## 6. Próximas perguntas de pesquisa
 
 - Qual é o comportamento estatístico da transformação `ouroboros_step`?
