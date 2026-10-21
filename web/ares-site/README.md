@@ -9,6 +9,7 @@ O site principal é a porta de entrada para os laboratórios do The Workshop.
 | Rota | Destino | Descrição |
 | --- | --- | --- |
 | [workshop-labs.pages.dev](https://workshop-labs.pages.dev/) | Portal / hub | Diretório dos projetos |
+| [/projects/wolf-vm/](https://workshop-labs.pages.dev/projects/wolf-vm/) | WOLF-VM | Página técnica do interpretador em C11 (sem execução remota de bytecode) |
 | [/projects/ares/](https://workshop-labs.pages.dev/projects/ares/) | ARES | Página técnica do servidor HTTP em C |
 | [/projects/ares/responses-routing/](https://workshop-labs.pages.dev/projects/ares/responses-routing/) | ARES v0.3 | Servidor HTTP local integrado, testes e segurança |
 | [/projects/ares/static-files/](https://workshop-labs.pages.dev/projects/ares/static-files/) | ARES v0.4 | Static files, MIME, traversal testing e check-up |
@@ -33,6 +34,7 @@ A versão publicada do hub está incorporada em `_worker.js`. Após editar os ar
 ## Rotas do Pages Worker
 
 - `/` → home dos laboratórios
+- `/projects/wolf-vm/` e `/wolf-vm/` → WOLF-VM v0.1 (documentação estática)
 - `/projects/ares/` e `/ares/` → ARES
 - `/projects/ares/tcp-foundation/` → TCP Foundation v0.1
 - `/projects/ares/responses-routing/` → Responses & Routing v0.3

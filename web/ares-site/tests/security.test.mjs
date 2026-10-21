@@ -121,3 +121,14 @@ test("no secrets or dynamic script execution patterns in Worker source", () => {
   assert.doesNotMatch(code, /api[_-]?token\s*[:=]/i);
   assert.doesNotMatch(code, /private[_-]?key\s*[:=]/i);
 });
+
+
+test("WOLF-VM v0.1 card and route follow site security baseline",async()=>{
+  const home=await request("/");assert.equal(home.status,200);
+  assert.match(await home.text(),/href="\/projects\/wolf-vm\/"/);
+  for(const path of ["/projects/wolf-vm/","/wolf-vm/"]){
+    const r=await request(path);assert.equal(r.status,200,path);assertHeaders(r);
+    assert.match(await r.text(),/WOLF-VM/);
+    const head=await request(path,"HEAD");assert.equal(head.status,200);assert.equal(await head.text(),"");assertHeaders(head);
+  }
+});
