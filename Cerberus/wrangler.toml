@@ -1,0 +1,5 @@
+# Official Cloudflare Worker: independent from WolfPack OS and Workshop Labs.
+name = "cerberus"
+main = "worker.js"
+compatibility_date = "2026-10-21"
+workers_dev = true
