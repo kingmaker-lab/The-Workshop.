@@ -1,6 +1,6 @@
 # WOLF-VM — Plano de integração com o ecossistema Cloudflare
 
-**Status atual: OFFLINE — deploy expressamente suspenso.**
+**Status atual: ONLINE — Workshop Labs em produção após preview e validação externa.**
 **Data:** 2026-10-21  
 **Versão técnica:** v0.1 (código publicado em `wolf-vm/`, porém sem publicação da interface em Cloudflare).
 
@@ -14,7 +14,7 @@ O WOLF-VM deve ser divulgado como um **módulo do The Workshop**, conectado aos 
 | --- | --- | --- |
 | Workshop Labs (portal central) | https://workshop-labs.pages.dev/ | Card do WOLF-VM, página técnica própria, navegação de volta ao hub e links ao código. |
 | WolfPack OS (hub) | https://wolfpack.wolfpackworkshop.workers.dev/ | Card/entrada do WOLF-VM apontando para a rota final do Workshop Labs. |
-| Cerberus (arquitetura) | https://cerberus.wolfpackworkshop.workers.dev/ | Inventário/registro central, status, versão e URL do laboratório; nenhuma ativação automática enquanto offline. |
+| Cerberus (arquitetura) | https://cerberus.wolfpackworkshop.workers.dev/ | Inventário/registro central, status, versão e URL do laboratório; sem executar bytecode remoto. |
 | Crypto Lab | https://wolfpack-crypto.pages.dev/ | Navegação institucional entre laboratórios quando fizer sentido, sem confundir o WOLF-VM com um experimento de criptografia. |
 
 Esses destinos são **alvos planejados**, não confirmação de versão online ou permissão de deploy.
@@ -50,4 +50,12 @@ Esses destinos são **alvos planejados**, não confirmação de versão online o
 
 ## Decisão
 
-**OFFLINE / NÃO PUBLICAR AINDA.** Retomar apenas com uma implantação coordenada dos demais sites.
+**ONLINE no Workshop Labs.** O card e a rota pública passaram na validação externa. As integrações de catálogo e navegação entre sites são progressivas; modificações nos Workers independentes WolfPack OS e Cerberus não foram realizadas nesta entrega.
+
+## Publicação verificada — 21/10/2026
+
+- Cloudflare Pages: projeto `workshop-labs`, ambiente `production`.
+- Deployment: `38ff3eed-95e5-406d-a73b-83240b5ff5bf` (primeira publicação WOLF-VM).
+- GitHub Actions: preview https://github.com/kingmaker-lab/The-Workshop./actions/runs/39648272474 e produção https://github.com/kingmaker-lab/The-Workshop./actions/runs/39648499014 com sucesso.
+- A navegação do WOLF-VM e do hub aponta para WolfPack OS e Cerberus. Os Workers desses dois projetos não foram alterados nesta publicação.
+- Riscos residuais: revisão de links de entrada de outros sites permanece independente e não bloqueia a disponibilidade da página oficial.

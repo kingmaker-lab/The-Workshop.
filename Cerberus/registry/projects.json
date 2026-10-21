@@ -39,11 +39,12 @@
       "id": "wolf-vm",
       "name": "WOLF-VM",
       "category": "systems_low_level",
-      "status": "offline",
+      "status": "online",
       "url": "https://workshop-labs.pages.dev/projects/wolf-vm/",
       "integration": "pages_documentation",
       "version": "0.1",
-      "release_gate": "ecosystem_integration_pending"
+      "release_gate": "cloudflare_live_smoke_passed",
+      "last_verified": "2026-10-21"
     }
   ]
 }
