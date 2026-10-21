@@ -34,7 +34,7 @@ test('CERBERUS_02 is live and contains the complete learning trail',async()=>{
  const experiment=await send('/labs/02');
  assert.equal(experiment.status,200);
  const html=await experiment.text();
- for(const mark of ['Camadas, Clean','Hexagonal','SQL','InMemoryReservations','SQLiteReservations','Injeção de dependências','ADR-0002','experiments/02-layers-clean-hexagonal']){
+ for(const mark of ['Camadas, Clean','Hexagonal','SQL','InMemoryReservations','SQLiteReservations','injeção de dependências','ADR-0002','experiments/02-layers-clean-hexagonal']){
   assert.ok(html.includes(mark),mark);
  }
  assert.doesNotMatch(html,/<script\\b/i);
