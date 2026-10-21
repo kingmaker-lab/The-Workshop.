@@ -1,0 +1,39 @@
+name: WOLF-VM Cloudflare Preview Smoke
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/wolf-vm-cloudflare-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Verify Cloudflare Pages preview routes, safe headers and existing labs
+        shell: bash
+        env:
+          BASE: https://preview-wolf-vm.workshop-labs.pages.dev
+        run: |
+          set -euo pipefail
+          for path in / /projects/wolf-vm/ /projects/ares/ /projects/ares/static-files/; do
+            code="$(curl --retry 4 --retry-delay 2 --max-time 20 -sS -o /tmp/wolf-body -D /tmp/wolf-headers -w '%{http_code}' "$BASE$path")"
+            test "$code" = "200" || { echo "Expected 200 at $path; got $code"; exit 1; }
+            grep -qi 'x-content-type-options: nosniff' /tmp/wolf-headers
+            grep -qi 'x-frame-options: DENY' /tmp/wolf-headers
+            grep -qi 'content-security-policy:.*frame-ancestors' /tmp/wolf-headers
+            case "$path" in
+              /) grep -q 'WOLF-VM' /tmp/wolf-body; grep -q 'PROJECT ARES' /tmp/wolf-body; grep -q 'CRYPTO LABS' /tmp/wolf-body ;;
+              /projects/wolf-vm/) grep -q 'WOLF-VM' /tmp/wolf-body ;;
+              /projects/ares/*) grep -q 'ARES' /tmp/wolf-body ;;
+            esac
+          done
+          code="$(curl --max-time 20 -sS -o /dev/null -w '%{http_code}' "$BASE/projects/crypto/")"
+          test "$code" = "302" || { echo "Crypto redirect status: $code"; exit 1; }
+          code="$(curl -X POST --max-time 20 -sS -o /dev/null -w '%{http_code}' "$BASE/projects/wolf-vm/")"
+          test "$code" = "405" || { echo "Unexpected POST status: $code"; exit 1; }
+          code="$(curl --max-time 20 -sS -o /dev/null -w '%{http_code}' "$BASE/.env")"
+          test "$code" = "404" || { echo "Sensitive path leaked: $code"; exit 1; }
+          printf 'WOLF-VM preview routes, ARES, Crypto and security headers OK\n'
