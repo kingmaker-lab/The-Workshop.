@@ -25,7 +25,7 @@ jobs:
             grep -qi 'x-frame-options: DENY' /tmp/wolf-headers
             grep -qi 'content-security-policy:.*frame-ancestors' /tmp/wolf-headers
             case "$path" in
-              /) grep -q 'WOLF-VM' /tmp/wolf-body; grep -q 'PROJECT ARES' /tmp/wolf-body; grep -q 'CRYPTO LABS' /tmp/wolf-body ;;
+              /) grep -q 'WOLF-VM' /tmp/wolf-body; grep -q 'PROJECT ARES' /tmp/wolf-body; grep -q 'CRYPTO LABS' /tmp/wolf-body; grep -q 'wolfpack.wolfpackworkshop.workers.dev' /tmp/wolf-body; grep -q 'cerberus.wolfpackworkshop.workers.dev' /tmp/wolf-body ;;
               /projects/wolf-vm/) grep -q 'WOLF-VM' /tmp/wolf-body ;;
               /projects/ares/*) grep -q 'ARES' /tmp/wolf-body ;;
             esac
