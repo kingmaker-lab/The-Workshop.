@@ -1,4 +1,4 @@
-.PHONY: help setup build test test-ares test-ares-tcp test-ares-http test-ares-server test-argus test-raven \
+.PHONY: help setup build test test-ares test-ares-tcp test-ares-http test-ares-server test-argus test-raven test-wolf-vm \
 	run-ares run-ares-legacy run-ares-tcp run-ares-http-demo run-argus run-raven clean status \
 	build-local test-local run-local check-security
 
@@ -31,6 +31,7 @@ help:
 	@echo "make test-ares-server Run integrated v0.4 HTTP tests"
 	@echo "make test-argus  Run ARGUS tests"
 	@echo "make test-raven  Run RAVEN tests"
+	@echo "make test-wolf-vm  Run WOLF-VM v0.1 tests"
 	@echo "make run-ares    Run HTTP server v0.4 locally"
 	@echo "make run-ares-legacy Run preserved root HTTP prototype"
 	@echo "make run-ares-tcp Run isolated TCP v0.1 locally"
@@ -58,8 +59,9 @@ setup:
 
 build:
 	$(MAKE) -C ares/http-server all
+	$(MAKE) -C wolf-vm all
 
-test: test-ares test-argus test-raven
+test: test-ares test-argus test-raven test-wolf-vm
 	@echo ""
 	@echo "[WORKSHOP] All test suites passed."
 
@@ -96,6 +98,9 @@ test-raven:
 	fi
 	cd raven && bundle exec rspec
 
+test-wolf-vm:
+	$(MAKE) -C wolf-vm test
+
 run-ares:
 	$(MAKE) -C ares/http-server run
 
@@ -123,6 +128,7 @@ check-security:
 	node --test web/ares-site/tests/security.test.mjs
 
 clean:
+	$(MAKE) -C wolf-vm clean
 	$(MAKE) -C ares/http-server clean
 	$(MAKE) -C ares/http-parser clean
 	$(MAKE) -C ares/tcp-foundation clean
@@ -141,6 +147,7 @@ status:
 	@echo "ARGUS     [ ACTIVE ]  Python"
 	@echo "RAVEN     [ ACTIVE ]  Ruby"
 	@echo "CERBERUS  [ LOCKED ]  Integration"
+	@echo "WOLF-VM   [ LAB v0.1 ]  C11 / Bytecode VM"
 	@echo ""
 
 build-local: $(BUILD_DIR)/ares
