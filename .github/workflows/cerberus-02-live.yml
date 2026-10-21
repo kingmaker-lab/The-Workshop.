@@ -1,0 +1,19 @@
+name: CERBERUS 02 production smoke verification
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/cerberus-02-live.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check live CERBERUS v0.3.0
+        run: node Cerberus/scripts/live-smoke.mjs
