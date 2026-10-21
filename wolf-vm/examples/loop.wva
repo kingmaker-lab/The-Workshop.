@@ -1,0 +1,9 @@
+; Testa CMP/JNZ, R0 termina em 0
+MOVI R0, 3
+MOVI R1, 1
+MOVI R2, 0
+again:
+SUB R0, R1
+CMP R0, R2
+JNZ again
+HALT

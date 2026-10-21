@@ -1,0 +1,28 @@
+name: WOLF-VM v0.1 CI
+on:
+  push:
+    paths:
+      - "wolf-vm/**"
+      - ".github/workflows/wolf-vm.yml"
+  pull_request:
+    paths:
+      - "wolf-vm/**"
+      - ".github/workflows/wolf-vm.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  vm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile with warnings as errors
+        run: make -C wolf-vm
+      - name: Unit and hostile bytecode tests
+        run: make -C wolf-vm test
+      - name: Build with ASan and UBSan
+        run: make -C wolf-vm sanitize

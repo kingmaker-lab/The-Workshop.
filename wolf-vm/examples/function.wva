@@ -1,0 +1,8 @@
+; Testa CALL e RET, R0=14
+MOVI R0, 7
+CALL double
+HALT
+
+double:
+ADD R0, R0
+RET

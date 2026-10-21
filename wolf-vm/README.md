@@ -1,26 +1,46 @@
-# 🐺 WOLF-VM — Módulo 03 (v0.1)
+# 🐺 WOLF-VM — The Workshop | Módulo 03
 
-**The Workshop • 22–31 de outubro de 2026 • Something Crazy**
+**Build. Break. Understand. Rebuild.**
 
-Máquina virtual educacional em C11, com assembler em Python e bytecode WVM1. Projeto experimental com 8 registradores de 32 bits, PC/SP/ZF, pilha, memória, instruções aritméticas, saltos, chamadas e validação de bytecode.
+**Something Crazy | 22–31 outubro 2026 | v0.1**
 
-## Status de integração
+CPU virtual didática em C11, com assembler Python 3.9+, bytecode WVM1 e 17 testes positivos e negativos. Não é hipervisor, não roda x86 e não executa sistemas operacionais convidados.
 
-- A página técnica e o card do WOLF-VM estão **versionados em branch**, pendentes de revisão, merge e publicação separada do Cloudflare Pages.
-- O código-fonte v0.1 foi compilado e executou **17 testes locais com sucesso**.
-- **O pacote completo do interpretador ainda não foi enviado a este repositório.** Está disponível como anexo `wolf-vm-v0.1.zip` na conversa de desenvolvimento. É necessário adicionar seus arquivos em `wolf-vm/` antes de considerar a integração de código concluída.
-- I/O, debugger avançado e fuzzing continuam no roadmap.
+## Requisitos
 
-## Rodar após importar o código
+- C11 compiler: cc ou gcc
+- make
+- Python 3.9+
 
-```sh
-cd wolf-vm
-make
-make examples
-make test
-./build/wolfvm --trace build/examples/arith.wvm
-```
+## Executar
 
-## Segurança
+    cd wolf-vm
+    make
+    make examples
+    ./build/wolfvm --trace build/examples/arith.wvm
+    make test
 
-O Cloudflare hospeda exclusivamente documentação estática, sem executar bytecode enviado por visitantes. O interpretador v0.1 **não é uma sandbox auditada para cargas hostis**.
+A saída do primeiro exemplo termina com R0=8.
+
+## Montar programas
+
+    python3 tools/assemble.py examples/loop.wva -o build/examples/loop.wvm
+    ./build/wolfvm --trace build/examples/loop.wvm
+
+## Estrutura
+
+- src/: interpretador, loader e CLI.
+- include/: estado e ISA da VM.
+- tools/: assembler WVA → WVM.
+- examples/: aritmética, loop, memória, CALL/RET.
+- tests/: 17 casos de execução e bytecode inválido.
+- docs/architecture.md: contrato de arquitetura.
+- docs/security.md: check-up, controles e riscos residuais.
+
+## Garantias e limites
+
+O bytecode não tem instruções para abrir sockets, acessar arquivos do host ou executar processos externos. A VM valida registradores, tamanho do arquivo, offsets de instruções, acessos de memória e profundidade de pilha. Execução limitada a 100.000 passos por padrão. A v0.1 é experimental e não é uma sandbox auditada para código hostil.
+
+O site Workshop Labs publica documentação, não um interpretador remoto.
+
+Documentação pública planejada: https://workshop-labs.pages.dev/projects/wolf-vm/ (depende de deploy Cloudflare independente).
