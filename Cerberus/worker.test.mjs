@@ -26,3 +26,25 @@ test('public API is architecture-oriented and backward compatible',async()=>{
  const projects=await (await send('/api/projects')).json();assert.equal(projects.projects.length,4);
  assert.equal(projects.projects.find(p=>p.id==='cerberus').category,'software_architecture');
 });
+
+test('CERBERUS_02 is live and contains the complete learning trail',async()=>{
+ const root=await (await send('/')).text();
+ assert.match(root,/href="\/labs\/02"/);
+ assert.match(root,/CERBERUS_02/);
+ const experiment=await send('/labs/02');
+ assert.equal(experiment.status,200);
+ const html=await experiment.text();
+ for(const mark of ['Camadas, Clean','Hexagonal','SQL','InMemoryReservations','SQLiteReservations','injeção de dependências','ADR-0002','experiments/02-layers-clean-hexagonal']){
+  assert.ok(html.includes(mark),mark);
+ }
+ assert.doesNotMatch(html,/<script\\b/i);
+ assert.doesNotMatch(html,/<iframe\\b/i);
+ assert.equal((await send('/labs/02/')).status,200);
+ assert.equal((await send('/labs/02','HEAD')).status,200);
+ const status=await (await send('/api/status')).json();
+ assert.equal(status.available_labs,2);
+ assert.equal(status.version,'0.3.0');
+ const modules=await (await send('/api/modules')).json();
+ const lab=modules.modules.find(m=>m.id==='cerberus-02');
+ assert.deepEqual({status:lab.status,route:lab.route},{status:'available',route:'/labs/02'});
+});
