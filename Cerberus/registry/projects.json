@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "module": "the-workshop",
-  "updated_at": "2026-10-19",
+  "updated_at": "2026-10-21",
   "projects": [
     {
       "id": "ares",
@@ -34,6 +34,15 @@
       "status": "online",
       "url": "https://cerberus.wolfpackworkshop.workers.dev/",
       "integration": "independent_lab"
+    },
+    {
+      "id": "wolf-vm",
+      "name": "WOLF-VM",
+      "category": "systems_low_level",
+      "status": "staged",
+      "url": "https://workshop-labs.pages.dev/projects/wolf-vm/",
+      "integration": "pages_documentation",
+      "version": "0.1"
     }
   ]
 }

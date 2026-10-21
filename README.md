@@ -164,6 +164,16 @@ Explora conceitos como:
 
 ---
 
+## WOLF-VM — Módulo 03
+
+Máquina virtual experimental de bytecode em **C11**, com ISA própria, registradores, memória, pilha e ciclo Fetch–Decode–Execute; assembler e testes em Python. Primeiro protótipo v0.1 (17 testes locais aprovados).
+
+- [Módulo, distribuição do código e instruções](wolf-vm/README.md)
+- [Página técnica do WOLF-VM](https://workshop-labs.pages.dev/projects/wolf-vm/) (publicação Cloudflare separada da versão Git)
+- Escopo de segurança: CPU virtual isolada, sem execução de bytecode arbitrário no Cloudflare.
+
+---
+
 ## ARGUS
 
 Motor defensivo de **Threat Hunting e correlação de eventos em Python**.
