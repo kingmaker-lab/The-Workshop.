@@ -2,24 +2,25 @@
 
 **The Workshop • 22–31 de outubro de 2026 • Something Crazy**
 
-Máquina virtual educacional em C11, com assembler em Python e bytecode WVM1. Inclui 8 registradores de 32 bits, PC/SP/ZF, pilha, memória, instruções aritméticas, saltos e chamadas, validação prévia de bytecode e proteção por limite de instruções.
+Máquina virtual educacional em C11, com assembler em Python e bytecode WVM1. Projeto experimental com 8 registradores de 32 bits, PC/SP/ZF, pilha, memória, instruções aritméticas, saltos, chamadas e validação de bytecode.
 
-## Distribuição
+## Status de integração
 
-O pacote de código-fonte completo está em `wolf-vm-v0.1-source.tar.gz` neste diretório (sem binários compilados). Para usar:
+- A página técnica e o card do WOLF-VM estão **versionados em branch**, pendentes de revisão, merge e publicação separada do Cloudflare Pages.
+- O código-fonte v0.1 foi compilado e executou **17 testes locais com sucesso**.
+- **O pacote completo do interpretador ainda não foi enviado a este repositório.** Está disponível como anexo `wolf-vm-v0.1.zip` na conversa de desenvolvimento. É necessário adicionar seus arquivos em `wolf-vm/` antes de considerar a integração de código concluída.
+- I/O, debugger avançado e fuzzing continuam no roadmap.
+
+## Rodar após importar o código
 
 ```sh
-mkdir -p wolf-vm-workdir
-cd wolf-vm-workdir
-tar -xzf ../wolf-vm-v0.1-source.tar.gz
+cd wolf-vm
 make
 make examples
 make test
 ./build/wolfvm --trace build/examples/arith.wvm
 ```
 
-Resultados locais: **17 testes aprovados**. Interface em Cloudflare Pages: [WOLF-VM](https://workshop-labs.pages.dev/projects/wolf-vm/) (deploy de Pages realizado separadamente).
+## Segurança
 
-## Aviso
-
-A v0.1 **não é sandbox auditada para código hostil** e não executa instruções enviadas por visitantes no Cloudflare. I/O, debugger avançado e fuzzing ficam para experimentos posteriores. Consulte `docs/security.md` no pacote de código.
+O Cloudflare hospeda exclusivamente documentação estática, sem executar bytecode enviado por visitantes. O interpretador v0.1 **não é uma sandbox auditada para cargas hostis**.
