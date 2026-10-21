@@ -1,0 +1,40 @@
+name: Cerberus 02 — Python architecture & worker gate
+on:
+  push:
+    branches: [main, feat/cerberus-02-clean-hexagonal-20261021]
+    paths:
+      - 'Cerberus/**'
+      - '.github/workflows/cerberus-02.yml'
+  pull_request:
+    paths:
+      - 'Cerberus/**'
+      - '.github/workflows/cerberus-02.yml'
+permissions:
+  contents: read
+jobs:
+  architecture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install executable CERBERUS_02 example
+        working-directory: Cerberus/experiments/02-layers-clean-hexagonal
+        run: python -m pip install -e .
+      - name: Run domain, ports, adapters, architectural and CLI tests
+        working-directory: Cerberus/experiments/02-layers-clean-hexagonal
+        run: python -m unittest discover -s tests -v
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check worker syntax
+        run: node --check Cerberus/worker.js
+      - name: Test CERBERUS_01, CERBERUS_02, status and CSP
+        run: node --test Cerberus/worker.test.mjs
