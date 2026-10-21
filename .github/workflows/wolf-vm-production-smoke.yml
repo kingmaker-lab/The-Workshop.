@@ -1,0 +1,41 @@
+name: WOLF-VM Production Cloudflare Smoke
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/wolf-vm-production-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Verify deployed production URL, legacy labs and security headers
+        shell: bash
+        env:
+          BASE: https://workshop-labs.pages.dev
+        run: |
+          set -euo pipefail
+          for path in / /projects/wolf-vm/ /projects/ares/ /projects/ares/static-files/; do
+            status="$(curl --retry 5 --retry-delay 3 --max-time 20 -sS -o /tmp/body -D /tmp/headers -w '%{http_code}' "$BASE$path")"
+            if [ "$status" != 200 ]; then echo "$path: expected 200, got $status"; exit 1; fi
+            grep -qi 'x-content-type-options: nosniff' /tmp/headers
+            grep -qi 'x-frame-options: DENY' /tmp/headers
+            grep -qi 'content-security-policy:.*frame-ancestors' /tmp/headers
+            case "$path" in
+              /) grep -q 'WOLF-VM' /tmp/body; grep -q 'PROJECT ARES' /tmp/body; grep -q 'CRYPTO LABS' /tmp/body ;;
+              /projects/wolf-vm/) grep -q 'WOLF-VM' /tmp/body ;;
+              /projects/ares/*) grep -q 'ARES' /tmp/body ;;
+            esac
+          done
+          status="$(curl -sS --max-time 20 -o /dev/null -w '%{http_code}' "$BASE/projects/crypto/")"
+          test "$status" = 302
+          status="$(curl -sS --max-time 20 -I -o /tmp/headers -w '%{http_code}' "$BASE/projects/wolf-vm/")"
+          test "$status" = 200
+          status="$(curl -sS --max-time 20 -X POST -o /dev/null -w '%{http_code}' "$BASE/projects/wolf-vm/")"
+          test "$status" = 405
+          status="$(curl -sS --max-time 20 -o /dev/null -w '%{http_code}' "$BASE/.env")"
+          test "$status" = 404
+          echo "Production WOLF-VM, ARES, Crypto Lab, HEAD/405/404 and security headers: PASS"
