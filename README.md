@@ -342,3 +342,13 @@ E algumas provavelmente vão crescer muito além do planejado.
 ---
 
 `Build. Break. Understand. Rebuild.`
+
+### ARGUS Protocol — HeartAI
+
+**PROJECT_001 / Artificial Intelligence Research.** Núcleo de IA local, memória conversacional persistente e tokenizer autoral Byte-BPE. HeartLM (modelo neural próprio) segue em pesquisa; não há modelo de linguagem treinado nesta etapa.
+
+- [Laboratório HeartAI — código e experimentos](IA/Heart/)
+- [Página pública ARGUS — fontes do site](IA/Heart/site/argus/index.html)
+- [Genesis e roadmap técnico](IA/Heart/docs/HEARTAI-GENESIS.md)
+
+A publicação no Cloudflare Pages requer deploy dos arquivos estáticos; atualizar este repositório não altera automaticamente o projeto Pages configurado como Direct Upload.
