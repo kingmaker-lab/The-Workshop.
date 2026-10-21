@@ -4,3 +4,9 @@ __pycache__/
 .venv/
 data/*.db
 data/*.jsonl
+
+# Local tokenizer artifacts, model weights and training corpora
+data/tokenizer*.json
+models/
+checkpoints/
+datasets/private/
