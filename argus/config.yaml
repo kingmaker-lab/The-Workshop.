@@ -9,3 +9,10 @@ correlation:
   window_seconds: 30
   failure_threshold: 15
   risk_window_seconds: 300
+# Opt-in statistical detection. Requires a representative baseline;
+# use only on trusted, prefiltered local telemetry.
+anomaly:
+  enabled: false
+  metrics: [orig_bytes, resp_bytes]
+  minimum_samples: 20
+  z_threshold: 4.0

@@ -13,6 +13,7 @@ from argus.collectors.syslog import SyslogCollector
 from argus.core.correlator import CorrelationEngine
 from argus.core.normalizer import normalize_event
 from argus.core.scoring import RiskScorer
+from argus.detection.anomaly_engine import AnomalyEngine
 from argus.detection.behavioral import BehavioralEngine
 from argus.detection.rules import RuleEngine
 from argus.storage.database import Database
@@ -53,16 +54,26 @@ def analyze(
     database_path: str | Path,
     rules_path: str | Path,
     correlation_config: dict[str, Any],
+    anomaly_config: dict[str, Any] | None = None,
 ) -> tuple[int, int]:
     database = Database(database_path)
     rules = RuleEngine.from_yaml(rules_path)
     window_seconds = int(correlation_config.get("window_seconds", 30))
     threshold = int(correlation_config.get("failure_threshold", 15))
     risk_window_seconds = int(correlation_config.get("risk_window_seconds", 300))
+    anomaly_config = anomaly_config or {}
+    anomaly = None
+    if anomaly_config.get("enabled", False):
+        anomaly = AnomalyEngine(
+            metrics=tuple(anomaly_config.get("metrics", ["orig_bytes", "resp_bytes"])),
+            minimum_samples=int(anomaly_config.get("minimum_samples", 20)),
+            z_threshold=float(anomaly_config.get("z_threshold", 4.0)),
+        )
     engine = CorrelationEngine(
         rules,
         BehavioralEngine(threshold, window_seconds),
         RiskScorer(risk_window_seconds),
+        anomaly=anomaly,
     )
     collector = _collector(Path(input_path), input_format)
     processed = 0
@@ -121,6 +132,7 @@ def main() -> int:
                 database_path,
                 rules_path,
                 configuration.get("correlation", {}),
+                configuration.get("anomaly", {}),
             )
             print(json.dumps({"processed": processed, "alerts": alert_count}, sort_keys=True))
         elif arguments.command == "serve":

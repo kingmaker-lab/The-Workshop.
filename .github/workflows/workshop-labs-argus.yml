@@ -1,0 +1,26 @@
+name: Workshop Labs security smoke
+
+on:
+  pull_request:
+    paths:
+      - "web/workshop-labs/**"
+      - ".github/workflows/workshop-labs-argus.yml"
+  push:
+    paths:
+      - "web/workshop-labs/**"
+      - ".github/workflows/workshop-labs-argus.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  static-worker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Static Worker test suite (GET/HEAD and CSP)
+        run: node --test web/workshop-labs/tests/smoke.test.mjs

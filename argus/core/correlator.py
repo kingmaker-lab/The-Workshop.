@@ -1,6 +1,7 @@
 from uuid import uuid4
 
 from argus.core.scoring import RiskScorer
+from argus.detection.anomaly_engine import AnomalyEngine
 from argus.detection.behavioral import BehavioralEngine
 from argus.detection.rules import RuleEngine
 from argus.models.alert import Alert
@@ -13,14 +14,18 @@ class CorrelationEngine:
         rules: RuleEngine,
         behavior: BehavioralEngine,
         scorer: RiskScorer,
+        anomaly: AnomalyEngine | None = None,
     ) -> None:
         self.rules = rules
         self.behavior = behavior
         self.scorer = scorer
+        self.anomaly = anomaly
 
     def process(self, event: Event) -> Alert | None:
         detections = self.rules.evaluate(event)
         detections.extend(self.behavior.process(event))
+        if self.anomaly is not None:
+            detections.extend(self.anomaly.process(event))
         if not detections:
             return None
         risk_score = self.scorer.score(event.src_ip, event.timestamp, detections)
