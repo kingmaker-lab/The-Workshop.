@@ -1,0 +1,56 @@
+{
+  "experiment": "OUROBOROS-009",
+  "target": "EXP-008 round function F(R,K)=P8(S(R XOR K))",
+  "method": "Exact full-domain enumeration; DDT 256x256; Walsh LAT 256x256; nontrivial LAT extrema exclude zero masks.",
+  "ddt": {
+    "input_differences": 256,
+    "output_differences": 256,
+    "max_count_nonzero_input_difference": 64,
+    "max_probability": 0.25,
+    "max_cells_count": 48,
+    "nonzero_entry_values": [
+      4,
+      8,
+      16,
+      32,
+      64
+    ],
+    "row_sum_min": 256,
+    "row_sum_max": 256,
+    "example": {
+      "input_delta": "0x01",
+      "output_delta": "0x05",
+      "count": 64,
+      "probability": 0.25
+    }
+  },
+  "lat": {
+    "nontrivial_mask_pairs": 65025,
+    "max_abs_walsh_nontrivial": 128,
+    "max_abs_correlation": 0.5,
+    "max_abs_bias_count": 64,
+    "agreement_probability_for_best_sign": 0.75,
+    "max_cells_count": 72,
+    "absolute_walsh_histogram": {
+      "0": 47337,
+      "16": 9216,
+      "32": 6912,
+      "64": 1488,
+      "128": 72
+    }
+  },
+  "fixed_round_key_invariance": {
+    "tested_keys": [
+      "0x00",
+      "0x5A",
+      "0xFF"
+    ],
+    "ddt_counts_identical": true,
+    "lat_absolute_walsh_identical": true
+  },
+  "tests": {
+    "passed": 6,
+    "failed": 0
+  },
+  "scope": "Exact round-function component analysis only; not an attack on the full 8-round cipher, not a security proof."
+}
