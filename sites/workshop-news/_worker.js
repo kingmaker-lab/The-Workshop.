@@ -133,7 +133,7 @@ async function makeFeed(fetcher=fetch) {
   updates=Array.from(new Map(updates.map(u=>[u.url,u])).values())
     .sort((a,b)=>Date.parse(b.published||0)-Date.parse(a.published||0)).slice(0,12);
   const unique=Array.from(new Map(articles.map(a=>[a.url,a])).values()).slice(0,24);
-  return {generatedAt:new Date().toISOString(),partial:available.length!==tasks.length,available,articles:unique,updates,highlights:HIGHLIGHTS,branchSourcesAvailable:branchAvailable.length,projectLinks:[
+  return {generatedAt:new Date().toISOString(),partial:available.length!==(2+FEEDS.length),available,articles:unique,updates,highlights:HIGHLIGHTS,branchSourcesAvailable:branchAvailable.length,projectLinks:[
     {name:'Workshop Labs',url:'https://workshop-labs.pages.dev/',tag:'Hub de pesquisa'},
     {name:'Crypto Lab',url:'https://wolfpack-crypto.pages.dev/',tag:'Criptografia e matemática'},
     {name:'WolfPack OS',url:'https://wolfpack.wolfpackworkshop.workers.dev/',tag:'Laboratórios interativos'},
