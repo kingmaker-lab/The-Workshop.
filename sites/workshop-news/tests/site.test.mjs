@@ -98,3 +98,21 @@ test('feed follows only same-host HTTPS redirects (not arbitrary hosts)',async()
  assert.ok(redirected);
  assert.ok(trusted.available.includes('Cloudflare Blog'));
 });
+
+test('games entry is a fixed redirect to WolfPack OS with no open redirect',async()=>{
+ for(const method of ['GET','HEAD']){
+   for(const path of ['/jogos','/jogos/?next=https://evil.invalid','/jogos?url=https://evil.invalid']){
+     const response=await handler(new Request(new URL(path,base),{method}),fakeAssets);
+     assert.equal(response.status,302,path);
+     assert.equal(response.headers.get('location'),'https://wolfpack.wolfpackworkshop.workers.dev/');
+     assert.equal(response.headers.get('cache-control'),'no-store');
+     assert.equal(response.headers.get('x-content-type-options'),'nosniff');
+     assert.equal(await response.text(),'');
+   }
+ }
+ for(const method of ['POST','OPTIONS']){
+   const response=await handler(new Request(new URL('/jogos',base),{method}),fakeAssets);
+   assert.equal(response.status,405);
+   assert.equal(response.headers.get('allow'),'GET, HEAD');
+ }
+});
