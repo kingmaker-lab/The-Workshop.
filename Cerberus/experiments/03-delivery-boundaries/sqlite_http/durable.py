@@ -4,28 +4,29 @@ This is a laboratory, not a production queue: delivery is sequential and initiat
 manually, with no scheduler, TLS, authentication or concurrent broker workers.
 """
 from contextlib import closing
+from http.client import HTTPConnection
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 from pathlib import Path
 import re
 import sqlite3
 from urllib.parse import urlsplit
-from urllib.request import Request, urlopen
 
 _SAFE_ID = re.compile(r"[A-Za-z0-9_-]{1,64}\Z")
 _MAX_BODY = 4096
+_NOT_GIVEN = object()
 
 
 class ConflictError(ValueError):
     pass
 
 
-def _validate(event_id, event_code, seats=None):
+def _validate(event_id, event_code, seats=_NOT_GIVEN):
     if not isinstance(event_id, str) or not _SAFE_ID.fullmatch(event_id):
         raise ValueError("event_id: expected 1-64 letters, digits, _ or -")
     if not isinstance(event_code, str) or not _SAFE_ID.fullmatch(event_code):
         raise ValueError("event_code: expected 1-64 letters, digits, _ or -")
-    if seats is not None and (type(seats) is not int or not 1 <= seats <= 6):
+    if seats is not _NOT_GIVEN and (type(seats) is not int or not 1 <= seats <= 6):
         raise ValueError("seats: expected integer 1-6")
 
 
@@ -209,15 +210,18 @@ def dispatch(store, base_url, *, fail_before_send=False, fail_after_delivery=Fal
         if fail_before_send:
             raise RuntimeError("simulated failure before send")
         body = json.dumps(event).encode("utf-8")
-        request = Request(
-            f"http://127.0.0.1:{port}/events",
-            data=body,
-            method="POST",
-            headers={"Content-Type": "application/json"},
-        )
-        with urlopen(request, timeout=timeout) as result:
+        # Direct socket to loopback: HTTP redirects and proxy environment cannot
+        # change the destination to a remote host.
+        conn = HTTPConnection("127.0.0.1", port, timeout=timeout)
+        try:
+            conn.request("POST", "/events", body=body,
+                         headers={"Content-Type": "application/json"})
+            result = conn.getresponse()
+            result.read(_MAX_BODY)
             if result.status not in (200, 201):
                 raise RuntimeError(f"HTTP {result.status} not acknowledged")
+        finally:
+            conn.close()
         if fail_after_delivery:
             raise RuntimeError("simulated failure after remote commit before local ack")
         store.acknowledge(event["event_id"])
