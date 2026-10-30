@@ -194,6 +194,14 @@ async function handler(request,env={},ctx={}) {
       'Content-Type':'text/plain; charset=utf-8'
     }});
   }
+  if(pathname==='/ruby'||pathname==='/ruby/'){
+    return new Response(null,{status:302,headers:{
+      ...SECURITY,
+      'Location':'https://wolfpack.wolfpackworkshop.workers.dev/#jogar',
+      'Cache-Control':'no-store',
+      'Content-Type':'text/plain; charset=utf-8'
+    }});
+  }
   if(pathname==='/api/feed'){
     const cache=typeof caches!=='undefined'?caches.default:null;
     const key=new Request(new URL('/api/feed',request.url),{method:'GET'});
