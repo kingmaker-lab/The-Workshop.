@@ -170,3 +170,14 @@ A seção `#cronograma` agora prioriza cinco projetos: Protocolo Ruby, ARGUS/Hea
 - A seção `#cronograma` e o link de navegação foram removidos do Workshop News.
 - Os estilos e testes específicos do calendário público também foram removidos.
 - O documento `docs/roadmaps/workshop-2026-nov-dec.md` permanece no repositório apenas como histórico interno de planejamento; não é exibido no portal.
+
+
+### Edição 002 — novidades de 30/10/2026
+
+- **Produção:** https://workshop-news.pages.dev/
+- **Cloudflare Pages deployment:** `bab62116-e7c7-429c-9ff8-c99449f99de0` — status `success`.
+- **Runtime publicado:** `8d98322e762543cad385c888726335e18d8f22ec`.
+- Destaques atualizados: ARGUS v0.2 e página pública ampliada; HEART_004 embeddings e playground; CERBERUS 03 durable delivery lab; Wolfpack Academy Android draft; Wolfpack Academy API FastAPI draft; Protocolo Ruby em revisão.
+- O painel de atividade passa a consultar também `feat/wolfpack-academy-android-starter` e `feat/wolfpack-academy-api-mvp`, além de Protocolo Ruby e Ouroboros.
+- Verificação ao vivo confirmou `ED. 002`, seis cards de destaque e preservação do feed de notícias.
+- GitHub Actions para a edição permaneceu em estado `queued` no instante da publicação. GitHub Status indicava Actions operacional; a edição foi verificada em preview Cloudflare e depois em produção. Não registrar esse job como PASS enquanto não houver conclusão.
