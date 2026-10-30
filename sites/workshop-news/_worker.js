@@ -132,6 +132,15 @@ function error(status,allow=false) {
 async function handler(request,env={},ctx={}) {
   if(!['GET','HEAD'].includes(request.method))return error(405,true);
   const pathname=new URL(request.url).pathname;
+  // Controlled navigation only: the destination is constant, never user-supplied.
+  if(pathname==='/jogos'||pathname==='/jogos/'){
+    return new Response(null,{status:302,headers:{
+      ...SECURITY,
+      'Location':'https://wolfpack.wolfpackworkshop.workers.dev/',
+      'Cache-Control':'no-store',
+      'Content-Type':'text/plain; charset=utf-8'
+    }});
+  }
   if(pathname==='/api/feed'){
     const cache=typeof caches!=='undefined'?caches.default:null;
     const key=new Request(new URL('/api/feed',request.url),{method:'GET'});
