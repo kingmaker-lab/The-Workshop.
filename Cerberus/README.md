@@ -10,7 +10,7 @@
 |---|---|---|
 | CERBERUS 01 | Fundamentos, atributos de qualidade, acoplamento, coesão, trade-offs | estudo introdutório publicado |
 | CERBERUS 02 | Arquitetura em camadas, Clean Architecture, Hexagonal | estudo e código disponíveis |
-| CERBERUS 03 | Monólitos modulares, microsserviços e sistemas distribuídos | planejado |
+| CERBERUS 03 | Monólitos modulares, microsserviços e sistemas distribuídos | laboratório de entrega persistente publicado no Worker |
 | CERBERUS 04 | SOLID, design patterns, DDD, C4 e ADRs | planejado |
 | CERBERUS 05 | Resiliência, escalabilidade, observabilidade, performance e segurança por design | planejado |
 
@@ -40,6 +40,16 @@ Pergunta: o mesmo caso de uso de reservas pode trocar o adaptador SQLite pelo ad
 - Python >= 3.11; biblioteca padrão como dependência em runtime. Nenhum servidor HTTP nem banco de dados público são iniciados.
 - Segurança: experimento local sem autenticação, autorização ou controle de capacidade real. Não usar dados pessoais reais.
 
+
+## Terceira bancada em desenvolvimento: CERBERUS 03 — fronteiras de entrega
+
+Parte 1, modelo em memória: [simulação de entrega e falhas](experiments/03-delivery-boundaries/). Dois modelos locais de reservas/notificações permitem testar entrega duplicada após falha de confirmação e deduplicação no consumidor, com casos de falha determinísticos.
+
+- Código e testes: [03-delivery-boundaries](experiments/03-delivery-boundaries/).
+- Decisão: [ADR-0003](experiments/03-delivery-boundaries/ADR-0003-delivery-boundary.md).
+- Execução: `cd Cerberus && npm test` (Node.js >= 20).
+- Limite: ambos os modelos são **simulações em memória**, sem rede, broker ou persistência real. Não há benchmark de microsserviços nem mudança de deploy.
+
 ## Implementação pública
 
 Worker independente com HTML e CSS estáticos, sem JavaScript executado no cliente, sem cookies, sem bindings de acesso a serviços e sem proxy. Publicação não altera os deploys do Workshop Labs, Ares, Crypto Lab ou WolfPack OS.
@@ -47,6 +57,7 @@ Worker independente com HTML e CSS estáticos, sem JavaScript executado no clien
 - `/` — página principal do laboratório.
 - `/labs/01` — primeiro estudo.
 - `/labs/02` — segundo estudo com fonte executável, contratos e ADR.
+- `/labs/03` — terceiro estudo: rastreamento visual das falhas, SQLite e HTTP loopback.
 - `/api/status` — status **do portal**, não dos demais serviços.
 - `/api/modules` — trilha de módulos (somente leitura).
 - `/api/projects` — catálogo anterior mantido exclusivamente por compatibilidade.
@@ -56,6 +67,7 @@ Worker independente com HTML e CSS estáticos, sem JavaScript executado no clien
 - Modelagem: [docs/SECURITY.md](docs/SECURITY.md)
 - Arquitetura: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - Testes do portal: `cd Cerberus && npm test` (Node.js >= 20).
+- Testes do experimento 03: `python -m unittest discover -s Cerberus/experiments/03-delivery-boundaries/sqlite_http -p 'test_*.py' -v`.
 - Testes do experimento 02: `cd Cerberus/experiments/02-layers-clean-hexagonal && python -m unittest discover -s tests -v` após instalar o pacote.
 - Deploy: publicar `Cerberus/worker.js` no Worker `cerberus` com alterações versionadas e revisão de headers, disponibilidade e regressões.
 

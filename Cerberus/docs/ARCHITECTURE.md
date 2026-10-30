@@ -1,4 +1,4 @@
-# Arquitetura do CERBERUS — v0.2
+# Arquitetura do CERBERUS — v0.4
 
 ## Contexto
 
@@ -13,6 +13,8 @@ Visitor (HTTPS)
 Cloudflare Workers / cerberus
     |-- GET /             => landing page estática
     |-- GET /labs/01      => experimento 001 (documentação)
+    |-- GET /labs/02      => experimento 002 (camadas, Clean e Hexagonal)
+    |-- GET /labs/03      => experimento 003 (fluxo visual de falhas)
     |-- GET /api/modules  => dados estáticos JSON
     |-- GET /api/status   => status declarativo do portal
     '-- GET /api/projects => compatibilidade com versão anterior
@@ -40,3 +42,7 @@ Cloudflare Workers / cerberus
 ## Não objetivos
 
 API de orquestração de outros serviços; gateway de identidade; sistema universal de monitoramento; scanner de vulnerabilidades; redirecionador aberto; integrações entre domínios via scripts.
+
+## Bancada 03 (somente ambiente local de teste)
+
+Dois arquivos SQLite: `producer.sqlite` registra reservas e outbox de modo transacional; `consumer.sqlite` guarda notificações com chave única. Testes Python instanciam um servidor HTTP bound a 127.0.0.1 com porta efêmera e injetam falhas antes do envio e depois do commit remoto. O Worker de produção **não** possui conexão, binding, proxy ou chamadas a esses bancos; fornece apenas documentação estática de leitura. Não existe isolamento em processos diferentes nem garantia universal exactly-once.
