@@ -200,33 +200,43 @@ test('all GitHub API requests may fail while the Atom alternative remains live',
 });
 
 
-test('public roadmap covers eight proposed consecutive weeks with review gates',async()=>{
-  const {readFile} = await import('node:fs/promises');
-  const html = await readFile(new URL('../index.html',import.meta.url),'utf8');
+test('flagship roadmap presents only five projects with proposed windows',async()=>{
+  const {readFile}=await import('node:fs/promises');
+  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
+  const css=await readFile(new URL('../styles.css',import.meta.url),'utf8');
   assert.match(html,/id="cronograma"/);
   assert.match(html,/href="#cronograma"/);
   assert.match(html,/janelas de trabalho propostas/);
-  assert.match(html,/Gate de publicação/);
-  const cards=[...html.matchAll(/<li class="roadmap-card" data-roadmap-id="(WK\d{2})">([\s\S]*?)<\/li>/g)];
-  assert.equal(cards.length,8);
-  const dates=[];
+  assert.match(html,/data-project="ruby"/);
+  assert.match(css,/project-roadmap-grid/);
+  assert.match(css,/@media\(max-width:650px\)/);
+  const cards=[...html.matchAll(/<li class="project-milestone project-milestone--([a-z]+)" data-project="([a-z]+)">([\s\S]*?)<\/li>/g)];
+  const expected=[
+    ['ruby','2026-11-09','2026-11-15'],
+    ['argus','2026-11-16','2026-11-22'],
+    ['cerberus','2026-11-23','2026-11-29'],
+    ['ouroboros','2026-11-30','2026-12-06'],
+    ['wolfpack','2026-12-07','2026-12-13']
+  ];
+  assert.equal(cards.length,expected.length);
+  const allUrls=new Set();
   for(let i=0;i<cards.length;i++){
-    assert.equal(cards[i][1],'WK'+String(i+1).padStart(2,'0'));
-    const body=cards[i][2];
-    assert.match(body,/class="roadmap-status">PLANEJADO</);
-    assert.match(body,/Critério:/);
-    assert.match(body,/rel="noopener noreferrer"/);
-    const times=[...body.matchAll(/<time datetime="(\d{4}-\d{2}-\d{2})">/g)].map(m=>m[1]);
-    assert.equal(times.length,2);
-    const start=Date.parse(times[0]+'T00:00:00Z'),end=Date.parse(times[1]+'T00:00:00Z');
-    assert.equal((end-start)/86400000,6,'each sprint is one seven-day week');
-    if(i>0)assert.equal(start,dates[dates.length-1][1]+86400000,'weekly roadmap has no gaps');
-    dates.push([start,end]);
+    const [,classSlug,slug,body]=cards[i];
+    assert.equal(classSlug,expected[i][0]);
+    assert.equal(slug,expected[i][0]);
+    assert.match(body,/class="project-status">PLANEJADO/);
+    assert.match(body,/MARCO DE VALIDAÇÃO/);
+    assert.match(body,/target="_blank" rel="noopener noreferrer"/);
+    const dates=[...body.matchAll(/<time datetime="(\d{4}-\d{2}-\d{2})">/g)].map(m=>m[1]);
+    assert.deepEqual(dates,expected[i].slice(1));
+    assert.equal((Date.parse(dates[1])-Date.parse(dates[0]))/86400000,6);
+    const href=body.match(/<a class="project-roadmap-link" href="([^"]+)"/)?.[1];
+    assert.ok(href&&(/^(https:\/\/github\.com\/|\/jogos$)/.test(href)),'trusted project destination');
+    allUrls.add(href);
   }
-  assert.equal(new Date(dates[0][0]).toISOString().slice(0,10),'2026-11-02');
-  assert.equal(new Date(dates[7][1]).toISOString().slice(0,10),'2026-12-27');
-  for(const key of ['PROTOCOL','Ruby','HEARTAI','CERBERUS','OUROBOROS','WOLFPACK','WORKSHOP NEWS']){
-    if(key==='PROTOCOL')continue;
-    assert.ok(html.toUpperCase().includes(key.toUpperCase()),key+' is covered by roadmap');
-  }
+  assert.equal(allUrls.size,5);
+  assert.doesNotMatch(html,/data-roadmap-id="WK0[1-8]"/);
+  assert.doesNotMatch(html,/class="roadmap-card"/);
+  assert.doesNotMatch(html,/<h3>Revisão de ciclo e próximos passos<\/h3>/);
+  assert.doesNotMatch(html,/<h3>Segurança antes de publicar<\/h3>/);
 });
