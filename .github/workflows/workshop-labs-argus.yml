@@ -23,4 +23,4 @@ jobs:
         with:
           node-version: "22"
       - name: Static Worker test suite (GET/HEAD and CSP)
-        run: node --test web/workshop-labs/tests/smoke.test.mjs
+        run: node --test web/workshop-labs/tests/*.test.mjs
