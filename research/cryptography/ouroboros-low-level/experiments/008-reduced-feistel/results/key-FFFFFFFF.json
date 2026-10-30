@@ -16,16 +16,16 @@
   "total_pairs": 524288,
   "sac": {
     "mean_flip_probability": 0.5001716613769531,
-    "mean_abs_deviation_from_half": 0.0022912025451660156,
+    "mean_abs_deviation_from_half": 0.002291202545166016,
     "max_abs_deviation_from_half": 0.0074462890625,
-    "min_flip_probability": 0.4925537109375,
+    "min_flip_probability": 0.4937744140625,
     "max_flip_probability": 0.5074462890625,
     "mean_changed_bits_per_pair": 8.00274658203125
   },
   "single_bit_differentials": {
     "max_count": 16,
     "max_probability": 0.00048828125,
-    "distinct_output_deltas_total": 412560
+    "distinct_output_deltas_total": 412587
   },
   "scope": "Exhaustive one-bit input differences only; not production cryptography."
 }
