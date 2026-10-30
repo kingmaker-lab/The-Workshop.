@@ -128,3 +128,13 @@ O diretório público continua limitado a HTML, CSS, JS, SVG e o Worker. Antes d
 - Oito janelas semanais de 02/11 a 27/12, com estados iniciais PLANEJADO e critérios de conclusão por projeto.
 - O cronograma é HTML estático no homepage para permanecer legível mesmo que o GitHub e outras fontes estejam indisponíveis.
 - Atualizações dos estados exigem revisão humana e evidência de conclusão. O portal não considera planejamento um lançamento.
+
+
+### Release do cronograma público — 30/10/2026
+
+- **Cloudflare Pages produção:** https://workshop-news.pages.dev/#cronograma
+- **Deploy ID:** `823b8f62-429c-480f-9b8b-07f7c6644dec` — status `success`.
+- **Código publicado:** `91775959fc526dba4fec57a27c1d61eda8740aa0`, branch `feat/workshop-news-portal-20261030`.
+- **Conteúdo:** oito semanas planejadas entre 02/11 e 27/12/2026, com marcos, critérios e links para os projetos.
+- **Verificação em produção:** homepage contém link `#cronograma`, oito cards, datas e conteúdo esperado; as suítes GitHub Actions Workshop News e ARES finalizaram com sucesso.
+- **Observação:** seção HTML estática, disponível sem feed de notícias; as datas são propostas de trabalho, não compromisso de entrega. Alterações da branch só chegam ao Cloudflare em novo Direct Upload.
