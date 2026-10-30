@@ -69,3 +69,10 @@ O diretório `dist` contém **apenas cinco arquivos necessários à publicação
 - **Estado das fontes:** 3 de 4 disponíveis na verificação (Hacker News, Cloudflare Blog e GitHub commits); GitHub Blog indisponível naquele ciclo. O portal apresenta `FONTES PARCIAIS` corretamente.
 - **Limites:** respostas HTTP/cabeçalhos, análise de acessibilidade visual, CSP em navegador e todos os casos 404/405 ainda exigem verificação dedicada em produção. Não há sincronização automática GitHub → Cloudflare; cada nova versão exige deploy manual.
 
+
+## Atalho: Jogos Interativos
+
+- No portal, o menu **Jogos Interativos** e seu card no ecossistema abrem `/jogos`.
+- `GET /jogos`, `GET /jogos/` e `HEAD` devolvem `302 Location: https://wolfpack.wolfpackworkshop.workers.dev/`.
+- O destino é fixo; parâmetros de query não são propagados e outros métodos continuam 405.
+- Esse atalho não incorpora os jogos ao portal nem cria proxy, iframe ou nova API.
