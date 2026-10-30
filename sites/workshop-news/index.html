@@ -69,88 +69,59 @@
         <p class="section-intro">Acompanhamos o trabalho em andamento nas branches, sem confundir experimento com produto finalizado. Fontes diretamente no GitHub.</p>
         <div id="highlights-list" class="highlights-grid" aria-live="polite"><div class="skeleton" aria-hidden="true"></div><div class="skeleton" aria-hidden="true"></div></div>
       </section>
-      <section id="cronograma" class="roadmap-section" aria-labelledby="roadmap-title">
+      <section id="cronograma" class="roadmap-section roadmap-v2" aria-labelledby="roadmap-title">
         <div class="section-heading roadmap-heading">
-          <div><span class="section-index">00.B / PLANEJAMENTO ABERTO</span><h2 id="roadmap-title">Cronograma da oficina<span class="heading-dot">.</span></h2></div>
-          <span class="section-meta">NOV · DEZ 2026 / 8 SEMANAS</span>
+          <div><span class="section-index">THE WORKSHOP / ROADMAP 2026</span><h2 id="roadmap-title">Projetos em rota<span class="heading-dot">.</span></h2></div>
+          <span class="section-meta">NOV — DEZ / 2026</span>
         </div>
-        <div class="roadmap-summary">
-          <div><span class="roadmap-eyebrow">CICLO DE DESENVOLVIMENTO / VERSÃO 1.0</span>
-            <p>Oito semanas para testar, documentar e compartilhar projetos do The Workshop. As datas indicam <strong>janelas de trabalho propostas</strong>, não garantias de lançamento. O andamento será atualizado mediante revisão do projeto.</p>
-          </div>
-          <span class="roadmap-window">02 NOV <span>→</span> 27 DEZ <small>2026</small></span>
+        <div class="roadmap-v2-intro">
+          <div><span class="roadmap-eyebrow">PLANO DE EVOLUÇÃO · 05 PROJETOS PRINCIPAIS</span>
+            <p>Uma visão direta das próximas etapas dos nossos laboratórios. Datas são <strong>janelas de trabalho propostas</strong>, não anúncios de lançamento.</p></div>
+          <div class="roadmap-v2-range"><span>09 NOV</span><span class="roadmap-v2-range-line" aria-hidden="true"></span><span>13 DEZ</span><small>2026</small></div>
         </div>
-        <ol class="roadmap-grid" aria-label="Oito sprints de novembro a dezembro de 2026">
-          <li class="roadmap-card" data-roadmap-id="WK01">
-            <div class="roadmap-card-top"><span class="roadmap-order">01 / SEGURANÇA</span><span class="roadmap-status">PLANEJADO</span></div>
-            <p class="roadmap-date"><time datetime="2026-11-02">02 NOV</time> <span>—</span> <time datetime="2026-11-08">08 NOV</time></p>
-            <h3>Segurança antes de publicar</h3>
-            <p class="roadmap-goal">Consolidar as validações dos sites, Workers e CI, revisar o PR de hardening e executar verificações HTTP em produção.</p>
-            <p class="roadmap-accept"><strong>Critério:</strong> testes verdes, checklist de CSP/rotas e riscos registrados antes de qualquer merge.</p>
-            <a href="https://github.com/kingmaker-lab/The-Workshop./pull/10" target="_blank" rel="noopener noreferrer">VER REVISÃO DE SEGURANÇA ↗</a>
+        <ol class="project-roadmap-grid" aria-label="Cinco projetos principais e seus próximos marcos">
+          <li class="project-milestone project-milestone--ruby" data-project="ruby">
+            <div class="project-milestone-top"><span class="project-milestone-number">01</span><span class="project-milestone-type">RUBY / MALWARE ANALYSIS</span><span class="project-status">PLANEJADO</span></div>
+            <div class="project-time"><time datetime="2026-11-09">09 NOV</time><span aria-hidden="true">/</span><time datetime="2026-11-15">15 NOV</time></div>
+            <h3>Protocolo Ruby</h3>
+            <p class="project-description">Pipeline de análise e APIs Ruby em ambiente controlado, começando pelo staging somente leitura no Render.</p>
+            <div class="project-deliverable"><span class="project-deliverable-label">MARCO DE VALIDAÇÃO</span><p>Health, capabilities e demo verificados; nenhum upload ou processamento de amostras habilitado.</p></div>
+            <a class="project-roadmap-link" href="https://github.com/kingmaker-lab/The-Workshop./tree/feature/protocolo-ruby-v0.1/protocolo-ruby/render" target="_blank" rel="noopener noreferrer">EXPLORAR PROJETO <span aria-hidden="true">↗</span></a>
           </li>
-          <li class="roadmap-card" data-roadmap-id="WK02">
-            <div class="roadmap-card-top"><span class="roadmap-order">02 / PROTOCOLO RUBY</span><span class="roadmap-status">PLANEJADO</span></div>
-            <p class="roadmap-date"><time datetime="2026-11-09">09 NOV</time> <span>—</span> <time datetime="2026-11-15">15 NOV</time></p>
-            <h3>Staging Ruby somente leitura</h3>
-            <p class="roadmap-goal">Validar o backend experimental no Render e o caminho Cloudflare ↔ staging, com respostas de demonstração inofensivas.</p>
-            <p class="roadmap-accept"><strong>Critério:</strong> health, capabilities e demo verificados; sem upload ou execução de amostras de malware.</p>
-            <a href="https://github.com/kingmaker-lab/The-Workshop./tree/feature/protocolo-ruby-v0.1/protocolo-ruby/render" target="_blank" rel="noopener noreferrer">VER CÓDIGO RUBY ↗</a>
+          <li class="project-milestone project-milestone--argus" data-project="argus">
+            <div class="project-milestone-top"><span class="project-milestone-number">02</span><span class="project-milestone-type">AI / NEURAL ENGINEERING</span><span class="project-status">PLANEJADO</span></div>
+            <div class="project-time"><time datetime="2026-11-16">16 NOV</time><span aria-hidden="true">/</span><time datetime="2026-11-22">22 NOV</time></div>
+            <h3>ARGUS / HeartAI</h3>
+            <p class="project-description">Evolução da IA local: memória conversacional, tokenizer e preparação dos experimentos neurais.</p>
+            <div class="project-deliverable"><span class="project-deliverable-label">MARCO DE VALIDAÇÃO</span><p>Testes reproduzíveis e métricas documentadas; sem alegar modelo treinado antes da validação.</p></div>
+            <a class="project-roadmap-link" href="https://github.com/kingmaker-lab/The-Workshop./tree/main/IA/Heart" target="_blank" rel="noopener noreferrer">EXPLORAR PROJETO <span aria-hidden="true">↗</span></a>
           </li>
-          <li class="roadmap-card" data-roadmap-id="WK03">
-            <div class="roadmap-card-top"><span class="roadmap-order">03 / ARGUS · HEARTAI</span><span class="roadmap-status">PLANEJADO</span></div>
-            <p class="roadmap-date"><time datetime="2026-11-16">16 NOV</time> <span>—</span> <time datetime="2026-11-22">22 NOV</time></p>
-            <h3>Experimentos locais de IA</h3>
-            <p class="roadmap-goal">Revisar testes de memória, tokenizer e runtime; documentar limites e preparar o próximo experimento neural em ambiente local.</p>
-            <p class="roadmap-accept"><strong>Critério:</strong> execução reproduzível e métricas registradas, sem anunciar um LLM treinado antes da validação.</p>
-            <a href="https://github.com/kingmaker-lab/The-Workshop./tree/main/IA/Heart" target="_blank" rel="noopener noreferrer">ABRIR HEARTAI ↗</a>
+          <li class="project-milestone project-milestone--cerberus" data-project="cerberus">
+            <div class="project-milestone-top"><span class="project-milestone-number">03</span><span class="project-milestone-type">ARCHITECTURE / DEFENSE</span><span class="project-status">PLANEJADO</span></div>
+            <div class="project-time"><time datetime="2026-11-23">23 NOV</time><span aria-hidden="true">/</span><time datetime="2026-11-29">29 NOV</time></div>
+            <h3>Cerberus</h3>
+            <p class="project-description">Arquitetura em camadas, Clean e Hexagonal: evolução dos contratos, adaptadores e casos de teste.</p>
+            <div class="project-deliverable"><span class="project-deliverable-label">MARCO DE VALIDAÇÃO</span><p>Testes de contrato para SQLite e memória, com trade-offs documentados.</p></div>
+            <a class="project-roadmap-link" href="https://github.com/kingmaker-lab/The-Workshop./tree/main/Cerberus/experiments/02-layers-clean-hexagonal" target="_blank" rel="noopener noreferrer">EXPLORAR PROJETO <span aria-hidden="true">↗</span></a>
           </li>
-          <li class="roadmap-card" data-roadmap-id="WK04">
-            <div class="roadmap-card-top"><span class="roadmap-order">04 / CERBERUS</span><span class="roadmap-status">PLANEJADO</span></div>
-            <p class="roadmap-date"><time datetime="2026-11-23">23 NOV</time> <span>—</span> <time datetime="2026-11-29">29 NOV</time></p>
-            <h3>Arquitetura verificável</h3>
-            <p class="roadmap-goal">Ampliar o experimento de arquitetura em camadas, Clean e Hexagonal com contratos de adaptadores e casos de teste.</p>
-            <p class="roadmap-accept"><strong>Critério:</strong> resultados comparáveis entre adaptadores SQLite e memória, com documentação de trade-offs.</p>
-            <a href="https://github.com/kingmaker-lab/The-Workshop./tree/main/Cerberus/experiments/02-layers-clean-hexagonal" target="_blank" rel="noopener noreferrer">ABRIR CERBERUS 02 ↗</a>
+          <li class="project-milestone project-milestone--ouroboros" data-project="ouroboros">
+            <div class="project-milestone-top"><span class="project-milestone-number">04</span><span class="project-milestone-type">CRYPTO / RESEARCH</span><span class="project-status">PLANEJADO</span></div>
+            <div class="project-time"><time datetime="2026-11-30">30 NOV</time><span aria-hidden="true">/</span><time datetime="2026-12-06">06 DEZ</time></div>
+            <h3>Ouroboros</h3>
+            <p class="project-description">Análise da função de rodada e do key schedule da cifra didática Feistel do EXP-008.</p>
+            <div class="project-deliverable"><span class="project-deliverable-label">MARCO DE VALIDAÇÃO</span><p>Resultados reproduzíveis e limitações explícitas; não se trata de criptografia para produção.</p></div>
+            <a class="project-roadmap-link" href="https://github.com/kingmaker-lab/The-Workshop./tree/exp-008-reduced-feistel/research/cryptography/ouroboros-low-level/experiments/008-reduced-feistel" target="_blank" rel="noopener noreferrer">EXPLORAR EXP-008 <span aria-hidden="true">↗</span></a>
           </li>
-          <li class="roadmap-card" data-roadmap-id="WK05">
-            <div class="roadmap-card-top"><span class="roadmap-order">05 / OUROBOROS</span><span class="roadmap-status">PLANEJADO</span></div>
-            <p class="roadmap-date"><time datetime="2026-11-30">30 NOV</time> <span>—</span> <time datetime="2026-12-06">06 DEZ</time></p>
-            <h3>Criptoanálise além da difusão</h3>
-            <p class="roadmap-goal">Aprofundar a análise da função de rodada e do key schedule do EXP-008, complementando os resultados SAC e diferenciais.</p>
-            <p class="roadmap-accept"><strong>Critério:</strong> experimentos e resultados reproduzíveis, com limites explícitos; nenhuma alegação de segurança real.</p>
-            <a href="https://github.com/kingmaker-lab/The-Workshop./tree/exp-008-reduced-feistel/research/cryptography/ouroboros-low-level/experiments/008-reduced-feistel" target="_blank" rel="noopener noreferrer">ABRIR EXP-008 ↗</a>
-          </li>
-          <li class="roadmap-card" data-roadmap-id="WK06">
-            <div class="roadmap-card-top"><span class="roadmap-order">06 / WOLFPACK OS</span><span class="roadmap-status">PLANEJADO</span></div>
-            <p class="roadmap-date"><time datetime="2026-12-07">07 DEZ</time> <span>—</span> <time datetime="2026-12-13">13 DEZ</time></p>
-            <h3>Aprender programação jogando</h3>
-            <p class="roadmap-goal">Prototipar uma nova sequência de desafios gratuitos para iniciantes, com explicações, feedback de erros e acessibilidade.</p>
-            <p class="roadmap-accept"><strong>Critério:</strong> pelo menos um fluxo demonstrável e testado no navegador; aplicativos móveis continuam sendo proposta futura.</p>
-            <a href="/jogos" target="_blank" rel="noopener noreferrer">ABRIR JOGOS INTERATIVOS ↗</a>
-          </li>
-          <li class="roadmap-card" data-roadmap-id="WK07">
-            <div class="roadmap-card-top"><span class="roadmap-order">07 / WORKSHOP NEWS</span><span class="roadmap-status">PLANEJADO</span></div>
-            <p class="roadmap-date"><time datetime="2026-12-14">14 DEZ</time> <span>—</span> <time datetime="2026-12-20">20 DEZ</time></p>
-            <h3>Transparência e documentação</h3>
-            <p class="roadmap-goal">Consolidar notícias dos experimentos, revisar a saúde das fontes do GitHub e publicar relatos técnicos curtos com links verificáveis.</p>
-            <p class="roadmap-accept"><strong>Critério:</strong> painel legível com estados reais, links válidos e registro editorial do que avançou e do que ficou pendente.</p>
-            <a href="https://github.com/kingmaker-lab/The-Workshop./pull/11" target="_blank" rel="noopener noreferrer">ACOMPANHAR O PORTAL ↗</a>
-          </li>
-          <li class="roadmap-card" data-roadmap-id="WK08">
-            <div class="roadmap-card-top"><span class="roadmap-order">08 / FECHAMENTO</span><span class="roadmap-status">PLANEJADO</span></div>
-            <p class="roadmap-date"><time datetime="2026-12-21">21 DEZ</time> <span>—</span> <time datetime="2026-12-27">27 DEZ</time></p>
-            <h3>Revisão de ciclo e próximos passos</h3>
-            <p class="roadmap-goal">Revisar o backlog, registrar decisões técnicas e definir o que merece continuidade no primeiro ciclo de 2027.</p>
-            <p class="roadmap-accept"><strong>Critério:</strong> retrospectiva publicada, pendências identificadas e próximos experimentos priorizados. Sem obrigatoriedade de release.</p>
-            <a href="https://github.com/kingmaker-lab/The-Workshop." target="_blank" rel="noopener noreferrer">ACOMPANHAR O REPOSITÓRIO ↗</a>
+          <li class="project-milestone project-milestone--wolfpack" data-project="wolfpack">
+            <div class="project-milestone-top"><span class="project-milestone-number">05</span><span class="project-milestone-type">INTERACTIVE / LEARNING</span><span class="project-status">PLANEJADO</span></div>
+            <div class="project-time"><time datetime="2026-12-07">07 DEZ</time><span aria-hidden="true">/</span><time datetime="2026-12-13">13 DEZ</time></div>
+            <h3>WolfPack OS</h3>
+            <p class="project-description">Jogos e desafios interativos de programação para iniciantes, com feedback e experiências acessíveis.</p>
+            <div class="project-deliverable"><span class="project-deliverable-label">MARCO DE VALIDAÇÃO</span><p>Um novo fluxo educacional demonstrável e testado no navegador.</p></div>
+            <a class="project-roadmap-link" href="/jogos" target="_blank" rel="noopener noreferrer">ABRIR JOGOS INTERATIVOS <span aria-hidden="true">↗</span></a>
           </li>
         </ol>
-        <div class="roadmap-footer">
-          <p><strong>Gate de publicação:</strong> código revisado → testes automatizados → revisão de segurança → verificação em produção → nota de versão.</p>
-          <p><strong>Cadência sugerida:</strong> revisão curta a cada sexta-feira. Estados só mudam após validação; este cronograma não executa tarefas nem altera o GitHub automaticamente.</p>
-          <span>ATUALIZADO EM 30 OUT 2026 · ROADMAP PROPOSTO, SUJEITO A REVISÃO</span>
-        </div>
+        <p class="project-roadmap-note">Roadmap público focado nos projetos principais · segurança, testes, documentação e revisões de publicação continuam como requisitos de todas as etapas. <span>STATUS: PLANEJAMENTO</span></p>
       </section>
       <div class="metrics" aria-label="Resumo das fontes">
         <div class="metric"><span class="metric-label">NOTÍCIAS DISPONÍVEIS</span><span class="metric-value" id="metric-news">—</span><span class="metric-sub">Manchetes de fontes públicas</span></div>
