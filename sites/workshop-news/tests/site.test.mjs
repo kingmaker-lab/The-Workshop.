@@ -212,3 +212,26 @@ test('public homepage does not expose the retired roadmap',async()=>{
   assert.doesNotMatch(html,/class="schedule-row"/);
   assert.doesNotMatch(css,/schedule-list|schedule-row|roadmap-v3/);
 });
+
+
+test('Ruby Tool entry is a fixed redirect to the live Ruby Protocol section',async()=>{
+ for(const method of ['GET','HEAD']){
+   for(const path of ['/ruby','/ruby/','/ruby?next=https://evil.invalid']){
+     const response=await handler(new Request(new URL(path,base),{method}),fakeAssets);
+     assert.equal(response.status,302,path);
+     assert.equal(response.headers.get('location'),'https://wolfpack.wolfpackworkshop.workers.dev/#jogar');
+     assert.equal(response.headers.get('cache-control'),'no-store');
+     assert.equal(response.headers.get('x-content-type-options'),'nosniff');
+     assert.equal(await response.text(),'');
+   }
+ }
+ for(const method of ['POST','OPTIONS']){
+   const response=await handler(new Request(new URL('/ruby',base),{method}),fakeAssets);
+   assert.equal(response.status,405);
+   assert.equal(response.headers.get('allow'),'GET, HEAD');
+ }
+ const {readFile}=await import('node:fs/promises');
+ const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
+ assert.equal((html.match(/href="\/ruby"/g)||[]).length,2);
+ assert.match(html,/Ruby Tool/);
+});
