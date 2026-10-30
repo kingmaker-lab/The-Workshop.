@@ -1,0 +1,38 @@
+name: Ouroboros EXP-009
+
+on:
+  push:
+    branches: [exp-009-round-function-analysis]
+    paths:
+      - 'research/cryptography/ouroboros-low-level/experiments/008-reduced-feistel/**'
+      - 'research/cryptography/ouroboros-low-level/experiments/009-round-function-analysis/**'
+      - '.github/workflows/ouroboros-exp009.yml'
+  pull_request:
+    paths:
+      - 'research/cryptography/ouroboros-low-level/experiments/008-reduced-feistel/**'
+      - 'research/cryptography/ouroboros-low-level/experiments/009-round-function-analysis/**'
+      - '.github/workflows/ouroboros-exp009.yml'
+  workflow_dispatch:
+
+jobs:
+  exhaustive-component-analysis:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: research/cryptography/ouroboros-low-level/experiments/009-round-function-analysis
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile experiment sources
+        run: python -m py_compile round_analysis.py test_round_analysis.py
+      - name: Run unit tests
+        run: python -m unittest -v
+      - name: Generate complete DDT and LAT
+        run: python round_analysis.py --output results
+      - name: Upload exhaustive tables
+        uses: actions/upload-artifact@v4
+        with:
+          name: ouroboros-exp009-ddt-lat
+          path: research/cryptography/ouroboros-low-level/experiments/009-round-function-analysis/results/
