@@ -26,3 +26,21 @@ test('GET/HEAD, 404 and 405 are deterministic',async()=>{
  const absent=await fetchPage('/.env');assert.equal(absent.status,404);assert.ok((await absent.text()).includes('Not Found'));
  const post=await fetchPage('/','POST');assert.equal(post.status,405);assert.equal(post.headers.get('allow'),'GET, HEAD');
 });
+
+test('ARGUS route: documentation only, safe headers and no live telemetry',async()=>{
+ const home=await (await fetchPage('/')).text();
+ assert.ok(home.includes('href="/argus/"'));
+ const response=await fetchPage('/argus/');
+ assert.equal(response.status,200);
+ assert.equal(response.headers.get('x-frame-options'),'DENY');
+ const html=await response.text();
+ assert.ok(html.includes('ARGUS'));
+ assert.ok(html.includes('Welford'));
+ assert.ok(html.includes('Vitrine estática'));
+ assert.ok(!/<script\\b/i.test(html));
+ assert.ok(!/<iframe\\b/i.test(html));
+ assert.equal((await fetchPage('/argus/index.html')).status,200);
+ const head=await fetchPage('/argus/','HEAD');
+ assert.equal(head.status,200);
+ assert.equal(await head.text(),'');
+});
