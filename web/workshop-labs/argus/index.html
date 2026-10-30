@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080e13">
+  <meta name="description" content="ARGUS, laboratório defensivo do The Workshop: threat hunting, correlação temporal, regras YAML, baseline estatística, exemplos reproduzíveis e segurança local-first.">
+  <link rel="canonical" href="https://workshop-labs.pages.dev/argus/">
+  <title>ARGUS Protocol | Threat Hunting &amp; Detection Engineering</title>
+  <style>
+    :root{color-scheme:dark;--bg:#080e13;--panel:#111d23;--panel2:#13252b;--line:#2a4249;--text:#edf6f4;--sub:#adbfbe;--mint:#8ee4c5;--lime:#cae99e;--cyan:#7ccadd;--amber:#f1c18a;font:15px/1.7 system-ui,-apple-system,"Segoe UI",sans-serif}
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}body{margin:0;color:var(--text);background:radial-gradient(ellipse at 78% 1%,#193630 0,transparent 34%),var(--bg)}a{color:inherit;text-decoration:none}a:focus-visible,summary:focus-visible{outline:3px solid var(--mint);outline-offset:4px}a:hover{color:var(--mint)}button,input{font:inherit}
+    .skip{position:absolute;top:-90px;left:18px;padding:12px;background:var(--mint);color:#06120d;z-index:5}.skip:focus{top:10px}
+    .wrap{max-width:1180px;margin:auto;padding:0 26px}.mono,.eyebrow,.tag,.status,.nav,.index,.overline{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.eyebrow,.index{font-size:11px;letter-spacing:.16em;font-weight:700;color:var(--mint)}.muted{color:var(--sub)}.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+    header{position:sticky;top:0;z-index:3;background:#080e13ed;border-bottom:1px solid var(--line);backdrop-filter:blur(14px)}header .wrap{min-height:74px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{display:flex;align-items:center;gap:12px;font-weight:850;letter-spacing:.06em;font-size:14px}.brandmark{display:grid;place-items:center;width:35px;height:35px;border:1px solid #538473;background:#11251f;border-radius:9px;color:var(--mint);font-size:24px}.brand small{display:block;font:700 9px ui-monospace,monospace;color:var(--sub);letter-spacing:.13em}.nav{display:flex;flex-wrap:wrap;gap:6px;font-size:11px;font-weight:700}.nav a{padding:10px 11px;border-radius:5px;color:var(--sub)}.nav a:hover{background:#17262a;color:var(--text)}
+    .hero{padding:75px 0 64px;border-bottom:1px solid var(--line)}.hero-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(260px,.85fr);gap:45px;align-items:center}.hero h1{font-size:clamp(74px,12vw,148px);letter-spacing:-.09em;line-height:.91;margin:18px 0 28px}.hero h1 span{color:var(--mint)}.lead{font-size:clamp(17px,2.1vw,20px);line-height:1.7;max-width:730px;color:#c4d6d3;margin:0}.hero .smallprint{font-size:12px;color:var(--sub);max-width:700px}.pills{display:flex;gap:8px;flex-wrap:wrap;margin:26px 0 30px}.tag{border:1px solid #3d615c;background:#0f211f;color:var(--mint);padding:5px 10px;font-size:10px;letter-spacing:.07em}.cta-row{display:flex;gap:10px;flex-wrap:wrap;margin:27px 0}.button{display:inline-flex;justify-content:center;align-items:center;padding:12px 19px;border:1px solid var(--mint);font:800 12px ui-monospace,monospace;letter-spacing:.04em;color:var(--mint);min-height:44px}.button.primary{background:var(--mint);color:#071510}.button:hover{color:#081411;background:var(--lime);border-color:var(--lime)}.button.primary:hover{color:#081411}
+    .radar{position:relative;display:grid;place-items:center;aspect-ratio:1;border:1px solid #31554e;border-radius:18px;background:repeating-linear-gradient(0deg,transparent 0 36px,#17463a55 37px),repeating-linear-gradient(90deg,transparent 0 36px,#17463a55 37px),radial-gradient(circle,#17362e 0,#0d1c20 63%,#0a1318 100%);overflow:hidden}.radar:before,.radar:after{content:"";position:absolute;border:1px solid #3b7665;border-radius:50%;width:73%;aspect-ratio:1}.radar:after{width:46%;border-style:dashed;border-color:#65ae92}.radar-eye{display:grid;place-items:center;border:3px solid var(--mint);width:95px;height:95px;transform:rotate(45deg);border-radius:65% 5%;box-shadow:0 0 55px #45c59e1f;background:#0c2220;z-index:1}.radar-eye span{display:block;width:35px;height:35px;border-radius:50%;border:8px solid #224c43;background:var(--mint);box-shadow:0 0 25px #65eac2}.radar-code{position:absolute;top:17px;left:18px;font:700 10px ui-monospace,monospace;color:var(--mint);letter-spacing:.12em}.radar-bottom{position:absolute;bottom:17px;left:18px;right:18px;display:flex;justify-content:space-between;font:700 10px ui-monospace,monospace;color:#b7d1c8;gap:10px}.node{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 6px #cae99e22}.node.a{left:25%;top:32%}.node.b{right:22%;bottom:26%}.node.c{right:18%;top:27%;background:#7ccadd}
+    .facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border-bottom:1px solid var(--line)}.fact{background:#0c171d;padding:23px 18px}.fact strong{display:block;font-size:26px;line-height:1.2;letter-spacing:-.035em;color:var(--mint)}.fact span{display:block;font:700 10px/1.7 ui-monospace,monospace;color:var(--sub);letter-spacing:.04em;margin-top:5px}
+    section.block{padding:75px 0;border-bottom:1px solid var(--line)}.section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:31px}.section-head h2{font-size:clamp(28px,4.4vw,46px);letter-spacing:-.045em;line-height:1.12;margin:10px 0 0;max-width:770px}.section-head p{color:var(--sub);max-width:355px;font-size:13px;margin:0}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.card{border:1px solid var(--line);background:linear-gradient(150deg,#16282d,#0f1a20);padding:25px;border-radius:12px;min-width:0}.card h3{font-size:19px;letter-spacing:-.025em;margin:15px 0 6px}.card p{color:var(--sub);font-size:13px;margin:0}.card .index{letter-spacing:.07em}.card .hint{display:inline-block;margin-top:17px;padding:5px 9px;border:1px solid #3f5d57;color:var(--mint);font:700 10px ui-monospace,monospace}.card .hint.amber{border-color:#61523d;color:var(--amber)}
+    .pipeline{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.stage{padding:20px 15px;border:1px solid #36514e;background:var(--panel);border-radius:10px;position:relative;min-width:0}.stage:not(:last-child):after{content:"→";position:absolute;right:-13px;top:43%;color:var(--mint);font-size:17px;z-index:1}.stage strong{display:block;font-size:15px;margin:12px 0 6px}.stage p{font-size:12px;line-height:1.6;color:var(--sub);margin:0}.stage .index{font-size:10px}.twocol{display:grid;grid-template-columns:1fr 1fr;gap:17px}.pane{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:27px;min-width:0}.pane h3{margin:0 0 13px;font-size:20px}.pane p{color:var(--sub);font-size:13px}.notice{border-left:3px solid var(--mint);background:#102620;padding:18px 22px;color:#cadad4;margin-top:21px;font-size:13px}.notice.warn{border-color:var(--amber);background:#282119}.notice strong{color:var(--text)}
+    .evidence{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:start}.trace{padding:22px;border:1px solid #33554d;background:#0a1919;border-radius:12px}.trace-row{display:grid;grid-template-columns:78px 1fr;gap:16px;position:relative;padding:15px 0;border-bottom:1px solid #2a4840}.trace-row:last-child{border-bottom:0}.trace-row time{color:var(--mint);font:700 12px ui-monospace,monospace}.trace-row strong{font-size:14px}.trace-row p{color:var(--sub);font-size:12px;margin:4px 0 0}.trace-row .tone{color:var(--amber)}.summary{padding:24px;background:var(--panel2);border:1px solid #3e6259;border-radius:12px}.summary strong{font-size:54px;line-height:1;color:var(--mint);display:block}.summary small{font:700 11px ui-monospace,monospace;color:var(--sub)}.summary p{font-size:13px;color:var(--sub)}.summary .rule{border-top:1px solid var(--line);padding-top:17px;margin-top:17px}
+    pre{margin:14px 0;overflow:auto;border:1px solid #2d5049;background:#071517;border-radius:8px;padding:18px;color:#c0f6df;font:12px/1.85 ui-monospace,Consolas,monospace;tab-size:2}code{font-family:ui-monospace,Consolas,monospace;color:var(--mint);font-size:.92em}pre code{color:inherit;white-space:pre}kbd{font-family:ui-monospace,monospace}.code-caption{font:700 10px ui-monospace,monospace;letter-spacing:.14em;color:var(--mint)}.accordions{display:grid;gap:10px}details{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:0 20px}summary{cursor:pointer;padding:17px 0;font-size:14px;font-weight:700;list-style:revert}details p{font-size:13px;color:var(--sub);margin:0 0 17px}details pre{margin-bottom:20px}details[open]{border-color:#46766a}
+    .roadmap{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.future{padding:23px;border:1px dashed #3d5756;border-radius:10px;min-height:170px}.future h3{margin:12px 0;font-size:17px}.future p{margin:0;font-size:12px;color:var(--sub)}
+    .last{padding:62px 0 75px}.last-cta{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:32px;border:1px solid #457569;background:radial-gradient(ellipse at 100% 0,#225b4b 0,transparent 70%),#132622;border-radius:14px}.last-cta h2{font-size:31px;margin:8px 0 5px;letter-spacing:-.04em}.last-cta p{margin:0;color:var(--sub);font-size:13px}.last-cta .cta-row{margin:0}.foot{border-top:1px solid var(--line);font:700 11px ui-monospace,monospace;color:var(--sub);letter-spacing:.07em}.foot .wrap{padding-top:27px;padding-bottom:35px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+    @media(max-width:1000px){.nav{gap:0}.nav a{padding:9px 7px}.radar{min-height:260px}.pipeline{grid-template-columns:repeat(3,1fr)}.stage:after{display:none}.roadmap{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:780px){header .wrap{align-items:flex-start;flex-direction:column;gap:8px;padding-top:13px;padding-bottom:13px}.hero-layout,.evidence,.twocol{grid-template-columns:1fr}.hero{padding:52px 0}.hero h1{font-size:clamp(70px,19vw,125px)}.radar{max-width:460px;width:100%;margin:10px auto 0}.facts{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:repeat(2,1fr)}.section-head{display:block}.section-head p{margin-top:13px}.last-cta{align-items:flex-start;flex-direction:column}.pipeline{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:530px){.wrap{padding:0 19px}.nav{max-width:100%;overflow:auto;flex-wrap:nowrap}.nav a{white-space:nowrap}.grid,.pipeline,.roadmap{grid-template-columns:1fr}.fact strong{font-size:23px}.hero .lead{font-size:16px}section.block{padding:53px 0}.card{padding:21px}.last-cta{padding:22px}.trace-row{grid-template-columns:68px 1fr;gap:10px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  </style>
+</head>
+<body>
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+<header><div class="wrap">
+  <a class="brand" href="/" aria-label="Workshop Labs, voltar ao catálogo"><span class="brandmark" aria-hidden="true">◉</span><span>ARGUS <small>THE WORKSHOP / DEFENSIVE RESEARCH</small></span></a>
+  <nav class="nav" aria-label="Navegação do ARGUS">
+    <a href="#visao">VISÃO</a><a href="#arquitetura">ARQUITETURA</a><a href="#deteccoes">DETECÇÕES</a><a href="#evidencia">EVIDÊNCIA</a><a href="#telemetria">TELEMETRIA</a><a href="#executar">EXECUTAR</a><a href="#seguranca">SEGURANÇA</a><a href="#roadmap">ROADMAP</a>
+  </nav>
+</div></header>
+<main id="conteudo">
+  <section class="hero" id="visao"><div class="wrap hero-layout">
+    <div>
+      <div class="eyebrow">THE WORKSHOP / PROTOCOLO ARGUS / DETECTION ENGINEERING</div>
+      <h1>ARGUS<span>.</span></h1>
+      <p class="lead">Um observador de eventos, não um oráculo. O ARGUS transforma logs em sinais investigáveis por meio de <strong>regras transparentes, correlação temporal e análise estatística experimental</strong>.</p>
+      <div class="pills"><span class="tag">PYTHON / LOCAL-FIRST</span><span class="tag">THREAT HUNTING</span><span class="tag">v0.2 / LAB</span><span class="tag">OPEN SOURCE</span></div>
+      <div class="cta-row"><a class="button primary" href="#executar">COMEÇAR PELO LABORATÓRIO ↓</a><a class="button" href="https://github.com/kingmaker-lab/The-Workshop./tree/main/argus" rel="noopener noreferrer">CÓDIGO NO GITHUB ↗</a></div>
+      <p class="smallprint">Vitrine estática: esta é uma página educativa. Nenhum log real ou evento do seu computador é coletado aqui; o motor Python funciona separadamente na sua máquina.</p>
+    </div>
+    <div class="radar" aria-label="Representação gráfica abstrata de observação de eventos" role="img">
+      <span class="radar-code">OBSERVABILITY // LOCAL</span><span class="node a"></span><span class="node b"></span><span class="node c"></span>
+      <span class="radar-eye" aria-hidden="true"><span></span></span>
+      <div class="radar-bottom"><span>DETECT → CORRELATE</span><span>ANALYST IN CONTROL</span></div>
+    </div>
+  </div></section>
+  <div class="facts" aria-label="Características principais do laboratório"><div class="fact"><strong>03</strong><span>FORMATOS DE ENTRADA</span></div><div class="fact"><strong>05</strong><span>TIPOS DE SINAIS</span></div><div class="fact"><strong>SQLite</strong><span>ARMAZENAMENTO LOCAL</span></div><div class="fact"><strong>OFF</strong><span>ANOMALIAS POR PADRÃO</span></div></div>
+  <section class="block" id="arquitetura"><div class="wrap">
+    <div class="section-head"><div><div class="eyebrow">01 / ARQUITETURA</div><h2>Do registro isolado ao contexto.</h2></div><p>Componentes pequenos, comportamento verificável e uma cadeia de evidências que pode ser estudada e reproduzida.</p></div>
+    <div class="pipeline" aria-label="Pipeline de análise">
+      <div class="stage"><span class="index">01 / INGEST</span><strong>Coleta</strong><p>Arquivos JSONL, syslog e registros Zeek conn.log em JSON.</p></div>
+      <div class="stage"><span class="index">02 / NORMALIZE</span><strong>Normalização</strong><p>Eventos compatíveis para data, origem, IP, tipo e atributos.</p></div>
+      <div class="stage"><span class="index">03 / DETECT</span><strong>Detecção</strong><p>Regras YAML, comportamento e baseline opcional.</p></div>
+      <div class="stage"><span class="index">04 / CORRELATE</span><strong>Correlação</strong><p>Janela temporal, fonte e score agregado por IP.</p></div>
+      <div class="stage"><span class="index">05 / INVESTIGATE</span><strong>Investigação</strong><p>Alertas em SQLite, timeline e API somente leitura.</p></div>
+    </div>
+    <div class="notice"><strong>Princípio do projeto:</strong> alertas são hipóteses para investigação. O ARGUS não bloqueia conexões, não executa respostas automáticas e não determina culpa ou comprometimento por conta própria.</div>
+  </div></section>
+  <section class="block" id="deteccoes"><div class="wrap">
+    <div class="section-head"><div><div class="eyebrow">02 / CAPACIDADES</div><h2>O que o ARGUS observa.</h2></div><p>Os limiares apresentados são os padrões da configuração atual, não limites universais de segurança.</p></div>
+    <div class="grid">
+      <article class="card"><span class="index">DETECÇÃO / 001</span><h3>Tentativas repetidas de login</h3><p>Uma sequência de <strong>15 falhas em 30 segundos</strong> para o mesmo IP pode gerar detecção de possível força bruta SSH.</p><span class="hint">55 PONTOS / HIGH</span></article>
+      <article class="card"><span class="index">DETECÇÃO / 002</span><h3>Sucesso após a sequência</h3><p>Um login bem-sucedido após o limiar de falhas acrescenta contexto à investigação, sem concluir que houve invasão.</p><span class="hint">+35 PONTOS / CRITICAL SIGNAL</span></article>
+      <article class="card"><span class="index">DETECÇÃO / 003</span><h3>Atividade entre fontes</h3><p>O mesmo IP observado em outra fonte durante a janela de correlação contribui para um alerta contextual.</p><span class="hint">+10 PONTOS / LOW</span></article>
+      <article class="card"><span class="index">DETECÇÃO / 004</span><h3>Regras declarativas YAML</h3><p>Condições explícitas, como autenticação bem-sucedida do usuário <code>root</code>, tornam a decisão auditável.</p><span class="hint">CONFIGURÁVEL / ROOT: +30</span></article>
+      <article class="card"><span class="index">DETECÇÃO / 005</span><h3>Anomalias de tráfego</h3><p>Baseline Welford por fonte e métrica para bytes e duração de conexões; exige amostras de aquecimento.</p><span class="hint amber">EXPERIMENTAL / OPT-IN / +25</span></article>
+      <article class="card"><span class="index">ANÁLISE / 006</span><h3>Risk Score acumulado</h3><p>As detecções contribuem para um score de <strong>0 a 100</strong>, limitado e acumulado por IP em janela padrão de 300 segundos.</p><span class="hint">INTERPRETAÇÃO HUMANA</span></article>
+    </div>
+  </div></section>
+  <section class="block" id="evidencia"><div class="wrap">
+    <div class="section-head"><div><div class="eyebrow">03 / CASO REPRODUZÍVEL</div><h2>Quando um evento ganha contexto.</h2></div><p>Exemplo didático incluído no repositório, usando dados sintéticos e resultados obtidos no teste de integração.</p></div>
+    <div class="evidence">
+      <div class="trace" aria-label="Linha do tempo do cenário de autenticação">
+        <div class="trace-row"><time>13:36:00</time><div><strong>Primeira falha</strong><p>O evento isolado é armazenado, mas ainda não dispara a regra de força bruta.</p></div></div>
+        <div class="trace-row"><time>13:36:14</time><div><strong class="tone">Limiar atingido</strong><p>15 falhas do IP de exemplo em 15 segundos. Detecção <code>ssh_brute_force</code>.</p></div></div>
+        <div class="trace-row"><time>13:36:15</time><div><strong>Autenticação bem-sucedida</strong><p>O motor registra sucesso após falhas; a regra de login privilegiado também pode coincidir.</p></div></div>
+        <div class="trace-row"><time>13:36:16</time><div><strong>Nova fonte de telemetria</strong><p>Um registro de rede do mesmo IP acrescenta correlação entre fontes.</p></div></div>
+      </div>
+      <aside class="summary" aria-label="Resultado do cenário sintético"><small>AMOSTRA LOCAL / NÃO É TELEMETRIA AO VIVO</small><strong>17</strong><p>eventos analisados no arquivo sintético <code>ssh_bruteforce.jsonl</code>.</p><div class="rule"><strong>03</strong><p>alertas produzidos na execução de referência. Os resultados dependem dos dados, das regras e da configuração.</p></div><a class="button" href="https://github.com/kingmaker-lab/The-Workshop./blob/main/argus/samples/ssh_bruteforce.jsonl" rel="noopener noreferrer">INSPECIONAR A AMOSTRA ↗</a></aside>
+    </div>
+  </div></section>
+  <section class="block" id="telemetria"><div class="wrap">
+    <div class="section-head"><div><div class="eyebrow">04 / FONTES &amp; ESTRUTURA</div><h2>Conheça a entrada. Entenda a saída.</h2></div><p>Formatos públicos e exemplos de configuração, sem expor dados de produção.</p></div>
+    <div class="twocol">
+      <div class="pane"><div class="code-caption">JSONL / AUTENTICAÇÃO / EXEMPLO</div><pre><code>{
+  "timestamp": "2026-10-02T13:36:14Z",
+  "source": "linux",
+  "event": "authentication",
+  "src_ip": "192.168.1.50",
+  "user": "root",
+  "result": "failed"
+}</code></pre><p>Os registros são lidos localmente. Não envie arquivos com credenciais, dados pessoais ou endereços internos para ferramentas públicas.</p></div>
+      <div class="pane"><div class="code-caption">CONFIG / BASELINE EXPERIMENTAL</div><pre><code>anomaly:
+  enabled: false
+  metrics: [orig_bytes, resp_bytes]
+  minimum_samples: 20
+  z_threshold: 4.0</code></pre><p>Detecção estatística desativada por padrão; o limiar compara desvios da baseline, não a probabilidade de um ataque. A baseline é reiniciada a cada execução.</p></div>
+    </div>
+    <div class="accordions" style="margin-top:16px">
+      <details><summary>Que formatos de log são aceitos?</summary><p><strong>JSONL</strong> com eventos normalizáveis, <strong>syslog</strong> para eventos de autenticação e <strong>Zeek conn.log em JSON</strong> via <code>--format network</code>. A opção <code>auto</code> reconhece arquivos .log/.syslog como syslog e os outros como JSONL.</p></details>
+      <details><summary>Como as regras YAML funcionam?</summary><p>As condições são comparações explícitas de campos do evento, acompanhadas de nome, severidade e pontuação. O exemplo padrão observa autenticação bem-sucedida do usuário root.</p><pre><code>rules:
+  - name: privileged_successful_authentication
+    event: authentication
+    conditions:
+      user: root
+      result: success
+    severity: high
+    score: 30</code></pre></details>
+      <details><summary>O que a API HTTP disponibiliza?</summary><p>Somente leitura, vinculada a <code>127.0.0.1:8765</code> por padrão: <code>GET /health</code>, <code>GET /alerts?limit=100</code> (1 a 500) e <code>GET /timeline?limit=500</code> (1 a 2000). A API não possui autenticação e não deve ser publicada na Internet.</p></details>
+    </div>
+  </div></section>
+  <section class="block" id="executar"><div class="wrap">
+    <div class="section-head"><div><div class="eyebrow">05 / QUICK START</div><h2>Reproduza no seu próprio ambiente.</h2></div><p>Os comandos devem ser executados na raiz do repositório clonado. A análise usa apenas o arquivo sintético incluído no projeto.</p></div>
+    <div class="twocol">
+      <div class="pane"><div class="code-caption">01 / DEPENDÊNCIA &amp; ANÁLISE</div><pre><code>python -m pip install -r argus/requirements.txt
+python -m argus.main analyze \
+  argus/samples/ssh_bruteforce.jsonl</code></pre><p>O motor produz alertas em JSON no terminal e salva os registros no banco SQLite local configurado.</p><div class="code-caption">SAÍDA RESUMIDA DO EXEMPLO</div><pre><code>{"alerts": 3, "processed": 17}</code></pre></div>
+      <div class="pane"><div class="code-caption">02 / INVESTIGAÇÃO &amp; API LOCAL</div><pre><code>python -m argus.main timeline \
+  --src-ip 192.168.1.50
+
+python -m argus.main serve</code></pre><p>Use a timeline para estudar a sequência e a API de leitura somente no loopback. Não é necessário nenhum serviço em nuvem.</p><div class="notice warn"><strong>Atenção:</strong> esta página não possui um console remoto. O comando <code>serve</code> inicia um processo local, sem autenticação HTTP.</div></div>
+    </div>
+  </div></section>
+  <section class="block" id="seguranca"><div class="wrap">
+    <div class="section-head"><div><div class="eyebrow">06 / LIMITAÇÕES &amp; SEGURANÇA</div><h2>Conhecer os limites também é pesquisar.</h2></div><p>O ARGUS é um laboratório defensivo experimental. Uma pontuação não substitui análise humana nem controles de segurança.</p></div>
+    <div class="grid">
+      <article class="card"><span class="index">GATE / REDE</span><h3>API restrita ao loopback</h3><p>O servidor local não implementa autenticação nem rate limit por cliente. Exposição pública requer arquitetura própria e revisão de acesso.</p></article>
+      <article class="card"><span class="index">GATE / PRIVACIDADE</span><h3>Logs podem ser sensíveis</h3><p>Proteja permissões, retenção e backups do SQLite. O site estático não envia arquivos para a nuvem.</p></article>
+      <article class="card"><span class="index">GATE / ANÁLISE</span><h3>Falsos positivos existem</h3><p>Janelas, ordem temporal, drift, dados incompletos ou uma baseline contaminada alteram a interpretação dos sinais.</p></article>
+      <article class="card"><span class="index">GATE / ESCALA</span><h3>Ingestão ainda limitada</h3><p>Não há limites abrangentes para tamanho de arquivo e cardinalidade de fontes. Testes de carga e de resistência a entradas hostis estão pendentes.</p></article>
+      <article class="card"><span class="index">GATE / PERSISTÊNCIA</span><h3>Estado de correlação volátil</h3><p>Os eventos e alertas são armazenados, mas o estado temporal das correlações e a baseline não persistem entre execuções.</p></article>
+      <article class="card"><span class="index">GATE / PUBLICAÇÃO</span><h3>LAB ONLY</h3><p>O motor defensivo não é oferecido como serviço web. A página pública mostra somente documentação e dados demonstrativos.</p></article>
+    </div>
+  </div></section>
+  <section class="block" id="roadmap"><div class="wrap">
+    <div class="section-head"><div><div class="eyebrow">07 / PRÓXIMOS EXPERIMENTOS</div><h2>O que vem depois da v0.2?</h2></div><p>Possibilidades de pesquisa, não funcionalidades publicadas nem compromissos de lançamento.</p></div>
+    <div class="roadmap">
+      <div class="future"><span class="index">PESQUISA / 01</span><h3>Ingestão contínua</h3><p>Leitura incremental de novos eventos com quotas e retomada segura.</p></div>
+      <div class="future"><span class="index">PESQUISA / 02</span><h3>Regras Sigma</h3><p>Estudo de um subconjunto compatível, com validação e testes.</p></div>
+      <div class="future"><span class="index">PESQUISA / 03</span><h3>Correlação multi-host</h3><p>Contexto entre máquinas, identidade de fontes e deduplicação.</p></div>
+      <div class="future"><span class="index">PESQUISA / 04</span><h3>Dashboard protegido</h3><p>Visão de investigação conectada a um backend autenticado, se aprovada pelo gate.</p></div>
+    </div>
+  </div></section>
+  <div class="wrap last"><div class="last-cta"><div><span class="eyebrow">RESEARCH / BUILD. BREAK. UNDERSTAND. REBUILD.</span><h2>Observe primeiro. Conclua depois.</h2><p>Explore a implementação, reproduza os testes e ajude a transformar sinais em conhecimento.</p></div><div class="cta-row"><a class="button primary" href="https://github.com/kingmaker-lab/The-Workshop./tree/main/argus" rel="noopener noreferrer">EXPLORAR ARGUS ↗</a><a class="button" href="/heartai/#playground">HEARTAI LAB ↗</a></div></div></div>
+</main>
+<footer class="foot"><div class="wrap"><span>© 2026 THE WORKSHOP / ARGUS / DEFENSIVE RESEARCH</span><span>LOCAL-FIRST • EXPERIMENTAL • HUMAN-IN-THE-LOOP</span></div></footer>
+</body>
+</html>
