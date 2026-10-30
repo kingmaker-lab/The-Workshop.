@@ -47,3 +47,18 @@
 **Governança:** datas, prioridades e escopo podem ser replanejados. A equipe não tem proprietários de tarefas atribuídos neste documento e a publicação não configura compromisso contratual.
 
 *Build. Break. Understand. Rebuild.*
+
+
+## Visão pública simplificada: projetos principais (v1.1, 30/10/2026)
+
+O site Workshop News mostra apenas cinco frentes principais, em vez de exibir toda a operação interna. **O planejamento operacional completo de oito semanas acima é preservado como histórico e referência interna.**
+
+| Projeto em destaque | Janela proposta | Marco |
+|---|---|---|
+| Protocolo Ruby | 09–15 nov | Validar staging read-only e demonstração inofensiva |
+| ARGUS / HeartAI | 16–22 nov | Testes reproduzíveis de memória, tokenizer e runtime |
+| Cerberus | 23–29 nov | Contratos de adaptadores e documentação de trade-offs |
+| Ouroboros EXP-008 | 30 nov–06 dez | Análise adicional do key schedule e função de rodada |
+| WolfPack OS | 07–13 dez | Novo fluxo educativo testado no navegador |
+
+Segurança, manutenção do News, publicação técnica e retrospectiva continuam existindo como atividades transversais, mas não são exibidas como cards no cronograma principal. Cada prazo é uma janela de trabalho, não um compromisso de lançamento. Esta visão é HTML estático e não depende da API do GitHub.
