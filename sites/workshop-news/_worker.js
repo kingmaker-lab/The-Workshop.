@@ -86,9 +86,20 @@ async function readLimited(response) {
   } finally { reader.releaseLock(); }
 }
 async function pull(fetcher,url,accept='application/json'){
-  const response=await fetcher(url,{headers:{'Accept':accept,'User-Agent':'Workshop-News/1.0 (+https://github.com/kingmaker-lab/The-Workshop.)'},signal:AbortSignal.timeout(4500),redirect:'follow'});
-  const data=await readLimited(response);
-  return data;
+  const approvedHost=new URL(url).hostname;
+  let current=url;
+  for(let hop=0;hop<3;hop++){
+    const response=await fetcher(current,{headers:{'Accept':accept,'User-Agent':'Workshop-News/1.0 (+https://github.com/kingmaker-lab/The-Workshop.)'},signal:AbortSignal.timeout(4500),redirect:'manual'});
+    if(response.status>=300&&response.status<400){
+      const location=response.headers.get('location');
+      if(!location)throw Error('upstream redirect missing location');
+      const target=new URL(location,current);
+      if(target.protocol!=='https:'||target.hostname!==approvedHost||target.port||target.username||target.password)throw Error('untrusted upstream redirect');
+      current=target.href;continue;
+    }
+    return readLimited(response);
+  }
+  throw Error('upstream redirect limit');
 }
 async function makeFeed(fetcher=fetch) {
   const tasks=[
