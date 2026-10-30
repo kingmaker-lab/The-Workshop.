@@ -164,3 +164,9 @@ A seção `#cronograma` agora prioriza cinco projetos: Protocolo Ruby, ARGUS/Hea
 - CI Workshop News: `a839c62521c3b65bcb39456a77d6194a405ed2cf` — **success**.
 - Cloudflare Pages produção: deployment `4948b397-6c75-42db-90a0-2649190f91aa` — **success**.
 - A API de Browser Rendering atingiu limite temporário de requisições durante a checagem pós-deploy; o deploy e a suíte automatizada confirmaram os arquivos publicados, mas não registrar uma inspeção visual remota como concluída.
+
+### Remoção do cronograma público — 30/10/2026
+
+- A seção `#cronograma` e o link de navegação foram removidos do Workshop News.
+- Os estilos e testes específicos do calendário público também foram removidos.
+- O documento `docs/roadmaps/workshop-2026-nov-dec.md` permanece no repositório apenas como histórico interno de planejamento; não é exibido no portal.
