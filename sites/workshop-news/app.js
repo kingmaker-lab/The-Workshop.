@@ -93,7 +93,8 @@ function renderActivity(){
   }
   for(const item of state.updates.slice(0,6)){
     const a=external(item.url,'activity-item');if(!a)continue;
-    a.append(el('span','activity-tag',(item.branch||'main').toUpperCase()+' / '+(item.sha||'COMMIT')),el('span','activity-title',item.title),el('span','activity-meta',age(item.published)));
+    const reference=Boolean(state.sourceStatus?.fallbackUsed);
+    a.append(el('span','activity-tag',(reference?'REFERÊNCIA VERIFICADA · ':'')+(item.branch||'main').toUpperCase()+' / '+(item.sha||'COMMIT')),el('span','activity-title',item.title),el('span','activity-meta',age(item.published)));
     wrap.append(a);
   }
 }
@@ -113,25 +114,29 @@ async function refresh(){
     state.sourceStatus={
       githubCommits:source.githubCommits===true||data.available.includes('workshop'),
       githubBranches:Number(source.githubBranches??data.branchSourcesAvailable)||0,
+      githubMode:typeof source.githubMode==='string'?source.githubMode:'unknown',
+      fallbackUsed:source.fallbackUsed===true,
+      snapshotAsOf:typeof source.snapshotAsOf==='string'?source.snapshotAsOf:null,
       hackerNews:source.hackerNews===true||data.available.includes('hn'),
       githubBlog:source.githubBlog===true||data.available.includes('GitHub Blog'),
       cloudflareBlog:source.cloudflareBlog===true||data.available.includes('Cloudflare Blog')
     };
     const githubOnline=state.sourceStatus.githubCommits||state.sourceStatus.githubBranches>0;
     const statusText=(name,ok)=>name+': '+(ok?'conectado':'indisponível neste ciclo');
+    const liveGitStatus=githubOnline?'Repositório GitHub: conectado'+(state.sourceStatus.githubMode==='atom'?' (feed alternativo)':''):'Repositório GitHub: consulta ao vivo indisponível'+(state.sourceStatus.fallbackUsed?' (histórico de referência de 30/10/2026)':'');
     $('source-diagnostics').textContent=[
-      statusText('Repositório GitHub',githubOnline),
+      liveGitStatus,
       statusText('GitHub Blog',state.sourceStatus.githubBlog),
       statusText('Cloudflare Blog',state.sourceStatus.cloudflareBlog),
       statusText('Hacker News',state.sourceStatus.hackerNews)
     ].join(' · ');
-    $('github-status').textContent=githubOnline?'GITHUB CONECTADO':'GITHUB INDISPONÍVEL';
+    $('github-status').textContent=githubOnline?'GITHUB CONECTADO':state.sourceStatus.fallbackUsed?'HISTÓRICO DE REFERÊNCIA':'GITHUB INDISPONÍVEL';
     $('metric-news').textContent=state.articles.length;
     $('metric-updates').textContent=state.updates.length;
     $('metric-sources').textContent=data.available.length+' / 4';
     $('metric-sync').textContent=data.generatedAt?new Intl.DateTimeFormat('pt-BR',{hour:'2-digit',minute:'2-digit'}).format(new Date(data.generatedAt)):'—';
-    $('connection-state').textContent=!githubOnline?'GITHUB INDISPONÍVEL':data.partial?'GITHUB OK · FEEDS PARCIAIS':'FONTES SINCRONIZADAS';
-    $('sync-hint').textContent=data.partial?'Status de cada fonte logo abaixo':'Atualizado automaticamente';
+    $('connection-state').textContent=!githubOnline?(state.sourceStatus.fallbackUsed?'GITHUB INSTÁVEL · HISTÓRICO SALVO':'GITHUB INDISPONÍVEL'):data.partial?'GITHUB OK · FEEDS PARCIAIS':'FONTES SINCRONIZADAS';
+    $('sync-hint').textContent=state.sourceStatus.fallbackUsed?'Referência verificada em 30/10/2026':data.partial?'Status de cada fonte logo abaixo':'Atualizado automaticamente';
   }catch{
     $('connection-state').textContent='DADOS NÃO VERIFICADOS';
     $('github-status').textContent='GITHUB: STATUS DESCONHECIDO';
