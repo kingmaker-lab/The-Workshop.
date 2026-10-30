@@ -205,3 +205,14 @@ A seção `#cronograma` agora prioriza cinco projetos: Protocolo Ruby, ARGUS/Hea
 - CI Workshop News `41105648667`: **success**.
 - Browser Rendering confirmou o destino final com título **Protocolo Ruby · Malware Lab**.
 - O teste do redirect mantém destino fixo, query ignorada e 405 para métodos não suportados.
+
+### Edição 003 — EXP-009 e atualização geral — 30/10/2026
+
+- **Produção:** https://workshop-news.pages.dev/
+- **Cloudflare Pages deployment:** `5ae91d9e-80a2-4b12-9da7-1b51f7970370` — status `success`.
+- **Runtime publicado:** `4d53c1a3d27ef16b872a2c871e941c8c1d0711cb`.
+- **CI Workshop News:** run `41112349462` — **success**.
+- A edição 003 destaca Ouroboros EXP-009, Protocolo Ruby, ARGUS v0.2, HEART_004, CERBERUS 03 e Wolfpack Academy.
+- O feed de atividade agora acompanha também `exp-009-round-function-analysis`.
+- EXP-009 é descrito como análise exaustiva da função de rodada: DDT e LAT completas, diferencial máximo 0,25 e correlação absoluta máxima 0,5. O portal não apresenta isso como ataque completo à cifra.
+- Verificação ao vivo confirmou `ED. 003`, seis cards, EXP-009 e o atalho correto do Protocolo Ruby.
