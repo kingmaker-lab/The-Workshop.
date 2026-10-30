@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import worker,{handler,makeFeed,parseRss,parseHn,parseCommits,safeUrl,categorize} from '../_worker.js';
+import worker,{handler,makeFeed,parseRss,parseHn,parseCommits,parseGitHubAtom,fetchGitHubCommits,safeUrl,categorize} from '../_worker.js';
 
 const base='https://workshop-news.pages.dev/';
 const rss='<?xml version="1.0"?><rss><channel><item><title><![CDATA[Cloudflare security update &amp; fixes]]></title><link>https://blog.cloudflare.com/security-update/</link><pubDate>Fri, 30 Oct 2026 08:00:00 GMT</pubDate></item><item><title>Bad link</title><link>http://evil.invalid/</link></item></channel></rss>';
@@ -17,6 +17,8 @@ const fixtures=url=>{
   if(url.includes('github.blog'))return new Response('<rss><channel><item><title>GitHub developer update</title><link>https://github.blog/changelog/</link><pubDate>Fri, 30 Oct 2026 08:00:00 GMT</pubDate></item></channel></rss>',{status:200});
   throw Error('unexpected URL '+url);
 };
+
+const githubAtom = '<feed xmlns="http://www.w3.org/2005/Atom"><entry><title>Fix GitHub status &amp; diagnostics</title><link rel="alternate" type="text/html" href="https://github.com/kingmaker-lab/The-Workshop./commit/abcdef1234567890"/><updated>2026-10-30T16:30:00Z</updated></entry><entry><title>Unsafe link</title><link href="https://evil.invalid/commit/333"/><updated>2026-10-30T16:00:00Z</updated></entry></feed>';
 const fakeAssets={ASSETS:{fetch:async req=>{
   const u=new URL(req.url);
   return new Response(u.pathname.endsWith('.css')?'body{}':'<!doctype html>',{status:200,headers:{'Content-Type':u.pathname.endsWith('.css')?'text/css':'text/html'}});
@@ -130,7 +132,9 @@ test('editorial updates survive total upstream outage and never impersonate rele
  const data=await makeFeed(async()=>{throw Error('all sources down')});
  assert.equal(data.partial,true);
  assert.equal(data.available.length,0);
- assert.equal(data.updates.length,0);
+ assert.equal(data.updates.length,3);
+ assert.equal(data.sourceStatus.fallbackUsed,true);
+ assert.equal(data.sourceStatus.githubMode,'snapshot');
  assert.equal(data.highlights.length,4);
  const byId=Object.fromEntries(data.highlights.map(x=>[x.id,x]));
  assert.equal(byId['ouroboros-exp008'].status,'PESQUISA');
@@ -163,6 +167,34 @@ test('GitHub repository errors do not masquerade as RSS feed failures',async()=>
   assert.equal(data.sourceStatus.githubCommits,false);
   assert.equal(data.sourceStatus.githubBranches,0);
   assert.equal(data.sourceStatus.githubBlog,true);
-  assert.equal(data.updates.length,0);
+  assert.equal(data.updates.length,3);
+ assert.equal(data.sourceStatus.fallbackUsed,true);
+ assert.equal(data.sourceStatus.githubMode,'snapshot');
   assert.equal(data.partial,true);
+});
+
+test('Atom fallback parses only safe public GitHub commits',async()=>{
+  const parsed=parseGitHubAtom(githubAtom);
+  assert.equal(parsed.length,1);
+  assert.equal(parsed[0].title,'Fix GitHub status & diagnostics');
+  assert.equal(parsed[0].url,'https://github.com/kingmaker-lab/The-Workshop./commit/abcdef1234567890');
+  const result=await fetchGitHubCommits(async url=>{
+    if(url.includes('api.github.com'))return new Response('rate limit',{status:403});
+    if(url.includes('github.com/kingmaker-lab/'))return new Response(githubAtom,{status:200});
+    throw Error('Unexpected upstream '+url);
+  },'main',5);
+  assert.equal(result.mode,'atom');
+  assert.equal(result.data.length,1);
+});
+test('all GitHub API requests may fail while the Atom alternative remains live',async()=>{
+  const data=await makeFeed(async url=>{
+    if(url.includes('api.github.com'))return new Response('rate limited',{status:429});
+    if(url.includes('github.com/kingmaker-lab/'))return new Response(githubAtom,{status:200});
+    return fixtures(url);
+  });
+  assert.equal(data.sourceStatus.githubCommits,true);
+  assert.equal(data.sourceStatus.githubMode,'atom');
+  assert.equal(data.sourceStatus.fallbackUsed,false);
+  assert.ok(data.updates.length>=1);
+  assert.ok(data.available.includes('workshop'));
 });
