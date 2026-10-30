@@ -155,3 +155,12 @@ A seção `#cronograma` agora prioriza cinco projetos: Protocolo Ruby, ARGUS/Hea
 - Testes automatizados de segurança e markup aprovados no CI. Navegador Cloudflare confirmou no site público `#cronograma`, os cinco projetos `ruby`, `argus`, `cerberus`, `ouroboros`, `wolfpack`, e a ausência dos antigos cards administrativos.
 - O documento de oito semanas continua armazenado como planejamento interno e histórico, sem exclusão de tarefas transversais.
 - A publicação é Direct Upload manual. Documentação alterada posteriormente não indica redeploy automático.
+
+
+### Refinamento visual do calendário — 30/10/2026
+
+- O roadmap público foi refinado para um visual mais editorial: trilho temporal horizontal, cards com profundidade, hierarquia tipográfica mais limpa, acentos discretos por projeto e comportamento responsivo em 5 → 3 → 2 → 1 colunas.
+- Conteúdo preservado: Protocolo Ruby, ARGUS/HeartAI, Cerberus, Ouroboros e WolfPack OS, com as mesmas datas, objetivos, critérios e links.
+- CI Workshop News: `a839c62521c3b65bcb39456a77d6194a405ed2cf` — **success**.
+- Cloudflare Pages produção: deployment `4948b397-6c75-42db-90a0-2649190f91aa` — **success**.
+- A API de Browser Rendering atingiu limite temporário de requisições durante a checagem pós-deploy; o deploy e a suíte automatizada confirmaram os arquivos publicados, mas não registrar uma inspeção visual remota como concluída.
