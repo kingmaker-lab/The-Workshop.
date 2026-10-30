@@ -1,11 +1,11 @@
-"""Run HEART_002 and HEART_003 as a local research demo."""
+"""Run HEART_002 through HEART_004 as a local research demo."""
 from __future__ import annotations
 
 import argparse
 from pathlib import Path
 
 from heart.conversation import ConversationStore
-from heart.neural import BPETokenizer
+from heart.neural import BPETokenizer, TokenEmbeddings
 
 
 def main() -> None:
@@ -30,6 +30,15 @@ def main() -> None:
         print(f"HEART_003: vocab={tokenizer.vocab_size}, tokens={encoded}")
         print(f"Roundtrip: {tokenizer.decode(encoded)}")
         print("Nota: tokenizer treinado não equivale a um LLM treinado.")
+        # Corpus is a tiny local example, not operational data.
+        embeddings = TokenEmbeddings(tokenizer.vocab_size, dimension=8, seed=7)
+        rows = [tokenizer.encode(text) for text in corpus]
+        losses = embeddings.fit(rows, epochs=3, window=2, negatives=1)
+        a = embeddings.mean_pool(tokenizer.encode("Olá, Heart!"))
+        b = embeddings.mean_pool(tokenizer.encode("HeartAI"))
+        print(f"HEART_004: dimension={embeddings.dimension}, training_loss={losses[-1]:.4f}")
+        print(f"Toy cosine similarity: {embeddings.cosine(a, b):.4f}")
+        print("Nota: embeddings demonstrativos não são compreensão semântica nem um LLM.")
     finally:
         memory.close()
 
