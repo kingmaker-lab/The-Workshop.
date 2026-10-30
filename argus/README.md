@@ -60,3 +60,27 @@ autenticacao, controle de acesso e revisao de seguranca adicionais.
 Os testes de regressao do ARGUS estao em
 `.github/workflows/argus-tests.yml`, com verificacoes de API, deteccoes e
 execucao basica pela CLI.
+
+## v0.2 — Anomalias estatisticas (experimental)
+
+O ARGUS agora pode observar metricas numericas de `network_connection`
+(`orig_bytes`, `resp_bytes` e `duration`) e emitir uma deteccao quando
+um valor supera o limiar de desvios padrao de sua baseline Welford.
+A baseline e mantida por par **source + metrica** no processo atual.
+
+O recurso fica **desativado por padrao**. Para experimentar, configure
+`anomaly.enabled: true` em `argus/config.yaml`; os padroes sao 20
+amostras de aquecimento e limiar `z_threshold: 4.0`. O score da deteccao e
+25 e a severidade e `medium`. Cada metrica e avaliada antes de atualizar
+a baseline. Numeros negativos, nao finitos e nao numericos sao ignorados.
+
+Exemplo de entrada Zeek (`--format network`):
+```json
+{"ts": 1793400000, "id.orig_h": "192.0.2.10", "orig_bytes": 1048576}
+```
+
+**Limitacoes**: detecta desvios estatisticos, nao confirma ataque.
+Dados artificiais, baseline contaminada, variacao legitima de trafego,
+alteracao de fontes, drift e grandes volumes podem gerar falso positivo.
+A baseline e reiniciada a cada invocacao, nao e persistida nem treinada
+entre sessoes. Avalie resultados com supervisao humana.
