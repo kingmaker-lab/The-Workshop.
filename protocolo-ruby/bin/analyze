@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+require 'json'
+require_relative '../lib/protocolo_ruby/analyzer'
+path = ARGV.fetch(0) { abort 'Usage: ruby bin/analyze FILE' }
+abort 'Not a regular file' unless File.file?(path)
+abort 'File too large' if File.size(path) > ProtocoloRuby::Analyzer::MAX_BYTES
+puts JSON.pretty_generate(ProtocoloRuby::Analyzer.new.analyze(File.binread(path), filename: File.basename(path)))
