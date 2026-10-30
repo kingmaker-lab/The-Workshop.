@@ -149,3 +149,17 @@ Status: **protocolo criado, piloto executado; análise em andamento**.
 - [Workshop Labs](https://workshop-labs.pages.dev)
 
 **Build. Break. Understand. Rebuild.**
+
+
+---
+
+## Experimento 009 — análise diferencial e linear da função de rodada
+
+O [EXP-009](./experiments/009-round-function-analysis/README.md) executa a DDT completa (256 × 256) e a LAT de Walsh completa (256 × 256) para a função de rodada do EXP-008, com enumeração exata e testes de invariância sob subchaves fixas.
+
+- Máxima contagem diferencial para diferença de entrada não nula: 64/256 (25%), em 48 células.
+- Máxima correlação linear absoluta não trivial: 0,5 (Walsh = 128), em 72 células.
+- Os resultados são da camada de rodada, não um ataque demonstrado contra a rede Feistel de oito rodadas.
+- O harness exporta DDT/LAT completas em CSV e verifica as invariâncias de subchave.
+
+**Conclusão:** a camada de rodada possui relações diferenciais e lineares fortes. A investigação seguinte deve modelar trilhas e hulls através da composição Feistel.
