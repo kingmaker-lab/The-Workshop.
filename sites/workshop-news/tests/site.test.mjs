@@ -9,7 +9,7 @@ const hn={hits:[{title:'Ruby security announcement',url:'https://ruby-lang.org/e
 const fixtures=url=>{
   if(url.includes('algolia.com'))return new Response(JSON.stringify(hn),{status:200,headers:{'content-type':'application/json'}});
   if(url.includes('api.github.com')){
-    const branch=url.includes('sha=feature')?'ruby':url.includes('sha=exp-008')?'ouroboros':'main';
+    const branch=url.includes('protocolo-ruby')?'ruby':url.includes('exp-008')?'ouroboros':url.includes('academy-android')?'academy-android':url.includes('academy-api')?'academy-api':'main';
     const commits=github.map(c=>({...c,sha:branch+'-1234567890abcdef',html_url:'https://github.com/kingmaker-lab/The-Workshop./commit/'+branch+'123456',commit:{...c.commit,message:branch+': '+c.commit.message}}));
     return new Response(JSON.stringify(commits),{status:200});
   }
@@ -47,9 +47,9 @@ test('aggregator reports real data and partial upstream failure',async()=>{
  const data=await makeFeed(async url=>fixtures(url));
  assert.equal(data.available.length,4);
  assert.equal(data.partial,false);
- assert.equal(data.updates.length,3);
- assert.equal(data.highlights.length,4);
- assert.equal(data.branchSourcesAvailable,2);
+ assert.equal(data.updates.length,5);
+ assert.equal(data.highlights.length,6);
+ assert.equal(data.branchSourcesAvailable,4);
  assert.ok(data.updates.some(x=>x.branch==='Protocolo Ruby'));
  assert.ok(data.updates.some(x=>x.branch==='Ouroboros EXP-008'));
  assert.ok(data.highlights.every(x=>x.url.startsWith('https://')&&x.status&&x.summary));
@@ -132,15 +132,17 @@ test('editorial updates survive total upstream outage and never impersonate rele
  const data=await makeFeed(async()=>{throw Error('all sources down')});
  assert.equal(data.partial,true);
  assert.equal(data.available.length,0);
- assert.equal(data.updates.length,3);
+ assert.equal(data.updates.length,5);
  assert.equal(data.sourceStatus.fallbackUsed,true);
  assert.equal(data.sourceStatus.githubMode,'snapshot');
- assert.equal(data.highlights.length,4);
+ assert.equal(data.highlights.length,6);
  const byId=Object.fromEntries(data.highlights.map(x=>[x.id,x]));
- assert.equal(byId['ouroboros-exp008'].status,'PESQUISA');
- assert.equal(byId['ruby-20261030'].status,'DESENVOLVIMENTO');
- assert.equal(byId['security-20261030'].status,'EM REVISÃO');
- assert.equal(byId['games-20261030'].status,'NO AR');
+ assert.equal(byId['argus-v02-20261030'].status,'LAB NO AR');
+ assert.equal(byId['heart004-20261030'].status,'PESQUISA NO AR');
+ assert.equal(byId['academy-android-20261030'].status,'DRAFT');
+ assert.equal(byId['academy-api-20261030'].status,'DRAFT');
+ assert.equal(byId['cerberus03-20261030'].status,'LAB NO AR');
+ assert.equal(byId['ruby-20261030'].status,'EM REVISÃO');
  for(const x of data.highlights)assert.equal(new URL(x.url).protocol,'https:');
 });
 
@@ -152,7 +154,7 @@ test('GitHub repository health stays online when GitHub Blog RSS is offline',asy
   });
   assert.equal(data.partial,true);
   assert.equal(data.sourceStatus.githubCommits,true);
-  assert.equal(data.sourceStatus.githubBranches,2);
+  assert.equal(data.sourceStatus.githubBranches,4);
   assert.equal(data.sourceStatus.githubBlog,false);
   assert.equal(data.sourceStatus.cloudflareBlog,true);
   assert.ok(data.updates.length>0);
@@ -167,7 +169,7 @@ test('GitHub repository errors do not masquerade as RSS feed failures',async()=>
   assert.equal(data.sourceStatus.githubCommits,false);
   assert.equal(data.sourceStatus.githubBranches,0);
   assert.equal(data.sourceStatus.githubBlog,true);
-  assert.equal(data.updates.length,3);
+  assert.equal(data.updates.length,5);
  assert.equal(data.sourceStatus.fallbackUsed,true);
  assert.equal(data.sourceStatus.githubMode,'snapshot');
   assert.equal(data.partial,true);
