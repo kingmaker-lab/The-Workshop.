@@ -5,10 +5,10 @@ import worker from '../_worker.js';
 const base='https://workshop-labs.pages.dev/';
 const fetchPage=(path='/',method='GET')=>worker.fetch(new Request(new URL(path,base),{method}));
 
-test('GET: three correct absolute HTTPS destinations',async()=>{
+test('GET: four correct absolute HTTPS destinations',async()=>{
  const r=await fetchPage(); assert.equal(r.status,200);
  const html=await r.text();
- for(const target of ['https://workshop-labs.pages.dev/projects/ares/','https://wolfpack-crypto.pages.dev/','https://wolfpack.wolfpackworkshop.workers.dev/']) assert.ok(html.includes('href="'+target+'"'));
+ for(const target of ['https://workshop-labs.pages.dev/projects/ares/','https://wolfpack-crypto.pages.dev/','https://wolfpack.wolfpackworkshop.workers.dev/','https://workshop-news.pages.dev/']) assert.ok(html.includes('href="'+target+'"'));
  assert.ok(html.includes('CERBERUS')); assert.ok(!/<script\\b/i.test(html)); assert.ok(!/<iframe\\b/i.test(html));
 });
 

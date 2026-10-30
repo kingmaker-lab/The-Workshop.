@@ -43,3 +43,13 @@ For any implementation that reads from disk, in addition to the generic checks:
 Cloudflare Pages hosts only the website/docs. The local ARES HTTP executable must not be exposed directly without hardened deployment design, concurrency, precise framing and independent security review.
 
 Repeat this check for **every subsequent version**. Keep the checklist in the repository so it survives conversation/session changes.
+
+## Workshop News security gate (v1.0 onward)
+
+- Run `node --test sites/workshop-news/tests/*.test.mjs` and `node sites/workshop-news/scripts/build.mjs`.
+- Enforce allowlisted HTTPS upstreams, same-host redirects, finite timeouts and response-size caps.
+- Never render feed-provided HTML. Untrusted titles and commit messages are treated as plain text.
+- Keep public API read-only with no arbitrary URL/proxy parameters; 404/405 responses must be uncacheable.
+- Deploy only the generated five-file `sites/workshop-news/dist` directory. Never publish tests, documentation or unreviewed files as assets.
+- Verify source attribution, partial-feed behavior, site navigation, CSP and HTTP headers after Cloudflare deployment.
+- The Workshop News workflow is an independent release gate for this portal; do not report CI-only checks as production validation.

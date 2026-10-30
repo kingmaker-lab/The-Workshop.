@@ -352,3 +352,15 @@ E algumas provavelmente vão crescer muito além do planejado.
 - [Genesis e roadmap técnico](IA/Heart/docs/HEARTAI-GENESIS.md)
 
 A publicação no Cloudflare Pages requer deploy dos arquivos estáticos; atualizar este repositório não altera automaticamente o projeto Pages configurado como Direct Upload.
+
+---
+
+## Workshop News — Tech Intelligence Dashboard
+
+Novo portal de notícias de tecnologia, segurança, IA e atividades do The Workshop.
+
+- [Código, validações e guia de publicação](sites/workshop-news/README.md)
+- [Portal (após implantação Cloudflare Pages)](https://workshop-news.pages.dev/)
+- Tech: Hacker News (Algolia), Cloudflare Blog e GitHub Blog; Workshop: commits públicos do repositório.
+- Segurança: fontes fixas, sem scripts externos, CSP, limite de respostas, 404/405 no-store, testes e CI.
+

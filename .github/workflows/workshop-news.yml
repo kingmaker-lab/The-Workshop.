@@ -1,0 +1,37 @@
+name: Workshop News | Security and Build
+
+on:
+  push:
+    paths:
+      - "sites/workshop-news/**"
+      - ".github/workflows/workshop-news.yml"
+  pull_request:
+    paths:
+      - "sites/workshop-news/**"
+      - ".github/workflows/workshop-news.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  news-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Verify JavaScript syntax
+        run: |
+          node --check sites/workshop-news/_worker.js
+          node --check sites/workshop-news/app.js
+          node --check sites/workshop-news/scripts/build.mjs
+      - name: Run security and data validation
+        run: node --test sites/workshop-news/tests/*.test.mjs
+      - name: Build immutable deployment directory
+        run: node sites/workshop-news/scripts/build.mjs
+      - name: Ensure no source tests are published
+        run: |
+          test ! -e sites/workshop-news/dist/tests
+          test ! -e sites/workshop-news/dist/README.md
+          test ! -e sites/workshop-news/dist/scripts
+          test -f sites/workshop-news/dist/_worker.js
