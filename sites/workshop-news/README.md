@@ -181,3 +181,12 @@ A seção `#cronograma` agora prioriza cinco projetos: Protocolo Ruby, ARGUS/Hea
 - O painel de atividade passa a consultar também `feat/wolfpack-academy-android-starter` e `feat/wolfpack-academy-api-mvp`, além de Protocolo Ruby e Ouroboros.
 - Verificação ao vivo confirmou `ED. 002`, seis cards de destaque e preservação do feed de notícias.
 - GitHub Actions para a edição permaneceu em estado `queued` no instante da publicação. GitHub Status indicava Actions operacional; a edição foi verificada em preview Cloudflare e depois em produção. Não registrar esse job como PASS enquanto não houver conclusão.
+
+
+### Atalho Ruby Tool — 30/10/2026
+
+- **Rota pública:** https://workshop-news.pages.dev/ruby
+- **Destino fixo:** https://wolfpack.wolfpackworkshop.workers.dev/#jogar
+- O atalho abre o Ruby Protocol já publicado no WolfPack OS; não aponta para o backend Ruby de staging.
+- GET/HEAD retornam 302. Query strings não alteram o destino e outros métodos continuam 405.
+- A navegação e o painel Laboratórios exibem o atalho Ruby Tool.
