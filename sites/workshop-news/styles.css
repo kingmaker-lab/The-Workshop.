@@ -15,3 +15,8 @@
 .highlight-footer{padding-top:11px;border-top:1px solid #355046;color:#82a69e;font:700 9px var(--mono)}
 .highlight-footer span:last-child{color:var(--accent)}
 @media(max-width:800px){.highlights-grid{grid-template-columns:1fr}.highlight-card{min-height:0}}
+
+/* Source diagnostics: separate GitHub repository connectivity from blog feeds. */
+.metrics{margin-bottom:13px}
+.source-diagnostics{margin:0 0 35px;color:#a7c4b7;background:#10212a;border:1px solid #2c4944;border-radius:8px;padding:12px 17px;font:650 10px/1.8 var(--mono)}
+@media(max-width:520px){.source-diagnostics{font-size:9px;padding:11px 12px}}
