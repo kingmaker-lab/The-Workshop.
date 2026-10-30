@@ -124,7 +124,7 @@ async function makeFeed(fetcher=fetch) {
   for(let i=0;i<settled.length;i++){
     if(settled[i].status!=='fulfilled')continue;
     const {type,data}=settled[i].value;
-    available.push(type);
+    if(type!=='branch')available.push(type);
     if(type==='workshop')updates.push(...data);
     else if(type==='branch'){updates.push(...data);branchAvailable.push('branch');}
     else articles.push(...data);
