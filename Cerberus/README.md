@@ -40,6 +40,16 @@ Pergunta: o mesmo caso de uso de reservas pode trocar o adaptador SQLite pelo ad
 - Python >= 3.11; biblioteca padrão como dependência em runtime. Nenhum servidor HTTP nem banco de dados público são iniciados.
 - Segurança: experimento local sem autenticação, autorização ou controle de capacidade real. Não usar dados pessoais reais.
 
+
+## Terceira bancada em desenvolvimento: CERBERUS 03 — fronteiras de entrega
+
+Parte 1 em branch de pesquisa: [simulação de entrega e falhas](experiments/03-delivery-boundaries/). Dois modelos locais de reservas/notificações permitem testar entrega duplicada após falha de confirmação e deduplicação no consumidor, com casos de falha determinísticos.
+
+- Código e testes: [03-delivery-boundaries](experiments/03-delivery-boundaries/).
+- Decisão: [ADR-0003](experiments/03-delivery-boundaries/ADR-0003-delivery-boundary.md).
+- Execução: `cd Cerberus && npm test` (Node.js >= 20).
+- Limite: ambos os modelos são **simulações em memória**, sem rede, broker ou persistência real. Não há benchmark de microsserviços nem mudança de deploy.
+
 ## Implementação pública
 
 Worker independente com HTML e CSS estáticos, sem JavaScript executado no cliente, sem cookies, sem bindings de acesso a serviços e sem proxy. Publicação não altera os deploys do Workshop Labs, Ares, Crypto Lab ou WolfPack OS.
