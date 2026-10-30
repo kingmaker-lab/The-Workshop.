@@ -41,7 +41,12 @@ test('aggregator reports real data and partial upstream failure',async()=>{
  const data=await makeFeed(async url=>fixtures(url));
  assert.equal(data.available.length,4);
  assert.equal(data.partial,false);
- assert.equal(data.updates.length,1);
+ assert.equal(data.updates.length,3);
+ assert.equal(data.highlights.length,4);
+ assert.equal(data.branchSourcesAvailable,2);
+ assert.ok(data.updates.some(x=>x.branch==='Protocolo Ruby'));
+ assert.ok(data.updates.some(x=>x.branch==='Ouroboros EXP-008'));
+ assert.ok(data.highlights.every(x=>x.url.startsWith('https://')&&x.status&&x.summary));
  assert.equal(data.articles.length,4);
  const partial=await makeFeed(async url=>{if(url.includes('github.blog'))throw Error('offline');return fixtures(url);});
  assert.equal(partial.available.length,3);
@@ -115,4 +120,18 @@ test('games entry is a fixed redirect to WolfPack OS with no open redirect',asyn
    assert.equal(response.status,405);
    assert.equal(response.headers.get('allow'),'GET, HEAD');
  }
+});
+
+test('editorial updates survive total upstream outage and never impersonate releases',async()=>{
+ const data=await makeFeed(async()=>{throw Error('all sources down')});
+ assert.equal(data.partial,true);
+ assert.equal(data.available.length,0);
+ assert.equal(data.updates.length,0);
+ assert.equal(data.highlights.length,4);
+ const byId=Object.fromEntries(data.highlights.map(x=>[x.id,x]));
+ assert.equal(byId['ouroboros-exp008'].status,'PESQUISA');
+ assert.equal(byId['ruby-20261030'].status,'DESENVOLVIMENTO');
+ assert.equal(byId['security-20261030'].status,'EM REVISÃO');
+ assert.equal(byId['games-20261030'].status,'NO AR');
+ for(const x of data.highlights)assert.equal(new URL(x.url).protocol,'https:');
 });
