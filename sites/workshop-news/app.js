@@ -1,6 +1,6 @@
 // Workshop News: untrusted headlines are always rendered with textContent.
 const $=id=>document.getElementById(id);
-const state={articles:[],updates:[],highlights:[],filter:'Tudo',search:'',loaded:false};
+const state={articles:[],updates:[],highlights:[],sourceStatus:null,filter:'Tudo',search:'',loaded:false};
 const relative=new Intl.RelativeTimeFormat('pt-BR',{numeric:'auto'});
 const labels={'Segurança':'SECURITY','IA':'ARTIFICIAL INTELLIGENCE','Dev':'DEVELOPMENT','Infra':'INFRASTRUCTURE','Tech':'TECHNOLOGY'};
 function age(iso){
@@ -84,7 +84,13 @@ function renderHighlights(){
 function renderActivity(){
   const wrap=$('activity-list');wrap.replaceChildren();
   if(!state.loaded){wrap.append(el('div','activity-loading','Lendo o repositório...'));return;}
-  if(!state.updates.length){wrap.append(emptyMessage('GitHub indisponível','O histórico não pôde ser consultado agora. Confira os commits diretamente no repositório.'));return;}
+  if(!state.updates.length){
+    const connected=state.sourceStatus&&(state.sourceStatus.githubCommits||state.sourceStatus.githubBranches>0);
+    wrap.append(emptyMessage(connected?'Nenhum commit recente nas fontes consultadas':'Atividade GitHub temporariamente indisponível',
+      connected?'Nenhum commit novo encontrado nesta atualização.':'Não conseguimos recuperar commits neste ciclo. Confira diretamente o repositório.',
+      [{name:'Ver repositório no GitHub',url:'https://github.com/kingmaker-lab/The-Workshop.'}]));
+    return;
+  }
   for(const item of state.updates.slice(0,6)){
     const a=external(item.url,'activity-item');if(!a)continue;
     a.append(el('span','activity-tag',(item.branch||'main').toUpperCase()+' / '+(item.sha||'COMMIT')),el('span','activity-title',item.title),el('span','activity-meta',age(item.published)));
@@ -103,14 +109,33 @@ async function refresh(){
     state.articles=data.articles.filter(x=>x&&typeof x.title==='string'&&trustedLink(x.url));
     state.updates=data.updates.filter(x=>x&&typeof x.title==='string'&&trustedLink(x.url));
     state.highlights=(Array.isArray(data.highlights)?data.highlights:[]).filter(x=>x&&typeof x.title==='string'&&trustedLink(x.url));
+    const source=data.sourceStatus&&typeof data.sourceStatus==='object'?data.sourceStatus:{};
+    state.sourceStatus={
+      githubCommits:source.githubCommits===true||data.available.includes('workshop'),
+      githubBranches:Number(source.githubBranches??data.branchSourcesAvailable)||0,
+      hackerNews:source.hackerNews===true||data.available.includes('hn'),
+      githubBlog:source.githubBlog===true||data.available.includes('GitHub Blog'),
+      cloudflareBlog:source.cloudflareBlog===true||data.available.includes('Cloudflare Blog')
+    };
+    const githubOnline=state.sourceStatus.githubCommits||state.sourceStatus.githubBranches>0;
+    const statusText=(name,ok)=>name+': '+(ok?'conectado':'indisponível neste ciclo');
+    $('source-diagnostics').textContent=[
+      statusText('Repositório GitHub',githubOnline),
+      statusText('GitHub Blog',state.sourceStatus.githubBlog),
+      statusText('Cloudflare Blog',state.sourceStatus.cloudflareBlog),
+      statusText('Hacker News',state.sourceStatus.hackerNews)
+    ].join(' · ');
+    $('github-status').textContent=githubOnline?'GITHUB CONECTADO':'GITHUB INDISPONÍVEL';
     $('metric-news').textContent=state.articles.length;
     $('metric-updates').textContent=state.updates.length;
     $('metric-sources').textContent=data.available.length+' / 4';
     $('metric-sync').textContent=data.generatedAt?new Intl.DateTimeFormat('pt-BR',{hour:'2-digit',minute:'2-digit'}).format(new Date(data.generatedAt)):'—';
-    $('connection-state').textContent=data.partial?'FONTES PARCIAIS':'FONTES SINCRONIZADAS';
-    $('sync-hint').textContent=data.partial?'Algumas fontes não responderam':'Atualizado automaticamente';
+    $('connection-state').textContent=!githubOnline?'GITHUB INDISPONÍVEL':data.partial?'GITHUB OK · FEEDS PARCIAIS':'FONTES SINCRONIZADAS';
+    $('sync-hint').textContent=data.partial?'Status de cada fonte logo abaixo':'Atualizado automaticamente';
   }catch{
-    $('connection-state').textContent='SEM CONEXÃO COM FEEDS';
+    $('connection-state').textContent='DADOS NÃO VERIFICADOS';
+    $('github-status').textContent='GITHUB: STATUS DESCONHECIDO';
+    $('source-diagnostics').textContent='Não foi possível consultar o status neste momento. Confira os commits diretamente no GitHub.';
     $('sync-hint').textContent='Tente recarregar a página';
     // Preserve previously fetched articles rather than replacing them with unverified fallback headlines.
   }finally{
