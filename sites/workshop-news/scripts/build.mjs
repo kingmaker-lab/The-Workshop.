@@ -1,0 +1,12 @@
+import {mkdir,copyFile,readdir,rm} from 'node:fs/promises';
+import {fileURLToPath} from 'node:url';
+import path from 'node:path';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const dist=path.join(root,'dist');
+const files=['_worker.js','index.html','styles.css','app.js','favicon.svg'];
+await rm(dist,{recursive:true,force:true});
+await mkdir(dist,{recursive:true});
+for(const file of files)await copyFile(path.join(root,file),path.join(dist,file));
+const got=(await readdir(dist)).sort();
+if(JSON.stringify(got)!==JSON.stringify([...files].sort()))throw Error('unexpected deployment output');
+console.log('Workshop News deployment assets verified:',got.join(', '));
