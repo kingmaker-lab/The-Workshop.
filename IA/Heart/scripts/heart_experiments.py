@@ -32,7 +32,13 @@ def main() -> None:
         print("Nota: tokenizer treinado não equivale a um LLM treinado.")
         # Corpus is a tiny local example, not operational data.
         embeddings = TokenEmbeddings(tokenizer.vocab_size, dimension=8, seed=7)
-        rows = [tokenizer.encode(text) for text in corpus]
+        # Diverse public phrases avoid one-token rows after BPE merges.
+        research_corpus = [
+            "heartai pesquisa neurais",
+            "linguagem e redes neurais",
+            "pesquisa de representações",
+        ] * 3
+        rows = [tokenizer.encode(text) for text in research_corpus]
         losses = embeddings.fit(rows, epochs=3, window=2, negatives=1)
         a = embeddings.mean_pool(tokenizer.encode("Olá, Heart!"))
         b = embeddings.mean_pool(tokenizer.encode("HeartAI"))
