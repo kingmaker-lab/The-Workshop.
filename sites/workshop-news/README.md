@@ -119,3 +119,12 @@ O diretório público continua limitado a HTML, CSS, JS, SVG e o Worker. Antes d
 - Fontes de notícias externas podem variar entre solicitações/PoPs. A presença de `FONTES PARCIAIS` **não** significa indisponibilidade do repositório.
 - Segurança preservada: URLs fixas de GitHub, TLS obrigatório, redirecionamento limitado ao próprio host e parser Atom com links HTTPS restritos a `github.com`.
 - Publicação continua por Direct Upload manual; GitHub PR #11 segue em revisão.
+
+
+## Cronograma público NOV–DEZ 2026
+
+- Página: https://workshop-news.pages.dev/#cronograma
+- Documento de planejamento versionado: [Workshop roadmap 2026](../../docs/roadmaps/workshop-2026-nov-dec.md).
+- Oito janelas semanais de 02/11 a 27/12, com estados iniciais PLANEJADO e critérios de conclusão por projeto.
+- O cronograma é HTML estático no homepage para permanecer legível mesmo que o GitHub e outras fontes estejam indisponíveis.
+- Atualizações dos estados exigem revisão humana e evidência de conclusão. O portal não considera planejamento um lançamento.
