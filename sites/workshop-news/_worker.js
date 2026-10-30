@@ -10,7 +10,18 @@ const SECURITY = Object.freeze({
   'Content-Security-Policy':"default-src 'none'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; upgrade-insecure-requests"
 });
 const HEADERS_API = {'Content-Type':'application/json; charset=utf-8','Cache-Control':'public, max-age=120, s-maxage=300, stale-while-revalidate=180'};
-const GH_COMMITS = 'https://api.github.com/repos/kingmaker-lab/The-Workshop./commits?per_page=10';
+const GH_COMMITS = 'https://api.github.com/repos/kingmaker-lab/The-Workshop./commits?per_page=7';
+const GH_BRANCHES = [
+  {branch:'feature/protocolo-ruby-v0.1',title:'Protocolo Ruby'},
+  {branch:'exp-008-reduced-feistel',title:'Ouroboros EXP-008'}
+];
+// Reviewed editorial highlights. Branch work is never described as a production release.
+const HIGHLIGHTS = Object.freeze([
+  {id:'ruby-20261030',title:'Protocolo Ruby: novo backend experimental em Ruby',summary:'Serviço de staging somente leitura, com endpoints de demonstração inofensiva. Uploads e processamento de amostras permanecem desativados.',status:'DESENVOLVIMENTO',category:'Ruby',published:'2026-10-30T15:37:24Z',url:'https://github.com/kingmaker-lab/The-Workshop./tree/feature/protocolo-ruby-v0.1/protocolo-ruby/render'},
+  {id:'ouroboros-exp008',title:'Ouroboros EXP-008: Feistel de 16 bits sob investigação',summary:'Nova cifra didática de oito rodadas com testes exaustivos de diferenças de um bit em três chaves. Não indicada para proteger dados reais.',status:'PESQUISA',category:'Criptografia',published:'2026-10-30T14:23:42Z',url:'https://github.com/kingmaker-lab/The-Workshop./tree/exp-008-reduced-feistel/research/cryptography/ouroboros-low-level/experiments/008-reduced-feistel'},
+  {id:'security-20261030',title:'Mais verificações de segurança no ecossistema',summary:'Nova suíte automatizada para os sites e Workers, com correções no cache do Crypto Lab e na política de segurança do ARES. Alterações seguem em revisão.',status:'EM REVISÃO',category:'Segurança',published:'2026-10-30T14:39:32Z',url:'https://github.com/kingmaker-lab/The-Workshop./pull/10'},
+  {id:'games-20261030',title:'Jogos Interativos agora acessíveis pelo Workshop News',summary:'O portal já oferece um atalho seguro para a plataforma WolfPack OS. Os jogos continuam hospedados em seu endereço próprio.',status:'NO AR',category:'Plataforma',published:'2026-10-30T15:02:29Z',url:'https://workshop-news.pages.dev/jogos'}
+]);
 const FEEDS = [
   {name:'Cloudflare Blog',url:'https://blog.cloudflare.com/rss/',host:'blog.cloudflare.com',category:'Infra'},
   {name:'GitHub Blog',url:'https://github.blog/feed/',host:'github.blog',category:'Dev'}
@@ -105,20 +116,24 @@ async function makeFeed(fetcher=fetch) {
   const tasks=[
     pull(fetcher,HN).then(x=>({type:'hn',data:parseHn(JSON.parse(x))})),
     ...FEEDS.map(s=>pull(fetcher,s.url,'application/rss+xml, application/xml;q=0.9, text/xml;q=0.8').then(x=>({type:s.name,data:parseRss(x,s)}))),
-    pull(fetcher,GH_COMMITS).then(x=>({type:'workshop',data:parseCommits(JSON.parse(x))}))
+    pull(fetcher,GH_COMMITS).then(x=>({type:'workshop',data:parseCommits(JSON.parse(x)).map(x=>({...x,branch:'main'}))})),
+    ...GH_BRANCHES.map(b=>pull(fetcher,'https://api.github.com/repos/kingmaker-lab/The-Workshop./commits?sha='+encodeURIComponent(b.branch)+'&per_page=4').then(x=>({type:'branch',data:parseCommits(JSON.parse(x)).filter(z=>z.published&&Date.parse(z.published)>=Date.parse('2026-10-22T00:00:00Z')).map(z=>({...z,branch:b.title}))})))
   ];
   const settled=await Promise.allSettled(tasks);
-  const articles=[];let updates=[];const available=[];
+  const articles=[];let updates=[];const available=[];const branchAvailable=[];
   for(let i=0;i<settled.length;i++){
     if(settled[i].status!=='fulfilled')continue;
     const {type,data}=settled[i].value;
     available.push(type);
-    if(type==='workshop')updates=data;
+    if(type==='workshop')updates.push(...data);
+    else if(type==='branch'){updates.push(...data);branchAvailable.push('branch');}
     else articles.push(...data);
   }
   articles.sort((a,b)=>Date.parse(b.published||0)-Date.parse(a.published||0));
+  updates=Array.from(new Map(updates.map(u=>[u.url,u])).values())
+    .sort((a,b)=>Date.parse(b.published||0)-Date.parse(a.published||0)).slice(0,12);
   const unique=Array.from(new Map(articles.map(a=>[a.url,a])).values()).slice(0,24);
-  return {generatedAt:new Date().toISOString(),partial:available.length!==tasks.length,available,articles:unique,updates,projectLinks:[
+  return {generatedAt:new Date().toISOString(),partial:available.length!==tasks.length,available,articles:unique,updates,highlights:HIGHLIGHTS,branchSourcesAvailable:branchAvailable.length,projectLinks:[
     {name:'Workshop Labs',url:'https://workshop-labs.pages.dev/',tag:'Hub de pesquisa'},
     {name:'Crypto Lab',url:'https://wolfpack-crypto.pages.dev/',tag:'Criptografia e matemática'},
     {name:'WolfPack OS',url:'https://wolfpack.wolfpackworkshop.workers.dev/',tag:'Laboratórios interativos'},
