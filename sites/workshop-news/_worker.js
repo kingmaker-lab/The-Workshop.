@@ -197,7 +197,7 @@ async function handler(request,env={},ctx={}) {
   if(pathname==='/ruby'||pathname==='/ruby/'){
     return new Response(null,{status:302,headers:{
       ...SECURITY,
-      'Location':'https://wolfpack.wolfpackworkshop.workers.dev/#jogar',
+      'Location':'https://protocolo-ruby.wolfpackworkshop.workers.dev/',
       'Cache-Control':'no-store',
       'Content-Type':'text/plain; charset=utf-8'
     }});
