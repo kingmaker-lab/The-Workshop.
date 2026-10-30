@@ -6,7 +6,7 @@ const security = {"X-Content-Type-Options":"nosniff","Referrer-Policy":"strict-o
 export default {
  async fetch(request){
    const url = new URL(request.url);
-   if(request.method!=="GET" && request.method!=="HEAD")return new Response(null,{status:405,headers:{...security,"Allow":"GET, HEAD"}});
+   if(request.method!=="GET" && request.method!=="HEAD")return new Response(null,{status:405,headers:{...security,"Allow":"GET, HEAD","Cache-Control":"no-store"}});
    let path=url.pathname;
    if(path==="/index.html")path="/";
    if(path==="/experimentos")path="/experimentos/";
@@ -14,7 +14,7 @@ export default {
    if(match)path+="/";
    const found=Object.prototype.hasOwnProperty.call(pages,path);
    const info=found?meta[path]:{type:"text/html; charset=utf-8",status:404};
-   const headers={...security,"Content-Type":info.type,"Cache-Control":path.startsWith("/assets/")?"public, max-age=3600":"public, max-age=180"};
+   const headers={...security,"Content-Type":info.type,"Cache-Control":!found?"no-store":path.startsWith("/assets/")?"public, max-age=3600":"public, max-age=180"};
    if(request.method==="HEAD")return new Response(null,{status:info.status,headers});
    return new Response(found?pages[path]:notFound,{status:info.status,headers});
  }
