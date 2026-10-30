@@ -112,6 +112,8 @@ class TokenEmbeddings:
                             raise ValueError("training pair budget exceeded")
         if not pairs:
             raise ValueError("at least one training context pair is required")
+        if len(pairs) * epochs * (negatives + 1) * self.dimension > 2_000_000:
+            raise ValueError("training exceeds the compute budget")
         observed = sorted({token_id for pair in pairs for token_id in pair})
         candidates = {target: [x for x in observed if x != target] for target in observed}
         if negatives and len(observed) < 2:
