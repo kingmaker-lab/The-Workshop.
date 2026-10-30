@@ -5,7 +5,11 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 EXP008 = HERE.parent / "008-reduced-feistel"
 sys.path.insert(0, str(EXP008))
-from feistel16 import SBOX4, P8, permute8, substitute8, round_function
+try:
+    from feistel16 import SBOX4, P8, permute8, substitute8, round_function
+except ModuleNotFoundError:
+    # Standalone bundle fallback; repository runs import the sibling EXP-008 source.
+    from feistel16 import SBOX4, P8, permute8, substitute8, round_function
 
 N = 256
 
