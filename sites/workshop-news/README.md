@@ -186,7 +186,12 @@ A seção `#cronograma` agora prioriza cinco projetos: Protocolo Ruby, ARGUS/Hea
 ### Atalho Ruby Tool — 30/10/2026
 
 - **Rota pública:** https://workshop-news.pages.dev/ruby
-- **Destino fixo:** https://wolfpack.wolfpackworkshop.workers.dev/#jogar
-- O atalho abre o Ruby Protocol já publicado no WolfPack OS; não aponta para o backend Ruby de staging.
+- **Destino fixo:** https://protocolo-ruby.wolfpackworkshop.workers.dev/
+- O atalho abre a ferramenta Protocolo Ruby publicada em Worker próprio; não aponta para a seção Ruby do WolfPack OS.
 - GET/HEAD retornam 302. Query strings não alteram o destino e outros métodos continuam 405.
 - A navegação e o painel Laboratórios exibem o atalho Ruby Tool.
+
+### Correção do destino Ruby Tool — 30/10/2026
+
+- O redirect `/ruby` foi corrigido para `https://protocolo-ruby.wolfpackworkshop.workers.dev/`.
+- O destino anterior no WolfPack OS foi substituído para evitar ambiguidade entre o playground embutido e a tool independente.
