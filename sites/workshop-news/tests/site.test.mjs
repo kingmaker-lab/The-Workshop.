@@ -209,7 +209,12 @@ test('flagship roadmap presents only five projects with proposed windows',async(
   assert.match(html,/janelas de trabalho propostas/);
   assert.match(html,/data-project="ruby"/);
   assert.match(css,/project-roadmap-grid/);
+  assert.match(css,/roadmap-track-line/);
+  assert.match(css,/project-milestone:hover/);
+  assert.match(css,/grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
   assert.match(css,/@media\(max-width:650px\)/);
+  const points=[...html.matchAll(/class="roadmap-track-point roadmap-track-point--([a-z]+)"/g)].map(m=>m[1]);
+  assert.deepEqual(points,['ruby','argus','cerberus','ouroboros','wolfpack']);
   const cards=[...html.matchAll(/<li class="project-milestone project-milestone--([a-z]+)" data-project="([a-z]+)">([\s\S]*?)<\/li>/g)];
   const expected=[
     ['ruby','2026-11-09','2026-11-15'],
