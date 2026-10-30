@@ -164,7 +164,8 @@ async function handler(request,env={},ctx={}) {
       if(cached) return request.method==='HEAD'?new Response(null,{status:cached.status,headers:cached.headers}):cached;
     }
     const feed=await makeFeed();
-    const response=json(feed,feed.available.length?200:503);
+    // Editorial highlights are local and available even when every upstream fails.
+    const response=json(feed);
     if(cache&&response.status===200&&typeof ctx.waitUntil==='function')ctx.waitUntil(cache.put(key,response.clone()));
     return request.method==='HEAD'?new Response(null,{status:response.status,headers:response.headers}):response;
   }
