@@ -62,6 +62,7 @@ class DurableDeliveryTests(unittest.TestCase):
             ("../../evt", "wolfcon", 2),
             ("evt1", "bad/code", 2),
             ("evt1", "wolfcon", True),
+            ("evt1", "wolfcon", None),
             ("evt1", "wolfcon", 7),
         ]:
             with self.assertRaises(ValueError):
@@ -105,9 +106,8 @@ class DurableDeliveryTests(unittest.TestCase):
         self.producer.reserve("evt1", "wolfcon", 2)
         self.consumer.accept("evt1", "othercode")
         with running_consumer(self.consumer) as url:
-            with self.assertRaises(HTTPError) as ex:
+            with self.assertRaisesRegex(RuntimeError, "HTTP 409"):
                 dispatch(self.producer, url)
-            self.assertEqual(ex.exception.code, 409)
         self.assertEqual(self.producer.counts()["pending"], 1)
         self.assertEqual(self.consumer.count(), 1)
 
@@ -144,6 +144,32 @@ class DurableDeliveryTests(unittest.TestCase):
             with self.assertRaises(ValueError, msg=base_url):
                 dispatch(self.producer, base_url)
         self.assertEqual(self.producer.counts()["pending"], 1)
+
+    def test_http_redirect_is_not_followed_and_event_stays_pending(self):
+        from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+        class RedirectHandler(BaseHTTPRequestHandler):
+            def do_POST(self):
+                self.send_response(302)
+                self.send_header("Location", "https://example.invalid/unsafe")
+                self.send_header("Content-Length", "0")
+                self.end_headers()
+
+            def log_message(self, *_args):
+                pass
+
+        server = ThreadingHTTPServer(("127.0.0.1", 0), RedirectHandler)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        try:
+            self.producer.reserve("evt1", "wolfcon", 2)
+            with self.assertRaisesRegex(RuntimeError, "HTTP 302"):
+                dispatch(self.producer, f"http://127.0.0.1:{server.server_port}")
+            self.assertEqual(self.producer.counts()["pending"], 1)
+        finally:
+            server.shutdown()
+            server.server_close()
+            thread.join(timeout=3)
 
     def test_duplicate_delivery_over_http_returns_200_not_second_effect(self):
         self.consumer.accept("evt1", "wolfcon")
