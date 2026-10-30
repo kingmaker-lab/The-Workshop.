@@ -198,3 +198,35 @@ test('all GitHub API requests may fail while the Atom alternative remains live',
   assert.ok(data.updates.length>=1);
   assert.ok(data.available.includes('workshop'));
 });
+
+
+test('public roadmap covers eight proposed consecutive weeks with review gates',async()=>{
+  const {readFile} = await import('node:fs/promises');
+  const html = await readFile(new URL('../index.html',import.meta.url),'utf8');
+  assert.match(html,/id="cronograma"/);
+  assert.match(html,/href="#cronograma"/);
+  assert.match(html,/janelas de trabalho propostas/);
+  assert.match(html,/Gate de publicação/);
+  const cards=[...html.matchAll(/<li class="roadmap-card" data-roadmap-id="(WK\d{2})">([\s\S]*?)<\/li>/g)];
+  assert.equal(cards.length,8);
+  const dates=[];
+  for(let i=0;i<cards.length;i++){
+    assert.equal(cards[i][1],'WK'+String(i+1).padStart(2,'0'));
+    const body=cards[i][2];
+    assert.match(body,/class="roadmap-status">PLANEJADO</);
+    assert.match(body,/Critério:/);
+    assert.match(body,/rel="noopener noreferrer"/);
+    const times=[...body.matchAll(/<time datetime="(\d{4}-\d{2}-\d{2})">/g)].map(m=>m[1]);
+    assert.equal(times.length,2);
+    const start=Date.parse(times[0]+'T00:00:00Z'),end=Date.parse(times[1]+'T00:00:00Z');
+    assert.equal((end-start)/86400000,6,'each sprint is one seven-day week');
+    if(i>0)assert.equal(start,dates[dates.length-1][1]+86400000,'weekly roadmap has no gaps');
+    dates.push([start,end]);
+  }
+  assert.equal(new Date(dates[0][0]).toISOString().slice(0,10),'2026-11-02');
+  assert.equal(new Date(dates[7][1]).toISOString().slice(0,10),'2026-12-27');
+  for(const key of ['PROTOCOL','Ruby','HEARTAI','CERBERUS','OUROBOROS','WOLFPACK','WORKSHOP NEWS']){
+    if(key==='PROTOCOL')continue;
+    assert.ok(html.toUpperCase().includes(key.toUpperCase()),key+' is covered by roadmap');
+  }
+});
