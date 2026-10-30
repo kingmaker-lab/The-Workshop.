@@ -18,14 +18,14 @@
     "mean_flip_probability": 0.4999122619628906,
     "mean_abs_deviation_from_half": 0.002270221710205078,
     "max_abs_deviation_from_half": 0.009033203125,
-    "min_flip_probability": 0.4913330078125,
-    "max_flip_probability": 0.5068359375,
+    "min_flip_probability": 0.490966796875,
+    "max_flip_probability": 0.50701904296875,
     "mean_changed_bits_per_pair": 7.99859619140625
   },
   "single_bit_differentials": {
     "max_count": 23,
     "max_probability": 0.000701904296875,
-    "distinct_output_deltas_total": 411790
+    "distinct_output_deltas_total": 412194
   },
   "scope": "Exhaustive one-bit input differences only; not production cryptography."
 }
