@@ -25,6 +25,7 @@
       <a href="#conteudo" class="nav-item active"><span class="nav-symbol">◈</span> Visão geral <span class="nav-arrow">↗</span></a>
       <a href="#noticias" class="nav-item"><span class="nav-symbol">⌁</span> Notícias tech</a>
       <a href="#destaques" class="nav-item"><span class="nav-symbol">✳</span> Destaques</a>
+      <a href="#cronograma" class="nav-item"><span class="nav-symbol">▤</span> Cronograma <span class="nav-arrow">↓</span></a>
       <a href="#workshop" class="nav-item"><span class="nav-symbol">⌘</span> The Workshop</a>
       <a href="#laboratorios" class="nav-item"><span class="nav-symbol">▧</span> Laboratórios</a>
     </nav>
@@ -67,6 +68,89 @@
         <div class="section-heading"><div><span class="section-index">00 / THE WORKSHOP • NOVIDADES CONFIRMADAS</span><h2 id="highlights-title">Fresco da bancada<span class="heading-dot">.</span></h2></div><span class="section-meta">PESQUISA / CÓDIGO / LANÇAMENTOS</span></div>
         <p class="section-intro">Acompanhamos o trabalho em andamento nas branches, sem confundir experimento com produto finalizado. Fontes diretamente no GitHub.</p>
         <div id="highlights-list" class="highlights-grid" aria-live="polite"><div class="skeleton" aria-hidden="true"></div><div class="skeleton" aria-hidden="true"></div></div>
+      </section>
+      <section id="cronograma" class="roadmap-section" aria-labelledby="roadmap-title">
+        <div class="section-heading roadmap-heading">
+          <div><span class="section-index">00.B / PLANEJAMENTO ABERTO</span><h2 id="roadmap-title">Cronograma da oficina<span class="heading-dot">.</span></h2></div>
+          <span class="section-meta">NOV · DEZ 2026 / 8 SEMANAS</span>
+        </div>
+        <div class="roadmap-summary">
+          <div><span class="roadmap-eyebrow">CICLO DE DESENVOLVIMENTO / VERSÃO 1.0</span>
+            <p>Oito semanas para testar, documentar e compartilhar projetos do The Workshop. As datas indicam <strong>janelas de trabalho propostas</strong>, não garantias de lançamento. O andamento será atualizado mediante revisão do projeto.</p>
+          </div>
+          <span class="roadmap-window">02 NOV <span>→</span> 27 DEZ <small>2026</small></span>
+        </div>
+        <ol class="roadmap-grid" aria-label="Oito sprints de novembro a dezembro de 2026">
+          <li class="roadmap-card" data-roadmap-id="WK01">
+            <div class="roadmap-card-top"><span class="roadmap-order">01 / SEGURANÇA</span><span class="roadmap-status">PLANEJADO</span></div>
+            <p class="roadmap-date"><time datetime="2026-11-02">02 NOV</time> <span>—</span> <time datetime="2026-11-08">08 NOV</time></p>
+            <h3>Segurança antes de publicar</h3>
+            <p class="roadmap-goal">Consolidar as validações dos sites, Workers e CI, revisar o PR de hardening e executar verificações HTTP em produção.</p>
+            <p class="roadmap-accept"><strong>Critério:</strong> testes verdes, checklist de CSP/rotas e riscos registrados antes de qualquer merge.</p>
+            <a href="https://github.com/kingmaker-lab/The-Workshop./pull/10" target="_blank" rel="noopener noreferrer">VER REVISÃO DE SEGURANÇA ↗</a>
+          </li>
+          <li class="roadmap-card" data-roadmap-id="WK02">
+            <div class="roadmap-card-top"><span class="roadmap-order">02 / PROTOCOLO RUBY</span><span class="roadmap-status">PLANEJADO</span></div>
+            <p class="roadmap-date"><time datetime="2026-11-09">09 NOV</time> <span>—</span> <time datetime="2026-11-15">15 NOV</time></p>
+            <h3>Staging Ruby somente leitura</h3>
+            <p class="roadmap-goal">Validar o backend experimental no Render e o caminho Cloudflare ↔ staging, com respostas de demonstração inofensivas.</p>
+            <p class="roadmap-accept"><strong>Critério:</strong> health, capabilities e demo verificados; sem upload ou execução de amostras de malware.</p>
+            <a href="https://github.com/kingmaker-lab/The-Workshop./tree/feature/protocolo-ruby-v0.1/protocolo-ruby/render" target="_blank" rel="noopener noreferrer">VER CÓDIGO RUBY ↗</a>
+          </li>
+          <li class="roadmap-card" data-roadmap-id="WK03">
+            <div class="roadmap-card-top"><span class="roadmap-order">03 / ARGUS · HEARTAI</span><span class="roadmap-status">PLANEJADO</span></div>
+            <p class="roadmap-date"><time datetime="2026-11-16">16 NOV</time> <span>—</span> <time datetime="2026-11-22">22 NOV</time></p>
+            <h3>Experimentos locais de IA</h3>
+            <p class="roadmap-goal">Revisar testes de memória, tokenizer e runtime; documentar limites e preparar o próximo experimento neural em ambiente local.</p>
+            <p class="roadmap-accept"><strong>Critério:</strong> execução reproduzível e métricas registradas, sem anunciar um LLM treinado antes da validação.</p>
+            <a href="https://github.com/kingmaker-lab/The-Workshop./tree/main/IA/Heart" target="_blank" rel="noopener noreferrer">ABRIR HEARTAI ↗</a>
+          </li>
+          <li class="roadmap-card" data-roadmap-id="WK04">
+            <div class="roadmap-card-top"><span class="roadmap-order">04 / CERBERUS</span><span class="roadmap-status">PLANEJADO</span></div>
+            <p class="roadmap-date"><time datetime="2026-11-23">23 NOV</time> <span>—</span> <time datetime="2026-11-29">29 NOV</time></p>
+            <h3>Arquitetura verificável</h3>
+            <p class="roadmap-goal">Ampliar o experimento de arquitetura em camadas, Clean e Hexagonal com contratos de adaptadores e casos de teste.</p>
+            <p class="roadmap-accept"><strong>Critério:</strong> resultados comparáveis entre adaptadores SQLite e memória, com documentação de trade-offs.</p>
+            <a href="https://github.com/kingmaker-lab/The-Workshop./tree/main/Cerberus/experiments/02-layers-clean-hexagonal" target="_blank" rel="noopener noreferrer">ABRIR CERBERUS 02 ↗</a>
+          </li>
+          <li class="roadmap-card" data-roadmap-id="WK05">
+            <div class="roadmap-card-top"><span class="roadmap-order">05 / OUROBOROS</span><span class="roadmap-status">PLANEJADO</span></div>
+            <p class="roadmap-date"><time datetime="2026-11-30">30 NOV</time> <span>—</span> <time datetime="2026-12-06">06 DEZ</time></p>
+            <h3>Criptoanálise além da difusão</h3>
+            <p class="roadmap-goal">Aprofundar a análise da função de rodada e do key schedule do EXP-008, complementando os resultados SAC e diferenciais.</p>
+            <p class="roadmap-accept"><strong>Critério:</strong> experimentos e resultados reproduzíveis, com limites explícitos; nenhuma alegação de segurança real.</p>
+            <a href="https://github.com/kingmaker-lab/The-Workshop./tree/exp-008-reduced-feistel/research/cryptography/ouroboros-low-level/experiments/008-reduced-feistel" target="_blank" rel="noopener noreferrer">ABRIR EXP-008 ↗</a>
+          </li>
+          <li class="roadmap-card" data-roadmap-id="WK06">
+            <div class="roadmap-card-top"><span class="roadmap-order">06 / WOLFPACK OS</span><span class="roadmap-status">PLANEJADO</span></div>
+            <p class="roadmap-date"><time datetime="2026-12-07">07 DEZ</time> <span>—</span> <time datetime="2026-12-13">13 DEZ</time></p>
+            <h3>Aprender programação jogando</h3>
+            <p class="roadmap-goal">Prototipar uma nova sequência de desafios gratuitos para iniciantes, com explicações, feedback de erros e acessibilidade.</p>
+            <p class="roadmap-accept"><strong>Critério:</strong> pelo menos um fluxo demonstrável e testado no navegador; aplicativos móveis continuam sendo proposta futura.</p>
+            <a href="/jogos" target="_blank" rel="noopener noreferrer">ABRIR JOGOS INTERATIVOS ↗</a>
+          </li>
+          <li class="roadmap-card" data-roadmap-id="WK07">
+            <div class="roadmap-card-top"><span class="roadmap-order">07 / WORKSHOP NEWS</span><span class="roadmap-status">PLANEJADO</span></div>
+            <p class="roadmap-date"><time datetime="2026-12-14">14 DEZ</time> <span>—</span> <time datetime="2026-12-20">20 DEZ</time></p>
+            <h3>Transparência e documentação</h3>
+            <p class="roadmap-goal">Consolidar notícias dos experimentos, revisar a saúde das fontes do GitHub e publicar relatos técnicos curtos com links verificáveis.</p>
+            <p class="roadmap-accept"><strong>Critério:</strong> painel legível com estados reais, links válidos e registro editorial do que avançou e do que ficou pendente.</p>
+            <a href="https://github.com/kingmaker-lab/The-Workshop./pull/11" target="_blank" rel="noopener noreferrer">ACOMPANHAR O PORTAL ↗</a>
+          </li>
+          <li class="roadmap-card" data-roadmap-id="WK08">
+            <div class="roadmap-card-top"><span class="roadmap-order">08 / FECHAMENTO</span><span class="roadmap-status">PLANEJADO</span></div>
+            <p class="roadmap-date"><time datetime="2026-12-21">21 DEZ</time> <span>—</span> <time datetime="2026-12-27">27 DEZ</time></p>
+            <h3>Revisão de ciclo e próximos passos</h3>
+            <p class="roadmap-goal">Revisar o backlog, registrar decisões técnicas e definir o que merece continuidade no primeiro ciclo de 2027.</p>
+            <p class="roadmap-accept"><strong>Critério:</strong> retrospectiva publicada, pendências identificadas e próximos experimentos priorizados. Sem obrigatoriedade de release.</p>
+            <a href="https://github.com/kingmaker-lab/The-Workshop." target="_blank" rel="noopener noreferrer">ACOMPANHAR O REPOSITÓRIO ↗</a>
+          </li>
+        </ol>
+        <div class="roadmap-footer">
+          <p><strong>Gate de publicação:</strong> código revisado → testes automatizados → revisão de segurança → verificação em produção → nota de versão.</p>
+          <p><strong>Cadência sugerida:</strong> revisão curta a cada sexta-feira. Estados só mudam após validação; este cronograma não executa tarefas nem altera o GitHub automaticamente.</p>
+          <span>ATUALIZADO EM 30 OUT 2026 · ROADMAP PROPOSTO, SUJEITO A REVISÃO</span>
+        </div>
       </section>
       <div class="metrics" aria-label="Resumo das fontes">
         <div class="metric"><span class="metric-label">NOTÍCIAS DISPONÍVEIS</span><span class="metric-value" id="metric-news">—</span><span class="metric-sub">Manchetes de fontes públicas</span></div>
