@@ -45,3 +45,16 @@ replace the pinned upstream with a fully versioned, self-contained
 Workshop News Pages build.
 
 Review: ChatGPT-assisted implementation; human review recommended.
+
+## Production verification — 2026-10-30
+
+- New Pages production deployment: `0318d9e0-d450-4256-835e-8a1724f7895a`, **SUCCESS**.
+- Live home `https://workshop-news.pages.dev/`: **HTTP 200** in Browser Rendering;
+  original NEWSROOM and "Da bancada" content retained, new `/argus/` link present.
+- Article `/argus/`: **HTTP 200 in preview**, expected ARGUS v0.2,
+  references and risk statement present.
+- Subsequent live article check: **NOT VERIFIED** (Cloudflare Browser
+  Rendering rate limit). Deployment status is not a substitute for a live
+  route response; recheck is recommended.
+- Security and status checks: original content remains dependent on the pinned
+  previous deployment and must not be deleted until source migration.
