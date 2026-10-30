@@ -63,14 +63,14 @@ test('all unsupported methods denied, including OPTIONS',async()=>{
 });
 test('sensitive paths and unknown API endpoints never reach ASSETS',async()=>{
  for(const path of ['/.env','/.git/config','/api/other','/%2e%2e/%2e%2e/private','/uploads/private.txt']){
-   const r=await worker.fetch(new Request(base+path),fakeAssets);
+   const r=await worker.fetch(new Request(new URL(path,base)),fakeAssets);
    assert.equal(r.status,404,path);
    assert.equal(r.headers.get('cache-control'),'no-store');
  }
 });
 test('static assets preserve security headers and HEAD semantics',async()=>{
  for(const path of ['/','/index.html','/styles.css','/app.js','/favicon.svg']){
-   const r=await handler(new Request(base+path),fakeAssets);
+   const r=await handler(new Request(new URL(path,base)),fakeAssets);
    assert.equal(r.status,200,path);
    assert.equal(r.headers.get('x-frame-options'),'DENY');
    assert.equal(r.headers.get('x-content-type-options'),'nosniff');
@@ -78,7 +78,7 @@ test('static assets preserve security headers and HEAD semantics',async()=>{
    assert.match(r.headers.get('content-security-policy'),/object-src 'none'/);
    assert.match(r.headers.get('strict-transport-security'),/max-age=\d+/);
    assert.equal(r.headers.get('access-control-allow-origin'),null);
-   const head=await handler(new Request(base+path,{method:'HEAD'}),fakeAssets);
+   const head=await handler(new Request(new URL(path,base),{method:'HEAD'}),fakeAssets);
    assert.equal(head.status,200);assert.equal(await head.text(),'');
  }
 });
