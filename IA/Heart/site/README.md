@@ -1,32 +1,40 @@
-# ARGUS Protocol — HeartAI / Public Lab
+# HeartAI / Workshop Labs
 
-**Publicado em produção:** https://workshop-labs.pages.dev/argus/
+URL pública: https://workshop-labs.pages.dev/heartai/
 
-O ARGUS é a bancada de pesquisa em inteligência artificial do The Workshop. Seu primeiro projeto é **HeartAI (PROJECT_001)**.
+O HeartAI é o laboratório local de pesquisa em inteligência artificial do
+The Workshop. O projeto **não** é o ARGUS defensivo (threat hunting).
 
-## Source of truth para a publicação
+## Endereços e assets
 
-- `IA/Heart/site/argus/index.html`: HTML e apresentação do laboratório.
-- `IA/Heart/site/argus/argus.js`: demonstração de tokenização sem rede.
-- `web/ares-site/_worker.js`: **Worker avançado do projeto Cloudflare Pages `workshop-labs`**; agrega a homepage, ARES, WOLF-VM, ARGUS e seus assets.
-- `/argus/` e `/argus/heartai/`: páginas públicas (equivalentes); `/argus/argus.js`: recurso JS sob a mesma origem.
+- `/heartai/`: HeartAI / tokenização e embeddings.
+- `/heartai/tokenizer.js`: demo Byte-level BPE (HEART_003).
+- `/heartai/embeddings.js`: demo com skip-gram de corpus público fixo
+  e similaridade de cosseno (HEART_004).
+- `/argus/`: projeto de threat hunting defensivo, independente.
 
-**Importante:** o projeto usa **Direct Upload**, sem publicação automática a partir de commits no GitHub. Para atualizar o site, é necessário recriar o deploy completo usando o `_worker.js` agregado e promover o resultado após testar em preview. Não envie apenas a página ARGUS: isso substituiria o deploy existente e apagaria rotas dos outros projetos.
+Os arquivos `site/argus/index.html`, `site/argus/argus.js` e
+`site/argus/embeddings.js` preservam o histórico da antiga nomenclatura.
+Sua publicação depende do `web/workshop-labs/_worker.js` agregado. Os
+URLs da instalação nova usam `/heartai/`, não `/argus/`.
 
-## Recursos e limites
+## Política de publicação
 
-O playground utiliza um corpus fixo de demonstração e realiza merges Byte-BPE no navegador. **Não executa o runtime Python**, não carrega memórias reais, não consulta APIs externas e não representa treinamento de um modelo de linguagem. A memória SQLite e as ferramentas operacionais permanecem privadas.
+- O Pages `workshop-labs` utiliza **Direct Upload**, sem deploy
+  automático do GitHub. Alterar o repositório não atualiza o site.
+- Faça deploy de **todo o Worker agregado**, não apenas uma página.
+  Caso contrário, as rotas de ARGUS, CERBERUS e demais laboratórios
+  podem desaparecer.
+- A CSP do HeartAI permite apenas scripts da própria origem,
+  `connect-src 'none'`; os outros laboratórios mantêm sua própria CSP.
+- Demonstrações executam no navegador, não chamam o runtime Python,
+  nem acessam memória SQLite ou ferramentas do computador.
+- Os vetores do demo Web **não** são os pesos do protótipo Python;
+  ambos são demonstrações didáticas sem validação semântica.
 
-A aplicação de Pages mantém CSP restritiva e serve o script por rota própria (`script-src 'self'`).
+Para reproduzir o treinamento local e os testes Python, consulte
+`IA/Heart/README.md`.
 
-## Registro de publicação
-
-- Data: 2026-10-21.
-- Pages: `workshop-labs`.
-- Deploy de produção: `d6ee7429-75bd-4b76-9f0e-a9847812919f`.
-- Status confirmado pela API Cloudflare: `deploy / success`.
-- Preview validado pela API: `96b3b38b-d09b-4cb5-a2a1-fb2a3d9bd7fd` (`deploy / success`).
-- Teste local de rotas do Worker: homepage, ARGUS, playground, ARES, WOLF-VM, 404 e método POST bloqueado.
-- Validação HTTP pública a partir desta sessão: **não confirmada**, pois o leitor web forneceu conteúdo cacheado anterior à publicação.
-
-No caso de problema em produção, use o mecanismo de rollback para o último deploy conhecido como estável.
+A primeira publicação do antigo playground ARGUS/HeartAI é de
+2026-10-21. Em 2026-10-30, o HeartAI foi separado no caminho `/heartai/`
+para evitar colisões com o ARGUS de segurança.
