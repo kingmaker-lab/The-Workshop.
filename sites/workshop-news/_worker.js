@@ -89,10 +89,10 @@ function parseCommits(json) {
   }).filter(Boolean);
 }
 function parseGitHubAtom(xml,limit=10) {
-  const entries=String(xml).match(/<entry(?:\\s[^>]*)?>[\\s\\S]*?<\\/entry>/gi)||[];
+  const entries=String(xml).match(/<entry(?:\s[^>]*)?>[\s\S]*?<\/entry>/gi)||[];
   return entries.slice(0,limit).map((entry)=>{
     const title=text(field(entry,'title'),130);
-    const tag=entry.match(/<link\\b[^>]*\\bhref\s*=\s*["']([^"']+)["'][^>]*\\/?\s*>/i);
+    const tag=entry.match(/<link\b[^>]*\bhref\s*=\s*["']([^"']+)["'][^>]*\/?\s*>/i);
     const url=safeUrl(decodeXml(tag?.[1]),['github.com']);
     const published=date(field(entry,'updated')||field(entry,'published'));
     if(!title||!url||!url.includes('/commit/'))return null;
