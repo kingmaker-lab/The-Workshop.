@@ -195,3 +195,13 @@ A seção `#cronograma` agora prioriza cinco projetos: Protocolo Ruby, ARGUS/Hea
 
 - O redirect `/ruby` foi corrigido para `https://protocolo-ruby.wolfpackworkshop.workers.dev/`.
 - O destino anterior no WolfPack OS foi substituído para evitar ambiguidade entre o playground embutido e a tool independente.
+
+### Publicação da correção Ruby Tool — 30/10/2026
+
+- **Rota:** https://workshop-news.pages.dev/ruby
+- **Destino confirmado:** https://protocolo-ruby.wolfpackworkshop.workers.dev/
+- **Cloudflare Pages production deployment:** `a95d7ef3-f5ec-4d89-921d-41db197b864b` — status `success`.
+- **Runtime:** `0910565b3a51f3ac63cb79f38bde81dd6866d920`.
+- CI Workshop News `41105648667`: **success**.
+- Browser Rendering confirmou o destino final com título **Protocolo Ruby · Malware Lab**.
+- O teste do redirect mantém destino fixo, query ignorada e 405 para métodos não suportados.
