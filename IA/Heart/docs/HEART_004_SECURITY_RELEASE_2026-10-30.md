@@ -34,3 +34,16 @@
 
 The security review applies to this static demonstration and does not certify
 the experimental vectors as accurate or safe to use for decisions.
+
+## Public deployment follow-up (2026-10-30)
+
+- Merge PR #20: `ae9d88bcd44bf4b8e0df29af45504ef7a8da7a3d`.
+- Cloudflare `workshop-labs` production deployment
+  `47d8249e-fed2-42cd-a999-fb01568e9dc7`: **SUCCESS**.
+- Browser Rendering live `https://workshop-labs.pages.dev/heartai/`:
+  **HTTP 200**, both Tokenizer and Neural Embeddings Playground present.
+- Browser JS executed: Byte-BPE example 15 characters / 19 bytes / 17
+  tokens / 28 demo merges; embedding similarity 0.7696 on two fixed
+  example inputs (8 dimensions). This is an arithmetic smoke check,
+  not an evaluation of semantic performance.
+- No private inference/API route added; ARGUS Python engine unchanged.
