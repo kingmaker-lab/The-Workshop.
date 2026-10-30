@@ -144,3 +144,14 @@ O diretório público continua limitado a HTML, CSS, JS, SVG e o Worker. Antes d
 A seção `#cronograma` agora prioriza cinco projetos: Protocolo Ruby, ARGUS/HeartAI, Cerberus, Ouroboros EXP-008 e WolfPack OS. Todos os cards têm janela proposta, marco de validação, status inicial PLANEJADO e link ao projeto. O layout usa cartões com acentos distintos e adapta-se a telas pequenas.
 
 **Atenção:** o cronograma operacional anterior de oito semanas, incluindo segurança, manutenção do News e retrospectiva, segue preservado em [docs/roadmaps/workshop-2026-nov-dec.md](../../docs/roadmaps/workshop-2026-nov-dec.md). As etapas de apoio foram removidas apenas da vitrine pública. As datas não representam anúncios de lançamento.
+
+
+### Publicação do roadmap visual (cinco projetos) — 30/10/2026
+
+- Produção: https://workshop-news.pages.dev/#cronograma
+- Cloudflare Pages deployment: `bee69a72-71c2-4249-988a-2f176ef42d71`, status `success`.
+- Runtime originado da branch `feat/workshop-news-portal-20261030`, commit `38223fcc49c71e998bfe561b6ad0040334d3fab2`.
+- Novo layout: cinco cards coloridos por projeto, links próprios, objetivos, critérios de validação e janela proposta.
+- Testes automatizados de segurança e markup aprovados no CI. Navegador Cloudflare confirmou no site público `#cronograma`, os cinco projetos `ruby`, `argus`, `cerberus`, `ouroboros`, `wolfpack`, e a ausência dos antigos cards administrativos.
+- O documento de oito semanas continua armazenado como planejamento interno e histórico, sem exclusão de tarefas transversais.
+- A publicação é Direct Upload manual. Documentação alterada posteriormente não indica redeploy automático.
