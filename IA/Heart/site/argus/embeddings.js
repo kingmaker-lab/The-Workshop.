@@ -19,7 +19,9 @@
     "tokens neural tokens"
   ];
   const rows = corpus.map(encode);
-  const size = Math.max(259, ...rows.flat()) + 1;
+  const size = typeof merges === "undefined"
+    ? Math.max(258, ...rows.flat()) + 1
+    : 259 + merges.length;
   const dim = 8;
   let seed = 20261030;
   const random = () => {
