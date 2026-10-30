@@ -44,7 +44,10 @@ class AnomalyEngine:
             # bool is a subclass of int, so explicitly reject it.
             if isinstance(value, bool) or not isinstance(value, (int, float)):
                 continue
-            number = float(value)
+            try:
+                number = float(value)
+            except (OverflowError, ValueError):
+                continue
             if not isfinite(number) or number < 0:
                 continue
             key = (event.source, metric)
