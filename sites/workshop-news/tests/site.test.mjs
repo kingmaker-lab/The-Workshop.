@@ -139,3 +139,30 @@ test('editorial updates survive total upstream outage and never impersonate rele
  assert.equal(byId['games-20261030'].status,'NO AR');
  for(const x of data.highlights)assert.equal(new URL(x.url).protocol,'https:');
 });
+
+
+test('GitHub repository health stays online when GitHub Blog RSS is offline',async()=>{
+  const data=await makeFeed(async url=>{
+    if(url.includes('github.blog'))throw Error('RSS source blocked');
+    return fixtures(url);
+  });
+  assert.equal(data.partial,true);
+  assert.equal(data.sourceStatus.githubCommits,true);
+  assert.equal(data.sourceStatus.githubBranches,2);
+  assert.equal(data.sourceStatus.githubBlog,false);
+  assert.equal(data.sourceStatus.cloudflareBlog,true);
+  assert.ok(data.updates.length>0);
+  assert.ok(data.available.includes('workshop'));
+  assert.ok(!data.available.includes('GitHub Blog'));
+});
+test('GitHub repository errors do not masquerade as RSS feed failures',async()=>{
+  const data=await makeFeed(async url=>{
+    if(url.includes('api.github.com'))throw Error('GitHub API rate-limited');
+    return fixtures(url);
+  });
+  assert.equal(data.sourceStatus.githubCommits,false);
+  assert.equal(data.sourceStatus.githubBranches,0);
+  assert.equal(data.sourceStatus.githubBlog,true);
+  assert.equal(data.updates.length,0);
+  assert.equal(data.partial,true);
+});
