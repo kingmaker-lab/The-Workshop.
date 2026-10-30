@@ -1,0 +1,34 @@
+name: HeartAI Python research regressions
+
+on:
+  push:
+    paths:
+      - "IA/Heart/**"
+      - ".github/workflows/heartai-research.yml"
+  pull_request:
+    paths:
+      - "IA/Heart/**"
+      - ".github/workflows/heartai-research.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  local-research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    defaults:
+      run:
+        working-directory: IA/Heart
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate Python modules
+        run: python -m compileall -q heart scripts
+      - name: Full local runtime regression suite
+        run: python -m unittest discover -s tests -v
+      - name: HEART_002 to HEART_004 experiment smoke
+        run: |
+          python -m scripts.heart_experiments --db /tmp/heart-004-test.db --tokenizer /tmp/heart-004-tokenizer.json
