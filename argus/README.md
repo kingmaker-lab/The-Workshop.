@@ -34,9 +34,9 @@ O modo `auto` trata `.log`/`.syslog` como syslog e outros arquivos como JSONL.
 - Regras YAML podem identificar eventos especificos, como autenticacao bem-sucedida
   para `root`.
 
-Os limites ficam em `config.yaml` e as regras em `rules/default.yaml`. A baseline
-Welford em `detection/anomaly.py` e uma base pequena para a futura camada de
-anomalias; ainda nao participa do score padrao.
+Os limites ficam em `config.yaml` e as regras em `rules/default.yaml`. A baseline Welford em `detection/anomaly.py` alimenta a camada estatistica
+experimental v0.2 (`detection/anomaly_engine.py`), desligada por padrao. Quando
+ativada, suas deteccoes entram no score de risco.
 
 ## Testes
 
@@ -84,3 +84,11 @@ Dados artificiais, baseline contaminada, variacao legitima de trafego,
 alteracao de fontes, drift e grandes volumes podem gerar falso positivo.
 A baseline e reiniciada a cada invocacao, nao e persistida nem treinada
 entre sessoes. Avalie resultados com supervisao humana.
+
+## Laboratorio publico
+
+A pagina [ARGUS / Workshop Labs](https://workshop-labs.pages.dev/argus/)
+apresenta arquitetura, regras, um cenario sintetico de 17 eventos e 3 alertas,
+exemplos de telemetria, comandos locais, limites de seguranca e roadmap. E uma
+vitrine estatica sem coleta de logs ou API remota. O motor executa apenas no
+ambiente Python escolhido pelo pesquisador.
