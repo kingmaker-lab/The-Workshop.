@@ -76,3 +76,10 @@ O diretório `dist` contém **apenas cinco arquivos necessários à publicação
 - `GET /jogos`, `GET /jogos/` e `HEAD` devolvem `302 Location: https://wolfpack.wolfpackworkshop.workers.dev/`.
 - O destino é fixo; parâmetros de query não são propagados e outros métodos continuam 405.
 - Esse atalho não incorpora os jogos ao portal nem cria proxy, iframe ou nova API.
+
+### Publicação do atalho Jogos Interativos — 30/10/2026
+
+- Rota: `https://workshop-news.pages.dev/jogos` (302 para `https://wolfpack.wolfpackworkshop.workers.dev/`).
+- Deploy Cloudflare Pages (produção): `55bd886e-e9da-4807-a659-cff34278f848`; origem do build: commit `b4d2254564803fe8738c0c40301625184233b0cd`.
+- Testes CI para a versão de origem: **success**; homepage publicada contém dois atalhos `/jogos`.
+- A verificação direta do cabeçalho `Location` em produção ainda não foi concluída; o navegador Cloudflare atingiu um limite temporário de requisições (HTTP 429). O destino fixo e o status 302 foram cobertos por testes de código.
