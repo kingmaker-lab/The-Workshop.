@@ -1,0 +1,54 @@
+name: Wolfpack Academy Android Preview
+
+on:
+  pull_request:
+    paths:
+      - 'mobile/apps/wolfpack_academy/**'
+      - '.github/workflows/wolfpack-academy-android.yml'
+  push:
+    branches:
+      - feat/wolfpack-academy-android-starter
+    paths:
+      - 'mobile/apps/wolfpack_academy/**'
+      - '.github/workflows/wolfpack-academy-android.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  android-debug:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: mobile/apps/wolfpack_academy
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Generate Android platform
+        run: flutter create --platforms=android --org dev.wolfpackworkshop --project-name wolfpack_academy .
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Flutter analyze
+        run: flutter analyze
+      - name: Test
+        run: flutter test
+      - name: Build debug APK
+        run: flutter build apk --debug
+      - name: Upload APK for testing
+        uses: actions/upload-artifact@v4
+        with:
+          name: wolfpack-academy-debug-apk
+          path: mobile/apps/wolfpack_academy/build/app/outputs/flutter-apk/app-debug.apk
+          if-no-files-found: error
+          retention-days: 7
