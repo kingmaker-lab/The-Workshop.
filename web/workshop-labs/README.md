@@ -1,10 +1,31 @@
-# Workshop Labs — Hub versionado do CERBERUS
+# The Workshop Labs — portal público
 
-Código-fonte do **candidato** ao portal estático de navegação do Workshop, com card do WolfPack OS. O Pages atual foi implantado diretamente no Cloudflare, sem fonte Git associada; por isso esta implementação está isolada em branch para revisão e publicação controlada.
+Fonte versionada do portal [workshop-labs.pages.dev](https://workshop-labs.pages.dev/), implantado como **Cloudflare Pages Direct Upload** com Advanced Worker `_worker.js` e sem dependências de build.
 
-- Worker: `_worker.js`, sem dependências.
-- Testes: `node --test tests/smoke.test.mjs` com Node.js 20+.
-- Rotas: `/`, `/index.html`; outras rotas 404.
-- Segurança: headers CSP, XFO, nosniff, HSTS, Permissions-Policy e Referrer-Policy.
-- Deploy via Wrangler: `npx wrangler pages deploy web/workshop-labs --project-name workshop-labs --branch cerberus-preview` (verifique permissões e políticas da conta). **Não execute produção sem validar preview e garantir backup/rollback.**
-- Fonte: `Cerberus/registry/projects.json` documenta os destinos e seus estados. Na fase 1, os links também estão embutidos no HTML, reduzindo requests e dependências; um gate deve checar consistência entre ambos.
+## Páginas e destinos
+
+- `/`, `/index.html`: catálogo de cinco laboratórios.
+- `/argus/`: documentação estática do ARGUS, preservada por este Worker.
+- `/assets/labs.css`: folha de estilo de primeira parte.
+- ARES: link para o diretório de código ARES no repositório, evitando um caminho interno que retornava 404.
+- Crypto Lab: portal Cloudflare Pages independente.
+- WolfPack OS: plataforma interativa independente.
+- CERBERUS: [portal de arquitetura de software](https://cerberus.wolfpackworkshop.workers.dev/), com estudos 01–03 e ADRs. **Não é um gateway de segurança nem controla os outros aplicativos.**
+
+## Segurança
+
+- Zero JavaScript de cliente, nenhum formulário, iframe, proxy ou dados de usuários.
+- CSP estrita no catálogo: `default-src 'none'`, `script-src 'none'`, `style-src 'self'`, sem estilos inline.
+- Exceção de `style-src 'unsafe-inline'` restrita à rota legado `/argus/`, que mantém CSS inline.
+- HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, COOP, CORP.
+- `GET` e `HEAD` somente; 404 em caminhos não reconhecidos; 405 nos demais métodos.
+- Segurança de outros domínios/aplicações fora do escopo deste Worker e requer testes separados.
+
+## Testes e deploy
+
+```bash
+node --test web/workshop-labs/tests/smoke.test.mjs
+npx wrangler pages deploy web/workshop-labs --project-name workshop-labs --branch main
+```
+
+A implantação por API do Cloudflare Pages exige `manifest` JSON e o arquivo `_worker.js`. Fazer snapshot do deployment atual, validar os testes e os links, publicar e repetir os smoke tests após o deploy. Evitar substituir a aplicação por HTML estático isolado: o `_worker.js` também atende `/argus/`.
