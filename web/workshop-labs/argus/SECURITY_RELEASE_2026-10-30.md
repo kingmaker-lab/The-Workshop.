@@ -46,3 +46,21 @@ suite or an independent penetration test.
 only. This exception does not permit publishing the ARGUS backend.
 CI test outcomes remain NOT VERIFIED until the queued workflows complete.
 Post-deploy verification of live production URLs is still mandatory.
+
+## Production release and post-deploy verification
+
+- PR #22 squashed to `main` as
+  `42554c9c3add2cf512d1ccf7dab4b8e9600cc30d`.
+- Cloudflare `workshop-labs` deployment
+  `7e07493d-6fad-4724-8808-06641d15d058`: **production / deploy / success**.
+- Live Browser Rendering `https://workshop-labs.pages.dev/argus/`:
+  **HTTP 200**, architecture, evidence, quick-start, security and roadmap
+  all present, with HeartAI link intact.
+- Live Browser Rendering `https://workshop-labs.pages.dev/`:
+  **HTTP 200**, links to ARGUS, HeartAI, CERBERUS and Crypto all present.
+- Separate live HeartAI browser recheck: **NOT VERIFIED** in this final
+  pass due to Cloudflare Browser Rendering rate limit. Prior versions
+  of HeartAI were tested and the implementation was not changed here.
+- GitHub Actions for this release (ARGUS and Workshop Labs): **QUEUED**;
+  no pass claim. Check workflow results when runners execute them.
+- Scope remains static website only; ARGUS Python backend not published.
