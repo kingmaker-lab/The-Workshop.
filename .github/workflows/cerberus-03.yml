@@ -1,0 +1,34 @@
+name: CERBERUS 03 - SQLite HTTP fault gate
+
+on:
+  pull_request:
+    paths:
+      - "Cerberus/**"
+      - ".github/workflows/cerberus-03.yml"
+  push:
+    branches: [main]
+    paths:
+      - "Cerberus/**"
+      - ".github/workflows/cerberus-03.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  durable-delivery:
+    name: SQLite HTTP restart, rollback and idempotency
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Python stdlib only - offline integration tests
+        run: python -m unittest discover -s Cerberus/experiments/03-delivery-boundaries/sqlite_http -p "test_*.py" -v
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Public Worker contract and in-memory model regression
+        working-directory: Cerberus
+        run: npm test
