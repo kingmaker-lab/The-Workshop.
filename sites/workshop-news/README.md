@@ -107,3 +107,15 @@ O diretório público continua limitado a HTML, CSS, JS, SVG e o Worker. Antes d
 - Validação no ambiente publicado: homepage renderiza quatro cards; API contém quatro destaques e 12 registros de atividade; interface exibiu commits identificados com `PROTOCOLO RUBY` e `OUROBOROS EXP-008`.
 - No instante da validação, as fontes externas estavam parcialmente disponíveis (Hacker News e GitHub entre as quatro fontes principais); a indisponibilidade é indicada na interface. Não inferir que todo site externo esteja inativo permanentemente.
 - **Importante:** notas editoriais são revisadas manualmente para cada publicação; apenas feeds e commits seguem atualização automática conforme cache. Alterações posteriores da branch não estão automaticamente publicadas no Pages.
+
+
+### Correção de conectividade GitHub — 30/10/2026
+
+- **Problema identificado:** respostas intermitentes das consultas à API pública do GitHub no ambiente Cloudflare; isso podia ocultar os commits e confundir o status do GitHub com o feed independente `github.blog`.
+- **Solução:** indicadores independentes para API do repositório, GitHub Blog, Cloudflare Blog e Hacker News. O agregador tenta primeiro GitHub REST e, se falhar, o feed Atom público de commits em `github.com`.
+- **Contingência final:** quando ambos os caminhos falham, três referências verificadas em 30/10/2026 são exibidas com marcação explícita `REFERÊNCIA VERIFICADA`, sem reivindicar atualização em tempo real.
+- **Deploy:** `aae8ce82-6598-42c7-9932-7a27154b6966`, Cloudflare Pages production success, origem `e2a1d559d0d9a5eece95520761c2307e65ed7402`.
+- **Validação publicada:** `/api/feed` respondeu com `githubMode: atom`, `githubCommits: true`, duas branches e 12 registros de atividade. A homepage exibiu `GITHUB CONECTADO`, a indicação de feed alternativo e os cards de commits.
+- Fontes de notícias externas podem variar entre solicitações/PoPs. A presença de `FONTES PARCIAIS` **não** significa indisponibilidade do repositório.
+- Segurança preservada: URLs fixas de GitHub, TLS obrigatório, redirecionamento limitado ao próprio host e parser Atom com links HTTPS restritos a `github.com`.
+- Publicação continua por Direct Upload manual; GitHub PR #11 segue em revisão.
