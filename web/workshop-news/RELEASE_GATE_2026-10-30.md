@@ -58,3 +58,13 @@ Review: ChatGPT-assisted implementation; human review recommended.
   route response; recheck is recommended.
 - Security and status checks: original content remains dependent on the pinned
   previous deployment and must not be deleted until source migration.
+
+## Additional live verification
+
+- Browser Rendering of `https://workshop-news.pages.dev/` with a brief load wait:
+  **HTTP 200**, existing scripts completed and GitHub status displayed
+  `GITHUB CONECTADO`; ARGUS link remained present.
+- Browser Rendering of `https://workshop-news.pages.dev/argus/`: **HTTP 200**;
+  article title, 17-test reference and Labs link present.
+- The earlier live article status `NOT VERIFIED` was superseded by this
+  successful recheck after the temporary browser rate limit.
