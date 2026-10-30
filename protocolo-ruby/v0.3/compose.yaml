@@ -11,6 +11,7 @@ services:
     tmpfs: ["/tmp:rw,noexec,nosuid,size=16m"]
     ports: ["127.0.0.1:9293:9292"]
     depends_on: [redis]
+    networks: [internal]
     security_opt: ["no-new-privileges:true"]
     cap_drop: ["ALL"]
     pids_limit: 64
@@ -29,7 +30,7 @@ services:
     cap_drop: ["ALL"]
     pids_limit: 64
     mem_limit: 256m
-    network_mode: none
+    networks: [internal]
   redis:
     image: redis:7-alpine
     command: ["redis-server", "--save", "", "--appendonly", "no", "--maxmemory", "128mb", "--maxmemory-policy", "noeviction"]
