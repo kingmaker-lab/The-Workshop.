@@ -1,0 +1,31 @@
+{
+  "experiment": "OUROBOROS-008",
+  "design": "W16-K32-Feistel8-S4-P8-KS1",
+  "master_key": "0xFFFFFFFF",
+  "round_keys": [
+    "03",
+    "93",
+    "D8",
+    "F4",
+    "BF",
+    "E2",
+    "22",
+    "52"
+  ],
+  "pairs_per_input_bit": 32768,
+  "total_pairs": 524288,
+  "sac": {
+    "mean_flip_probability": 0.5001716613769531,
+    "mean_abs_deviation_from_half": 0.0022912025451660156,
+    "max_abs_deviation_from_half": 0.0074462890625,
+    "min_flip_probability": 0.4925537109375,
+    "max_flip_probability": 0.5074462890625,
+    "mean_changed_bits_per_pair": 8.00274658203125
+  },
+  "single_bit_differentials": {
+    "max_count": 16,
+    "max_probability": 0.00048828125,
+    "distinct_output_deltas_total": 412560
+  },
+  "scope": "Exhaustive one-bit input differences only; not production cryptography."
+}
