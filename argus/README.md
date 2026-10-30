@@ -43,3 +43,20 @@ anomalias; ainda nao participa do score padrao.
 ```sh
 python -m unittest discover -s argus/tests -v
 ```
+## Comportamento e limites da API
+
+O motor emite um alerta de brute force por sequencia ativa de falhas do mesmo
+IP. Novos alertas desse tipo sao possiveis quando a janela anterior expira ou
+apos a sequencia ser encerrada por um login bem-sucedido. Para evitar ruído,
+falhas adicionais enquanto o limiar ja esta ativo nao geram alertas repetidos.
+
+A API e somente leitura e vincula-se ao loopback por padrao. Os limites de
+`/alerts` devem estar entre 1 e 500, e os de `/timeline` entre 1 e 2000;
+valores invalidos retornam HTTP 400 em vez de serem truncados silenciosamente.
+Respostas JSON usam `Cache-Control: no-store`. Como eventos podem conter
+informacoes sensiveis, **nao exponha a porta da API na Internet** sem
+autenticacao, controle de acesso e revisao de seguranca adicionais.
+
+Os testes de regressao do ARGUS estao em
+`.github/workflows/argus-tests.yml`, com verificacoes de API, deteccoes e
+execucao basica pela CLI.
