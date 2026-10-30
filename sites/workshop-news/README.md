@@ -83,3 +83,17 @@ O diretório `dist` contém **apenas cinco arquivos necessários à publicação
 - Deploy Cloudflare Pages (produção): `55bd886e-e9da-4807-a659-cff34278f848`; origem do build: commit `b4d2254564803fe8738c0c40301625184233b0cd`.
 - Testes CI para a versão de origem: **success**; homepage publicada contém dois atalhos `/jogos`.
 - A verificação direta do cabeçalho `Location` em produção ainda não foi concluída; o navegador Cloudflare atingiu um limite temporário de requisições (HTTP 429). O destino fixo e o status 302 foram cobertos por testes de código.
+
+
+## Atualização editorial — 30/10/2026
+
+### Fresco da bancada
+A seção de destaques informa estágio e fonte verificável para:
+- **Ouroboros EXP-008:** pesquisa Feistel didática, oito rodadas e análise de um bit para três chaves; não usar para dados reais.
+- **Protocolo Ruby:** backend de *staging* somente leitura no diretório `protocolo-ruby/render`. Isto não significa backend público em produção.
+- **Security Hardening:** validações de segurança em revisão no PR #10.
+- **Jogos Interativos:** atalho /jogos já publicado para WolfPack OS.
+
+A atividade recente combina os commits de `main` com as branches experimentais `feature/protocolo-ruby-v0.1` e `exp-008-reduced-feistel`. Os feeds de branches são opcionais e nunca aumentam indevidamente a contagem das quatro fontes base. Datas e estados das quatro notas editoriais são estáticos e precisam de nova revisão para futuras mudanças; os commits são carregados dinamicamente. Um feed externo indisponível não remove as notas verificadas.
+
+O diretório público continua limitado a HTML, CSS, JS, SVG e o Worker. Antes de cada publicação, executar o workflow Workshop News, validar o estado dos destaques e testar o carregamento da rota /api/feed no site ao vivo.
