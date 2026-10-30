@@ -97,3 +97,13 @@ A seção de destaques informa estágio e fonte verificável para:
 A atividade recente combina os commits de `main` com as branches experimentais `feature/protocolo-ruby-v0.1` e `exp-008-reduced-feistel`. Os feeds de branches são opcionais e nunca aumentam indevidamente a contagem das quatro fontes base. Datas e estados das quatro notas editoriais são estáticos e precisam de nova revisão para futuras mudanças; os commits são carregados dinamicamente. Um feed externo indisponível não remove as notas verificadas.
 
 O diretório público continua limitado a HTML, CSS, JS, SVG e o Worker. Antes de cada publicação, executar o workflow Workshop News, validar o estado dos destaques e testar o carregamento da rota /api/feed no site ao vivo.
+
+
+### Release Workshop News: novidades da bancada (30/10/2026)
+
+- Cloudflare Pages `workshop-news`: produção atualizada, deployment `2071d8f9-99fd-4794-8249-add98448af72`, status **success**.
+- Origem da aplicação: commit `bbd02104fb72edf513351499a2cab72d4fef3556` da branch `feat/workshop-news-portal-20261030` (CI Workshop News + ARES: success).
+- Quatro notas editoriais com status verificável, links de referência e data; histórico inclui consultas a `main`, `feature/protocolo-ruby-v0.1` e `exp-008-reduced-feistel`.
+- Validação no ambiente publicado: homepage renderiza quatro cards; API contém quatro destaques e 12 registros de atividade; interface exibiu commits identificados com `PROTOCOLO RUBY` e `OUROBOROS EXP-008`.
+- No instante da validação, as fontes externas estavam parcialmente disponíveis (Hacker News e GitHub entre as quatro fontes principais); a indisponibilidade é indicada na interface. Não inferir que todo site externo esteja inativo permanentemente.
+- **Importante:** notas editoriais são revisadas manualmente para cada publicação; apenas feeds e commits seguem atualização automática conforme cache. Alterações posteriores da branch não estão automaticamente publicadas no Pages.
