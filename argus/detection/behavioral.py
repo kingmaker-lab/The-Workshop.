@@ -38,7 +38,9 @@ class BehavioralEngine:
                         {"failed_attempts": len(failures), "window_seconds": int(self.window.total_seconds())},
                     )
                 )
-            else:
+            elif len(failures) < self.failure_threshold:
+                # Re-arm only when the current sequence falls below the threshold.
+                # Otherwise every second failure would trigger a duplicate alert.
                 self._brute_force_reported.discard(event.src_ip)
         elif event.event_type == "authentication" and event.result == "success":
             if len(failures) >= self.failure_threshold:
