@@ -200,41 +200,13 @@ test('all GitHub API requests may fail while the Atom alternative remains live',
 });
 
 
-test('calendar matches Workshop News visual system and keeps five flagship projects',async()=>{
+test('public homepage does not expose the retired roadmap',async()=>{
   const {readFile}=await import('node:fs/promises');
   const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
   const css=await readFile(new URL('../styles.css',import.meta.url),'utf8');
-  assert.match(html,/id="cronograma"/);
-  assert.match(html,/href="#cronograma"/);
-  assert.match(html,/Cronograma da oficina/);
-  assert.match(html,/propostas de execução/);
-  assert.match(css,/schedule-list/);
-  assert.match(css,/background:linear-gradient\(120deg,#121d26,#0d1821\)/);
-  assert.match(css,/border:1px solid #24343c/);
-  assert.match(css,/color:var\(--accent\)/);
-  assert.match(css,/@media\(max-width:520px\)/);
-  assert.doesNotMatch(css,/project-milestone--ruby/);
-  assert.doesNotMatch(css,/roadmap-track-line/);
-  const rows=[...html.matchAll(/<li class="schedule-row" data-project="([a-z]+)">([\s\S]*?)<\/li>/g)];
-  const expected=[
-    ['ruby','2026-11-09','2026-11-15'],
-    ['argus','2026-11-16','2026-11-22'],
-    ['cerberus','2026-11-23','2026-11-29'],
-    ['ouroboros','2026-11-30','2026-12-06'],
-    ['wolfpack','2026-12-07','2026-12-13']
-  ];
-  assert.equal(rows.length,5);
-  for(let i=0;i<rows.length;i++){
-    const [,slug,body]=rows[i];
-    assert.equal(slug,expected[i][0]);
-    assert.match(body,/PLANEJADO/);
-    assert.match(body,/MARCO DE VALIDAÇÃO/);
-    assert.match(body,/target="_blank" rel="noopener noreferrer"/);
-    const dates=[...body.matchAll(/<time datetime="(\d{4}-\d{2}-\d{2})"/g)].map(m=>m[1]);
-    assert.deepEqual(dates,expected[i].slice(1));
-    const href=body.match(/<a href="([^"]+)"/)?.[1];
-    assert.ok(href&&(/^(https:\/\/github\.com\/|\/jogos$)/.test(href)));
-  }
-  assert.doesNotMatch(html,/class="roadmap-track"/);
-  assert.doesNotMatch(html,/class="project-milestone/);
+  assert.doesNotMatch(html,/id="cronograma"/);
+  assert.doesNotMatch(html,/href="#cronograma"/);
+  assert.doesNotMatch(html,/Cronograma da oficina/);
+  assert.doesNotMatch(html,/class="schedule-row"/);
+  assert.doesNotMatch(css,/schedule-list|schedule-row|roadmap-v3/);
 });
