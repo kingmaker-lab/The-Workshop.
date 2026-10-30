@@ -50,3 +50,7 @@ Requer autenticação em uma conta Cloudflare com acesso ao projeto. O comando u
 **Ouroboros é uma pesquisa autoral e experimental.** Os experimentos de SHA-256 truncado em 16/32 bits não representam uma prova de segurança do SHA-256 completo nem do motor C/Assembly. Não utilize essas construções para proteger informação sensível.
 
 **Build. Break. Understand. Rebuild.**
+
+
+- [008 — Cifra Feistel reduzida](https://wolfpack-crypto.pages.dev/experimentos/008/) — documentação pública em preparação; implementação e testes em [Ouroboros EXP-008](https://github.com/kingmaker-lab/The-Workshop./tree/exp-008-reduced-feistel/research/cryptography/ouroboros-low-level/experiments/008-reduced-feistel).
+- [009 — Análise diferencial e linear](https://wolfpack-crypto.pages.dev/experimentos/009/) — DDT e LAT completas da função de rodada do EXP-008, com enumeração exata e limites explícitos de interpretação. [Código e resultados](https://github.com/kingmaker-lab/The-Workshop./tree/exp-009-round-function-analysis/research/cryptography/ouroboros-low-level/experiments/009-round-function-analysis).
