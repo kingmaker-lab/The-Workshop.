@@ -57,3 +57,15 @@ O diretório `dist` contém **apenas cinco arquivos necessários à publicação
 4. Instrumentação mínima de saúde com política de privacidade clara.
 
 **Build. Break. Understand. Rebuild.**
+
+## Implantação real — 30/10/2026
+
+- **Produção:** https://workshop-news.pages.dev/
+- **Cloudflare Pages:** projeto `workshop-news`, branch de publicação `main`, método **Direct Upload**.
+- **Deployment ID:** `6a5d84a6-ad37-4ec1-b685-b30b51417e6e` (status Cloudflare: `success`).
+- **Fonte:** branch `feat/workshop-news-portal-20261030`, commit `c4c83082e6fea106cee79d5b0018fcbf455fe04e`.
+- **Empacotamento realizado:** Worker único contendo os quatro assets estáticos incorporados. A aplicação usa roteamento interno para responder HTML/CSS/JS/SVG; não depende do binding `env.ASSETS` neste deployment específico. A fonte versionada permanece modular e o build Wrangler produz os cinco arquivos separadamente.
+- **Verificação ao vivo:** navegador Cloudflare abriu a homepage, executou o JavaScript, exibiu 18 notícias e histórico de commits, e o endpoint `/api/feed` retornou artigos e atualizações.
+- **Estado das fontes:** 3 de 4 disponíveis na verificação (Hacker News, Cloudflare Blog e GitHub commits); GitHub Blog indisponível naquele ciclo. O portal apresenta `FONTES PARCIAIS` corretamente.
+- **Limites:** respostas HTTP/cabeçalhos, análise de acessibilidade visual, CSP em navegador e todos os casos 404/405 ainda exigem verificação dedicada em produção. Não há sincronização automática GitHub → Cloudflare; cada nova versão exige deploy manual.
+
