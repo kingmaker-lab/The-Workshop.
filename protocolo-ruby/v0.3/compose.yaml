@@ -1,0 +1,40 @@
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: v0.3/Dockerfile
+    command: ["bundle", "exec", "puma", "-C", "v0.3/puma.rb"]
+    environment:
+      RUBY_API_TOKEN: ${RUBY_API_TOKEN:?Set a random 32-byte token}
+      REDIS_URL: redis://redis:6379/0
+    read_only: true
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=16m"]
+    ports: ["127.0.0.1:9293:9292"]
+    depends_on: [redis]
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    pids_limit: 64
+    mem_limit: 256m
+  worker:
+    build:
+      context: ..
+      dockerfile: v0.3/Dockerfile
+    command: ["bundle", "exec", "sidekiq", "-r", "./v0.3/worker.rb", "-q", "analysis", "-c", "1"]
+    environment:
+      REDIS_URL: redis://redis:6379/0
+    read_only: true
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=16m"]
+    depends_on: [redis]
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    pids_limit: 64
+    mem_limit: 256m
+    network_mode: none
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no", "--maxmemory", "128mb", "--maxmemory-policy", "noeviction"]
+    networks: [internal]
+    security_opt: ["no-new-privileges:true"]
+networks:
+  internal:
+    internal: true
