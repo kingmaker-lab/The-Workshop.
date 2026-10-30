@@ -138,3 +138,9 @@ O diretório público continua limitado a HTML, CSS, JS, SVG e o Worker. Antes d
 - **Conteúdo:** oito semanas planejadas entre 02/11 e 27/12/2026, com marcos, critérios e links para os projetos.
 - **Verificação em produção:** homepage contém link `#cronograma`, oito cards, datas e conteúdo esperado; as suítes GitHub Actions Workshop News e ARES finalizaram com sucesso.
 - **Observação:** seção HTML estática, disponível sem feed de notícias; as datas são propostas de trabalho, não compromisso de entrega. Alterações da branch só chegam ao Cloudflare em novo Direct Upload.
+
+## Roadmap em destaque: somente projetos principais (v1.1)
+
+A seção `#cronograma` agora prioriza cinco projetos: Protocolo Ruby, ARGUS/HeartAI, Cerberus, Ouroboros EXP-008 e WolfPack OS. Todos os cards têm janela proposta, marco de validação, status inicial PLANEJADO e link ao projeto. O layout usa cartões com acentos distintos e adapta-se a telas pequenas.
+
+**Atenção:** o cronograma operacional anterior de oito semanas, incluindo segurança, manutenção do News e retrospectiva, segue preservado em [docs/roadmaps/workshop-2026-nov-dec.md](../../docs/roadmaps/workshop-2026-nov-dec.md). As etapas de apoio foram removidas apenas da vitrine pública. As datas não representam anúncios de lançamento.
