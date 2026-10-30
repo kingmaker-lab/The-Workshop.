@@ -11,6 +11,12 @@ const SECURITY = Object.freeze({
 });
 const HEADERS_API = {'Content-Type':'application/json; charset=utf-8','Cache-Control':'public, max-age=120, s-maxage=300, stale-while-revalidate=180'};
 const GH_COMMITS = 'https://api.github.com/repos/kingmaker-lab/The-Workshop./commits?per_page=7';
+const GH_ATOM_BASE = 'https://github.com/kingmaker-lab/The-Workshop./commits/';
+const LAST_VERIFIED_UPDATES = Object.freeze([
+  {id:'snapshot-ruby',title:'docs(protocolo-ruby): describe Cloudflare to Render read-only staging gateway',url:'https://github.com/kingmaker-lab/The-Workshop./tree/feature/protocolo-ruby-v0.1/protocolo-ruby/render',published:'2026-10-30T15:37:24Z',branch:'Protocolo Ruby',sha:'5f53e7f',source:'The Workshop',category:'Workshop'},
+  {id:'snapshot-ouroboros',title:'Add CI for Ouroboros EXP-008',url:'https://github.com/kingmaker-lab/The-Workshop./tree/exp-008-reduced-feistel/research/cryptography/ouroboros-low-level/experiments/008-reduced-feistel',published:'2026-10-30T14:23:42Z',branch:'Ouroboros EXP-008',sha:'7932fd7',source:'The Workshop',category:'Workshop'},
+  {id:'snapshot-security',title:'fix(ares): explicitly forbid object embedding in CSP',url:'https://github.com/kingmaker-lab/The-Workshop./pull/10',published:'2026-10-30T14:39:32Z',branch:'Security Review',sha:'5c10eb1',source:'The Workshop',category:'Workshop'}
+]);
 const GH_BRANCHES = [
   {branch:'feature/protocolo-ruby-v0.1',title:'Protocolo Ruby'},
   {branch:'exp-008-reduced-feistel',title:'Ouroboros EXP-008'}
@@ -82,6 +88,18 @@ function parseCommits(json) {
     return {id:text(commit.sha,40),title,url,source:'The Workshop',category:categorize(title,'Workshop'),published:date(commit?.commit?.committer?.date||commit?.commit?.author?.date),sha:text(commit.sha,7)};
   }).filter(Boolean);
 }
+function parseGitHubAtom(xml,limit=10) {
+  const entries=String(xml).match(/<entry(?:\\s[^>]*)?>[\\s\\S]*?<\\/entry>/gi)||[];
+  return entries.slice(0,limit).map((entry)=>{
+    const title=text(field(entry,'title'),130);
+    const tag=entry.match(/<link\\b[^>]*\\bhref\s*=\s*["']([^"']+)["'][^>]*\\/?\s*>/i);
+    const url=safeUrl(decodeXml(tag?.[1]),['github.com']);
+    const published=date(field(entry,'updated')||field(entry,'published'));
+    if(!title||!url||!url.includes('/commit/'))return null;
+    const sha=new URL(url).pathname.split('/commit/')[1]?.split('/')[0]||'';
+    return {id:text(sha,40),title,url,source:'The Workshop',category:categorize(title,'Workshop'),published,sha:text(sha,7)};
+  }).filter(Boolean);
+}
 async function readLimited(response) {
   const length=Number(response.headers.get('content-length')||0);
   if(!response.ok || length>SOURCE_LIMIT) throw Error('upstream not available');
@@ -112,28 +130,42 @@ async function pull(fetcher,url,accept='application/json'){
   }
   throw Error('upstream redirect limit');
 }
+async function fetchGitHubCommits(fetcher,branch,limit=4){
+  const url=branch==='main'?GH_COMMITS:'https://api.github.com/repos/kingmaker-lab/The-Workshop./commits?sha='+encodeURIComponent(branch)+'&per_page='+limit;
+  try {
+    const data=parseCommits(JSON.parse(await pull(fetcher,url)));
+    if(data.length)return {data:data.slice(0,limit),mode:'api'};
+  } catch { /* GitHub REST API may be rate limited on shared Cloudflare egress. */ }
+  const atomUrl=GH_ATOM_BASE+branch.split('/').map(encodeURIComponent).join('/')+'.atom';
+  const data=parseGitHubAtom(await pull(fetcher,atomUrl,'application/atom+xml, application/xml;q=0.9'),limit);
+  if(!data.length)throw Error('GitHub Atom unavailable');
+  return {data,mode:'atom'};
+}
 async function makeFeed(fetcher=fetch) {
   const tasks=[
     pull(fetcher,HN).then(x=>({type:'hn',data:parseHn(JSON.parse(x))})),
     ...FEEDS.map(s=>pull(fetcher,s.url,'application/rss+xml, application/xml;q=0.9, text/xml;q=0.8').then(x=>({type:s.name,data:parseRss(x,s)}))),
-    pull(fetcher,GH_COMMITS).then(x=>({type:'workshop',data:parseCommits(JSON.parse(x)).map(x=>({...x,branch:'main'}))})),
-    ...GH_BRANCHES.map(b=>pull(fetcher,'https://api.github.com/repos/kingmaker-lab/The-Workshop./commits?sha='+encodeURIComponent(b.branch)+'&per_page=4').then(x=>({type:'branch',data:parseCommits(JSON.parse(x)).filter(z=>z.published&&Date.parse(z.published)>=Date.parse('2026-10-22T00:00:00Z')).map(z=>({...z,branch:b.title}))})))
+    fetchGitHubCommits(fetcher,'main',7).then(x=>({type:'workshop',mode:x.mode,data:x.data.map(z=>({...z,branch:'main'}))})),
+    ...GH_BRANCHES.map(b=>fetchGitHubCommits(fetcher,b.branch,4).then(x=>({type:'branch',mode:x.mode,data:x.data.filter(z=>z.published&&Date.parse(z.published)>=Date.parse('2026-10-22T00:00:00Z')).map(z=>({...z,branch:b.title}))})))
   ];
   const settled=await Promise.allSettled(tasks);
-  const articles=[];let updates=[];const available=[];const branchAvailable=[];
+  const articles=[];let updates=[];const available=[];const branchAvailable=[];let githubMode='offline';
   for(let i=0;i<settled.length;i++){
     if(settled[i].status!=='fulfilled')continue;
-    const {type,data}=settled[i].value;
+    const {type,data,mode}=settled[i].value;
     if(type!=='branch')available.push(type);
-    if(type==='workshop')updates.push(...data);
+    if(type==='workshop'){updates.push(...data);githubMode=mode;}
     else if(type==='branch'){updates.push(...data);branchAvailable.push('branch');}
     else articles.push(...data);
   }
+  const githubLive=available.includes('workshop')||branchAvailable.length>0;
+  const fallbackUsed=!githubLive;
+  if(fallbackUsed)updates.push(...LAST_VERIFIED_UPDATES);
   articles.sort((a,b)=>Date.parse(b.published||0)-Date.parse(a.published||0));
   updates=Array.from(new Map(updates.map(u=>[u.url,u])).values())
     .sort((a,b)=>Date.parse(b.published||0)-Date.parse(a.published||0)).slice(0,12);
   const unique=Array.from(new Map(articles.map(a=>[a.url,a])).values()).slice(0,24);
-  return {generatedAt:new Date().toISOString(),partial:available.length!==(2+FEEDS.length),available,sourceStatus:{githubCommits:available.includes('workshop'),githubBranches:branchAvailable.length,hackerNews:available.includes('hn'),githubBlog:available.includes('GitHub Blog'),cloudflareBlog:available.includes('Cloudflare Blog')},articles:unique,updates,highlights:HIGHLIGHTS,branchSourcesAvailable:branchAvailable.length,projectLinks:[
+  return {generatedAt:new Date().toISOString(),partial:available.length!==(2+FEEDS.length),available,sourceStatus:{githubCommits:available.includes('workshop'),githubBranches:branchAvailable.length,githubMode:githubLive?(githubMode==='offline'?'branch-only':githubMode):'snapshot',fallbackUsed,snapshotAsOf:fallbackUsed?'2026-10-30T15:37:24Z':null,hackerNews:available.includes('hn'),githubBlog:available.includes('GitHub Blog'),cloudflareBlog:available.includes('Cloudflare Blog')},articles:unique,updates,highlights:HIGHLIGHTS,branchSourcesAvailable:branchAvailable.length,projectLinks:[
     {name:'Workshop Labs',url:'https://workshop-labs.pages.dev/',tag:'Hub de pesquisa'},
     {name:'Crypto Lab',url:'https://wolfpack-crypto.pages.dev/',tag:'Criptografia e matemática'},
     {name:'WolfPack OS',url:'https://wolfpack.wolfpackworkshop.workers.dev/',tag:'Laboratórios interativos'},
@@ -178,5 +210,5 @@ async function handler(request,env={},ctx={}) {
   headers.set('Cache-Control',response.status===200?(pathname==='/'||pathname==='/index.html'?'public, max-age=120':'public, max-age=3600'):'no-store');
   return new Response(request.method==='HEAD'?null:response.body,{status:response.status,headers});
 }
-export {makeFeed,parseRss,parseHn,parseCommits,safeUrl,categorize,handler};
+export {makeFeed,parseRss,parseHn,parseCommits,parseGitHubAtom,fetchGitHubCommits,safeUrl,categorize,handler};
 export default {fetch:handler};
