@@ -8,7 +8,11 @@ const github=[{sha:'1234567890abcdef',html_url:'https://github.com/kingmaker-lab
 const hn={hits:[{title:'Ruby security announcement',url:'https://ruby-lang.org/en/news/',objectID:'123',points:19,created_at:'2026-10-30T14:00:00Z'}, {title:'Unsafe',url:'javascript:alert(1)',objectID:'999',created_at:'2026-10-30T14:01:00Z'}]};
 const fixtures=url=>{
   if(url.includes('algolia.com'))return new Response(JSON.stringify(hn),{status:200,headers:{'content-type':'application/json'}});
-  if(url.includes('api.github.com'))return new Response(JSON.stringify(github),{status:200});
+  if(url.includes('api.github.com')){
+    const branch=url.includes('sha=feature')?'ruby':url.includes('sha=exp-008')?'ouroboros':'main';
+    const commits=github.map(c=>({...c,sha:branch+'-1234567890abcdef',html_url:'https://github.com/kingmaker-lab/The-Workshop./commit/'+branch+'123456',commit:{...c.commit,message:branch+': '+c.commit.message}}));
+    return new Response(JSON.stringify(commits),{status:200});
+  }
   if(url.includes('blog.cloudflare.com'))return new Response(rss,{status:200});
   if(url.includes('github.blog'))return new Response('<rss><channel><item><title>GitHub developer update</title><link>https://github.blog/changelog/</link><pubDate>Fri, 30 Oct 2026 08:00:00 GMT</pubDate></item></channel></rss>',{status:200});
   throw Error('unexpected URL '+url);
