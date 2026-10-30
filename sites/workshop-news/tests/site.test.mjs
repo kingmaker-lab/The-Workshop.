@@ -82,3 +82,19 @@ test('static assets preserve security headers and HEAD semantics',async()=>{
    assert.equal(head.status,200);assert.equal(await head.text(),'');
  }
 });
+
+test('feed follows only same-host HTTPS redirects (not arbitrary hosts)',async()=>{
+ const hostile=await makeFeed(async url=>{
+   if(url.includes('blog.cloudflare.com'))return new Response(null,{status:302,headers:{location:'https://127.0.0.1/private'}});
+   return fixtures(url);
+ });
+ assert.ok(!hostile.available.includes('Cloudflare Blog'));
+ assert.equal(hostile.partial,true);
+ let redirected=false;
+ const trusted=await makeFeed(async url=>{
+   if(url==='https://blog.cloudflare.com/rss/'){redirected=true;return new Response(null,{status:301,headers:{location:'/rss'}});}
+   return fixtures(url);
+ });
+ assert.ok(redirected);
+ assert.ok(trusted.available.includes('Cloudflare Blog'));
+});
