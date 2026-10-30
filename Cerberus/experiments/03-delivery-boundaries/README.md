@@ -15,11 +15,11 @@ Dois modelos mínimos, com as mesmas validações:
 
 ## Executar (Node.js >= 20)
 
-A partir de \`Cerberus\`:
+A partir de `Cerberus`:
 
-\`\`\`sh
+```sh
 node --test experiments/03-delivery-boundaries/model.test.mjs
-\`\`\`
+```
 
 Os testes injetam falha antes da entrega e falha após o processamento, mas antes do *ack*. Na segunda situação há duas tentativas de entrega e somente um efeito no consumidor idempotente.
 
