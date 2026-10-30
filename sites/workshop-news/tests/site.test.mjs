@@ -214,12 +214,12 @@ test('public homepage does not expose the retired roadmap',async()=>{
 });
 
 
-test('Ruby Tool entry is a fixed redirect to the live Ruby Protocol section',async()=>{
+test('Ruby Tool entry is a fixed redirect to the standalone Protocolo Ruby tool',async()=>{
  for(const method of ['GET','HEAD']){
    for(const path of ['/ruby','/ruby/','/ruby?next=https://evil.invalid']){
      const response=await handler(new Request(new URL(path,base),{method}),fakeAssets);
      assert.equal(response.status,302,path);
-     assert.equal(response.headers.get('location'),'https://wolfpack.wolfpackworkshop.workers.dev/#jogar');
+     assert.equal(response.headers.get('location'),'https://protocolo-ruby.wolfpackworkshop.workers.dev/');
      assert.equal(response.headers.get('cache-control'),'no-store');
      assert.equal(response.headers.get('x-content-type-options'),'nosniff');
      assert.equal(await response.text(),'');
@@ -233,5 +233,5 @@ test('Ruby Tool entry is a fixed redirect to the live Ruby Protocol section',asy
  const {readFile}=await import('node:fs/promises');
  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
  assert.equal((html.match(/href="\/ruby"/g)||[]).length,2);
- assert.match(html,/Ruby Tool/);
+ assert.match(html,/Protocolo Ruby/);
 });
