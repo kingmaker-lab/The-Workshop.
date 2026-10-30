@@ -1,0 +1,31 @@
+name: Ouroboros EXP-008
+
+on:
+  push:
+    branches: [exp-008-reduced-feistel]
+    paths:
+      - 'research/cryptography/ouroboros-low-level/experiments/008-reduced-feistel/**'
+      - '.github/workflows/ouroboros-exp008.yml'
+  pull_request:
+    paths:
+      - 'research/cryptography/ouroboros-low-level/experiments/008-reduced-feistel/**'
+      - '.github/workflows/ouroboros-exp008.yml'
+  workflow_dispatch:
+
+jobs:
+  test-and-characterize:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: research/cryptography/ouroboros-low-level/experiments/008-reduced-feistel
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile Python sources
+        run: python -m py_compile feistel16.py probe.py test_exp008.py
+      - name: Run unit and exhaustive permutation tests
+        run: python -m unittest -v
+      - name: Check deterministic probe
+        run: python probe.py --key 0x01234567 --output /tmp/exp008-ci
