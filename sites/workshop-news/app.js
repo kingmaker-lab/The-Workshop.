@@ -1,6 +1,6 @@
 // Workshop News: untrusted headlines are always rendered with textContent.
 const $=id=>document.getElementById(id);
-const state={articles:[],updates:[],filter:'Tudo',search:'',loaded:false};
+const state={articles:[],updates:[],highlights:[],filter:'Tudo',search:'',loaded:false};
 const relative=new Intl.RelativeTimeFormat('pt-BR',{numeric:'auto'});
 const labels={'Segurança':'SECURITY','IA':'ARTIFICIAL INTELLIGENCE','Dev':'DEVELOPMENT','Infra':'INFRASTRUCTURE','Tech':'TECHNOLOGY'};
 function age(iso){
@@ -57,13 +57,37 @@ function renderNews(){
     wrap.append(a);
   }
 }
+function renderHighlights(){
+  const wrap=$('highlights-list');
+  if(!wrap)return;
+  wrap.replaceChildren();
+  if(!state.loaded){
+    for(let i=0;i<2;i++)wrap.append(el('div','skeleton'));
+    return;
+  }
+  if(!state.highlights.length){
+    wrap.append(emptyMessage('Nenhum destaque neste ciclo','Os destaques editoriais serão publicados após revisão das fontes.'));
+    return;
+  }
+  for(const item of state.highlights.slice(0,6)){
+    const a=external(item.url,'highlight-card');if(!a)continue;
+    const top=el('span','highlight-top');
+    top.append(el('span','highlight-topic',item.category||'The Workshop'),el('span','highlight-state',item.status||'EM PESQUISA'));
+    const title=el('strong','highlight-title',item.title);
+    const description=el('span','highlight-description',item.summary||'');
+    const bottom=el('span','highlight-footer');
+    bottom.append(el('span','',age(item.published)),el('span','','LER FONTE ↗'));
+    a.append(top,title,description,bottom);
+    wrap.append(a);
+  }
+}
 function renderActivity(){
   const wrap=$('activity-list');wrap.replaceChildren();
   if(!state.loaded){wrap.append(el('div','activity-loading','Lendo o repositório...'));return;}
   if(!state.updates.length){wrap.append(emptyMessage('GitHub indisponível','O histórico não pôde ser consultado agora. Confira os commits diretamente no repositório.'));return;}
   for(const item of state.updates.slice(0,6)){
     const a=external(item.url,'activity-item');if(!a)continue;
-    a.append(el('span','activity-tag',item.sha?'COMMIT / '+item.sha:'COMMIT'),el('span','activity-title',item.title),el('span','activity-meta',age(item.published)));
+    a.append(el('span','activity-tag',(item.branch||'main').toUpperCase()+' / '+(item.sha||'COMMIT')),el('span','activity-title',item.title),el('span','activity-meta',age(item.published)));
     wrap.append(a);
   }
 }
@@ -78,6 +102,7 @@ async function refresh(){
     if(!Array.isArray(data.articles)||!Array.isArray(data.updates)||!Array.isArray(data.available))throw Error('invalid feed');
     state.articles=data.articles.filter(x=>x&&typeof x.title==='string'&&trustedLink(x.url));
     state.updates=data.updates.filter(x=>x&&typeof x.title==='string'&&trustedLink(x.url));
+    state.highlights=(Array.isArray(data.highlights)?data.highlights:[]).filter(x=>x&&typeof x.title==='string'&&trustedLink(x.url));
     $('metric-news').textContent=state.articles.length;
     $('metric-updates').textContent=state.updates.length;
     $('metric-sources').textContent=data.available.length+' / 4';
@@ -89,7 +114,7 @@ async function refresh(){
     $('sync-hint').textContent='Tente recarregar a página';
     // Preserve previously fetched articles rather than replacing them with unverified fallback headlines.
   }finally{
-    state.loaded=true;renderNews();renderActivity();
+    state.loaded=true;renderNews();renderActivity();renderHighlights();
   }
 }
 for(const button of document.querySelectorAll('[data-filter]')){
