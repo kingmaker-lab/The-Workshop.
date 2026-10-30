@@ -42,3 +42,12 @@
   be safely updated.
 
 Reviewer: automated checks plus ChatGPT-assisted diff review; human review encouraged.
+
+## Production follow-up — 2026-10-30
+
+- Workshop Labs production deployment: `84f5384a-144a-466e-97c9-877bb7dc6f82`, **SUCCESS**.
+- Browser Rendering GET `https://workshop-labs.pages.dev/argus/`: **HTTP 200**;
+  expected ARGUS, Welford and static-only disclaimer were visible.
+- Public website is documentation only. ARGUS processing/API not deployed.
+- The earlier "External HTTP validation: NOT VERIFIED" above describes the
+  initial preview attempt; the production route was checked afterward.
