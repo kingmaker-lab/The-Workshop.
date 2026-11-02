@@ -4,14 +4,14 @@ on:
   push:
     branches: [main]
     paths:
-      - "web/workshop-news/**"
+      - "sites/workshop-news/**"
       - "web/workshop-labs/**"
       - "sites/wolfpack-crypto/**"
       - "scripts/pages-release.mjs"
       - ".github/workflows/pages-artifact-gate.yml"
   pull_request:
     paths:
-      - "web/workshop-news/**"
+      - "sites/workshop-news/**"
       - "web/workshop-labs/**"
       - "sites/wolfpack-crypto/**"
       - "scripts/pages-release.mjs"
@@ -40,8 +40,9 @@ jobs:
           set -euo pipefail
           case "${{ matrix.app }}" in
             workshop-news)
-              node --check web/workshop-news/_worker.js
-              node --test web/workshop-news/tests/*.test.mjs
+              node --check sites/workshop-news/_worker.js
+              node sites/workshop-news/scripts/build.mjs
+              node --test sites/workshop-news/tests/*.test.mjs
               ;;
             workshop-labs)
               node --check web/workshop-labs/_worker.js
@@ -55,14 +56,24 @@ jobs:
         env:
           RELEASE_SHA: ${{ github.sha }}
         run: node scripts/pages-release.mjs "${{ matrix.app }}"
-      - name: Verify artifact hash
+      - name: Verify every immutable artifact file
         shell: bash
         run: |
           set -euo pipefail
           APP="${{ matrix.app }}"
-          EXPECTED=$(node -e "console.log(require('./release/'+process.argv[1]+'/release-manifest.json').sha256)" "$APP")
-          GOT=$(sha256sum "release/$APP/deploy/_worker.js" | awk '{print $1}')
-          test "$EXPECTED" = "$GOT"
+          node - "$APP" <<'NODE'
+          const fs=require('fs'),crypto=require('crypto'),path=require('path');
+          const app=process.argv[2],root=path.join('release',app);
+          const m=JSON.parse(fs.readFileSync(path.join(root,'release-manifest.json'),'utf8'));
+          const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+          for(const f of m.files){
+            const bytes=fs.readFileSync(path.join(root,'deploy',f.dest));
+            if(hash(bytes)!==f.sha256)throw Error('hash mismatch: '+f.dest);
+          }
+          const aggregate=hash(Buffer.from([...m.files].sort((a,b)=>a.dest.localeCompare(b.dest)).map(f=>f.dest+':'+f.sha256).join('\n')));
+          if(aggregate!==m.aggregate_sha256)throw Error('aggregate hash mismatch');
+          console.log('verified',m.app,m.files.length,'files',m.aggregate_sha256);
+          NODE
       - uses: actions/upload-artifact@v4
         with:
           name: pages-${{ matrix.app }}-${{ github.sha }}
