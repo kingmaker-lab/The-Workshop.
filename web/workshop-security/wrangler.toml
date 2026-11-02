@@ -9,3 +9,23 @@ database_name = "workshop-security-ctf"
 database_id = "ee63fbe2-8e54-49b6-8152-815cc118766c"
 
 # FLAG_SECRET is configured as an encrypted Worker secret.
+
+
+[[ratelimits]]
+name = "CTF_AUTH_LIMITER"
+namespace_id = "202611031"
+  [ratelimits.simple]
+  limit = 8
+  period = 60
+
+[[ratelimits]]
+name = "CTF_SUBMIT_LIMITER"
+namespace_id = "202611032"
+  [ratelimits.simple]
+  limit = 40
+  period = 60
+
+[observability]
+enabled = true
+head_sampling_rate = 0.1
+redact_query_string = true
