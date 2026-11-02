@@ -47,3 +47,10 @@ Deploy manual: `npx wrangler deploy web/workshop-kids/worker.js --name workshop-
 - Nenhum dado de conversa é guardado em banco/localStorage; rate limit temporário na memória da instância do Worker (não é rate limit global). O provedor pode tratar logs operacionais e textos enviados para inferência. Não existem autenticação infantil, chat entre usuários ou ferramentas executáveis.
 - Os filtros são incompletos e não garantem segurança. Revisão de salvaguardas, carga, acessibilidade e LGPD/ECA Digital antes de expandir chat. Limites globais Cloudflare devem ser configurados no painel.
 - Deploy exige Workers AI binding `AI` (`{type:"ai",name:"AI"}`). O modelo utiliza a franquia e pode gerar custos conforme o plano da conta.
+
+## Blade 2.0: guardião digital (02/11/2026)
+- Nova arte fornecida pelo projeto, otimizada como `web/workshop-kids/assets/blade.webp` (768 × 768).
+- Imagem substituída na vitrine dos mascotes e exibida integralmente na seção `/#blade`, com destaque para privacidade, direitos, proteção e navegação consciente.
+- A seção direciona famílias e educadores ao aviso `/#responsaveis`; o aviso mantém o acesso a `https://workshop-news.pages.dev/#workshop`.
+- A rota pública `/assets/blade.webp` mantém-se interna ao Worker, sem chamada a fornecedores de imagens.
+- O binding `AI` do Heart foi preservado no deploy.
