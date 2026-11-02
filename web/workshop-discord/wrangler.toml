@@ -7,3 +7,8 @@ workers_dev = true
 # Enable the Workers AI binding if you want Heart's model-assisted educational answers.
 [ai]
 binding = "AI"
+
+[observability]
+enabled = true
+head_sampling_rate = 0.1
+redact_query_string = true
