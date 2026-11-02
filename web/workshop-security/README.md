@@ -20,3 +20,10 @@ Inicialize o banco usando schema.sql.
 
 ## Roadmap
 Turnstile e limites distribuídos, moderação dos codinomes, novas categorias e níveis, painel administrativo e auditoria antifraude.
+
+
+## Mascote oficial: Argus
+Argus é o guardião da Security Division e acompanha o onboarding da arena. A arte oficial está em `assets/argus.avif` (AVIF responsivo, 1672 × 941), carregada no próprio domínio como `/assets/argus.avif`. O Oni permanece como anfitrião na seção original, sem mudanças de fluxo.
+
+## Compilação reproduzível
+Execute `node web/workshop-security/build.mjs` antes de publicar com `wrangler deploy --config web/workshop-security/wrangler.toml` (ajuste o diretório de trabalho conforme o Wrangler). O build injeta HTML/CSS/JS e AVIF no Worker, mantendo o conteúdo servido por rotas `GET` de mesma origem. `FLAG_SECRET` deve continuar configurado como segredo, nunca versionado. Testes: `node --test web/workshop-security/tests/argus.test.mjs`.

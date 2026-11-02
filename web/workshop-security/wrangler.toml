@@ -1,5 +1,5 @@
 name = "workshop-security"
-main = "worker.mjs"
+main = "dist/worker.mjs"
 compatibility_date = "2026-11-02"
 workers_dev = true
 
