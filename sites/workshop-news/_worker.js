@@ -222,7 +222,7 @@ async function handler(request,env={},ctx={}) {
     return request.method==='HEAD'?new Response(null,{status:response.status,headers:response.headers}):response;
   }
   if(pathname.startsWith('/api/'))return error(404);
-  if(!['/','/index.html','/styles.css','/app.js','/favicon.svg'].includes(pathname))return error(404);
+  if(!['/','/index.html','/styles.css','/app.js','/favicon.svg','/fake.svg','/fake-walker.css','/fake-walker.js'].includes(pathname))return error(404);
   if(!env.ASSETS || typeof env.ASSETS.fetch!=='function')return error(404);
   const response=await env.ASSETS.fetch(request);
   const headers=new Headers(response.headers);
