@@ -93,3 +93,14 @@ Deploy manual: `npx wrangler deploy web/workshop-kids/worker.js --name workshop-
 - Imagens antigas não devem mais ser utilizadas no HTML, no JavaScript ou nos avatares. As versões são baseadas nos blobs WebP atuais do repositório. Não há dependência de imagens externas.
 - No próximo lançamento de cada mascote, atualizar o WebP canônico e o parâmetro de versão em **todas** as páginas, inclusive o quadrinho, a capa do jogo, o tabuleiro e os chats.
 - Validação automática em `tests/heart-feminine-canon.test.mjs` e suíte `node --test web/workshop-kids/tests/*.test.mjs`.
+
+## Workshop Kids Game Lab: três jogos publicados (02/11/2026)
+- **Catálogo:** `/jogos/` (página inicial também apresenta o Game Lab).
+- **Heart's Robot Factory:** `/jogos/robot-factory/`, quatro missões com comandos, peças, obstáculos, sensores condicionais e repetições. Jogo de programação inteiramente local.
+- **Blade: Cyber Guardian:** `/jogos/cyber-guardian/`, cinco situações fictícias de segurança infantil, privacidade, senhas, mensagens suspeitas, boatos e respeito, com decisões e explicações.
+- **Mini Circuit Lab:** `/jogos/mini-circuit/`, três experimentos didáticos com LED vermelho, resistor, fonte virtual de 3/5 V, polaridade e interruptor. Modelo aproximado de circuito CC série, **não um simulador profissional**, nem instrução para usar rede elétrica.
+- Fontes editoriais versionadas em `web/workshop-kids/games/`: `catalog.js`, `robot.js`, `guardian.js`, `circuit.js`. Durante o deploy manual, o conteúdo é incorporado nas constantes do `worker.js`; manter ambos sincronizados em mudanças futuras.
+- Rotas de assets: `/jogos/games.css`, `/jogos/robot.js`, `/jogos/guardian.js`, `/jogos/circuit.js` e as artes oficiais da Heart e do Blade, hospedadas pela própria origem.
+- Sem cadastro, cookies de aplicação, chat entre crianças, placar público, anúncios ou coleta de escolhas/comandos. Jogos não fazem chamadas de rede no navegador.
+- Apps preexistentes (Missão dos Algoritmos, chat da Heart, chat do Blade, quadrinhos e políticas para responsáveis) preservados. O Workers AI binding `AI`, os dois limites de requisição distribuídos e as configurações de observabilidade foram preservados durante a publicação.
+- Testes Node: `node --test web/workshop-kids/tests/*.test.mjs`; novo arquivo `games-lab.test.mjs` valida rotas, soluções das missões, proteção dos circuitos e manutenção dos chats. GitHub Actions `workshop-kids-live.yml` verifica as URLs reais.
