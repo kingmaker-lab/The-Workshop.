@@ -29,7 +29,7 @@ export function answer(message) {
   if (/\b(bomba|fabricar arma|machucar alguem|roubar|invadir conta|roubar senha|criar virus|malware|pornografia)\b/.test(m)) {
     return result("Esse assunto não é uma missão segura para crianças. Podemos aprender a proteger computadores e pessoas, ou tentar um desafio de lógica! 🛡️", [option("Senhas seguras 🔒", "Como criar uma senha segura?"), STARTERS[0]], "safety");
   }
-  if (/\b(triste|sozinh|ansios|medo|chatead|ninguem gosta|estou chorando)\b/.test(m)) {
+  if (/\b(triste|sozinh\w*|ansios\w*|medo|chatead\w*|ninguem gosta|estou chorando)\b/.test(m)) {
     return result("Sinto muito que você esteja passando por isso. 💙 Seus sentimentos importam. Que tal contar a um adulto de confiança o que está acontecendo? Se quiser, também podemos fazer uma missão tranquila.", [STARTERS[0]], "wellbeing");
   }
   const logicAnswer = m.match(/^resposta da missao de logica:\s*([abc])$/);
@@ -52,7 +52,7 @@ export function answer(message) {
         option("C: 6", "Resposta da missão de matemática: C")
       ], "quiz");
   }
-  if (/\b(desafio|missao|quiz|logica|algoritmo|programac|codigo|repetic|loop|se e senao|if)\b/.test(m)) {
+  if (/\b(desafio|missao|quiz|logica|algoritmo|programa\w*|codigo|repeti\w*|loop|se e senao|if)\b/.test(m)) {
     return result("Missão de lógica! 🐾 Um robô precisa dar 3 passos. Qual comando resolve melhor?\nA) PULE\nB) REPITA 3 VEZES: ANDE\nC) DESLIGUE", [
       option("A: pule", "Resposta da missão de lógica: A"),
       option("B: repita", "Resposta da missão de lógica: B"),
@@ -66,7 +66,7 @@ export function answer(message) {
       option("C: 6", "Resposta da missão de matemática: C")
     ], "quiz");
   }
-  if (/\b(robo|robotica|eletronica|sensor|arduino)\b/.test(m)) {
+  if (/\b(robo\w*|robotic\w*|eletronic\w*|sensor\w*|arduino)\b/.test(m)) {
     return result("Um robô combina peças, sensores e instruções. 🤖 O sensor percebe algo, e o programa decide o que fazer. Por exemplo: SE estiver escuro, ENTÃO acenda uma luz!", [
       option("Desafio de lógica 🧩", "Quero um desafio de lógica"),
       option("Aprender matemática ⭐", "Quero uma missão de matemática")
