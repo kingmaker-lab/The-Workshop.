@@ -169,7 +169,7 @@ const bladeNormalize=x=>String(x).normalize("NFD").replace(/[\u0300-\u036f]/g,""
 function bladePrivate(input,n){
  return /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i.test(input) ||
   /(?:\+?\d[\s().-]*){9,}\d/.test(input) ||
-  /\b(meu nome|me chamo|minha escola|meu colegio|moro na|eu moro|meu endereco|meu cpf|meu rg|meu telefone|meu numero|meu whatsapp|minha senha|senha e|meu codigo|minha rua|minha foto|meu perfil)\b/.test(n);
+  /\b(meu nome|me chamo|minha escola|meu colegio|moro na|eu moro|meu endereco|meu cpf|meu rg|meu telefone|meu numero|meu whatsapp|minha senha|senha e|meu codigo|minha rua|meu perfil)\b/.test(n);
 }
 function bladeEmergency(n){
  return /\b(quero morrer|me matar|me machucar|suicid\w*|abuso|assedio|me bate|me machucou|me ameac\w*|chantage\w*|sextorsao|estou em perigo|alguem me feriu|sofro bullying|me humilha\w*|me persegu\w*|me obrig\w*|medo de contar)\b/.test(n);
