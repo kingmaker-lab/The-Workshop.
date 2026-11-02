@@ -130,6 +130,6 @@ export default {async fetch(req,env){
  if(req.method==='GET'&&p==='/styles.css')return asset(CSS,'text/css; charset=utf-8');
  if(req.method==='GET'&&p==='/app.js')return asset(JS,'text/javascript; charset=utf-8');
  if(req.method==='GET'&&p==='/assets/argus.avif')return new Response(Uint8Array.from(atob(ARGUS_B64),c=>c.charCodeAt(0)),{headers:{...HEAD,'Content-Type':'image/avif','Cache-Control':'public, max-age=604800'}});
- if(p.startsWith('/api/'))try{return await api(req,env,p);}catch(_){console.error(JSON.stringify({event:'arena_api_failure',path:p}));return error('Serviço temporariamente indisponível.',503);}
+ if(p.startsWith('/api/'))try{return await api(req,env,p);}catch(e){const event=/\bD1_(?:ERROR|EXEC_ERROR|TYPE_ERROR|COLUMN_NOTFOUND)\b/.test(String(e?.message||''))?'d1_failure':'arena_api_failure';console.error(JSON.stringify({event,path:p}));return error('Serviço temporariamente indisponível.',503);}
  return error('Página não encontrada.',404);
 }};
