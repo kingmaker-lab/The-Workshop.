@@ -83,3 +83,12 @@ test("Blade comic remains static with no chat scripts on its route",async()=>{
  assert.match(get("/blade/").headers.get("Content-Security-Policy"),/script-src 'none'/);
  assert.match(get("/blade/").headers.get("Content-Security-Policy"),/connect-src 'none'/);
 });
+
+test("Distributed rate limits protect Blade API and optional AI",async()=>{
+ const deny={limit:async()=>({success:false})},allow={limit:async()=>({success:true})};
+ const apiLimited=await post("Como criar uma senha forte?","10-12",true,{KIDS_API_LIMITER:deny},{headers:{"CF-Connecting-IP":"198.51.100.210"}});
+ assert.equal(apiLimited.status,429);assert.equal(apiLimited.headers.get("Retry-After"),"60");
+ let aiCalls=0;
+ const aiLimited=await post("Como criar uma senha forte?","10-12",true,{KIDS_API_LIMITER:allow,KIDS_AI_LIMITER:deny,AI:{run:async()=>{aiCalls++;return {response:"safe"}}}},{headers:{"CF-Connecting-IP":"198.51.100.211"}});
+ assert.equal(aiLimited.status,429);assert.equal(aiLimited.headers.get("Retry-After"),"60");assert.equal(aiCalls,0);
+});
