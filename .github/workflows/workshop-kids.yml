@@ -1,0 +1,28 @@
+name: Workshop Kids · jogo de lógica
+
+on:
+  push:
+    paths:
+      - 'web/workshop-kids/**'
+      - '.github/workflows/workshop-kids.yml'
+  pull_request:
+    paths:
+      - 'web/workshop-kids/**'
+      - '.github/workflows/workshop-kids.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  kids-game:
+    name: Testar Heart e a Missão dos Algoritmos
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Rodar testes de rotas, segurança e soluções
+        run: node --test web/workshop-kids/tests/*.test.mjs
