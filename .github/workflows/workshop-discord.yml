@@ -35,4 +35,4 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          ! grep -RIE --exclude='*.test.mjs' --exclude='README.md' '(DISCORD_BOT_TOKEN|DISCORD_PUBLIC_KEY|ALLOWED_GUILD_IDS)\s*=\s*["'"']?[A-Za-z0-9_-]{20,}' web/workshop-discord
+          ! grep -RIE --exclude='*.test.mjs' --exclude='README.md' '(DISCORD_BOT_TOKEN|DISCORD_PUBLIC_KEY|ALLOWED_GUILD_IDS)[[:space:]]*=[[:space:]]*[A-Za-z0-9_-]{20,}' web/workshop-discord
