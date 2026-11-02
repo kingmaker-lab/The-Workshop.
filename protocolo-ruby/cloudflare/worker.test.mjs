@@ -31,7 +31,9 @@ test('HSTS and no-store survive home and error responses',async()=>{
 test('gateway remains fixed-route GET-only and has no arbitrary proxy target',()=>{
   assert.match(source,/\['\/backend\/health','\/backend\/capabilities','\/backend\/demo'\]/);
   assert.match(source,/https:\/\/protocolo-ruby-api\.onrender\.com/);
-  assert.doesNotMatch(source,/new URL\([^\n]*req\.url[^\n]*fetch/);
+  assert.doesNotMatch(source,/fetch\s*\(\s*req\.url/);
+  assert.doesNotMatch(source,/fetch\s*\(\s*p\s*\)/);
+  assert.doesNotMatch(source,/fetch\s*\(\s*new URL/);
   assert.doesNotMatch(source,/Access-Control-Allow-Origin/i);
   assert.doesNotMatch(source,/\beval\s*\(|new\s+Function\s*\(/);
 });
