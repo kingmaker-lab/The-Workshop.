@@ -1,0 +1,11 @@
+name = "workshop-security"
+main = "worker.mjs"
+compatibility_date = "2026-11-02"
+workers_dev = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "workshop-security-ctf"
+database_id = "ee63fbe2-8e54-49b6-8152-815cc118766c"
+
+# FLAG_SECRET is configured as an encrypted Worker secret.
