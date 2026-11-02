@@ -3,7 +3,7 @@ import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const dist=path.join(root,'dist');
-const files=['_worker.js','index.html','styles.css','app.js','favicon.svg'];
+const files=['_worker.js','index.html','styles.css','app.js','favicon.svg','fake.svg','fake-walker.css','fake-walker.js','fake-3d.svg'];
 await rm(dist,{recursive:true,force:true});
 await mkdir(dist,{recursive:true});
 for(const file of files)await copyFile(path.join(root,file),path.join(dist,file));
