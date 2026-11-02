@@ -1,0 +1,131 @@
+name: Pages · preview → production promotion
+
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: Pages project
+        required: true
+        type: choice
+        options: [workshop-news, workshop-labs, wolfpack-crypto]
+      artifact_run_id:
+        description: Successful Pages artifact gate run ID
+        required: true
+        type: string
+      commit_sha:
+        description: Exact commit SHA used by the artifact gate
+        required: true
+        type: string
+      promote_production:
+        description: Promote the exact previewed artifact to production
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download exact immutable artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ inputs.artifact_run_id }}
+          APP: ${{ inputs.app }}
+          SHA: ${{ inputs.commit_sha }}
+        run: |
+          set -euo pipefail
+          mkdir -p release-download
+          gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name "pages-$APP-$SHA" --dir release-download
+      - name: Verify commit and artifact hash
+        env:
+          SHA: ${{ inputs.commit_sha }}
+        run: |
+          set -euo pipefail
+          MANIFEST="release-download/release-manifest.json"
+          test "$(node -e "console.log(require('./'+process.argv[1]).commit)" "$MANIFEST")" = "$SHA"
+          EXPECTED=$(node -e "console.log(require('./'+process.argv[1]).sha256)" "$MANIFEST")
+          GOT=$(sha256sum release-download/deploy/_worker.js | awk '{print $1}')
+          test "$EXPECTED" = "$GOT"
+      - name: Resolve project and canonical URL
+        id: meta
+        env:
+          APP: ${{ inputs.app }}
+        run: |
+          case "$APP" in
+            workshop-news) echo "project=workshop-news" >> "$GITHUB_OUTPUT"; echo "url=https://workshop-news.pages.dev/" >> "$GITHUB_OUTPUT" ;;
+            workshop-labs) echo "project=workshop-labs" >> "$GITHUB_OUTPUT"; echo "url=https://workshop-labs.pages.dev/" >> "$GITHUB_OUTPUT" ;;
+            wolfpack-crypto) echo "project=wolfpack-crypto" >> "$GITHUB_OUTPUT"; echo "url=https://wolfpack-crypto.pages.dev/" >> "$GITHUB_OUTPUT" ;;
+          esac
+      - name: Deploy preview from immutable artifact
+        id: preview
+        env:
+          PROJECT: ${{ steps.meta.outputs.project }}
+          SHA: ${{ inputs.commit_sha }}
+        run: |
+          set -euo pipefail
+          test -n "$CLOUDFLARE_API_TOKEN"
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+          BRANCH="release-${SHA:0:10}"
+          npx wrangler@4 pages deploy release-download/deploy --project-name="$PROJECT" --branch="$BRANCH" --commit-hash="$SHA" --commit-message="immutable preview $SHA" | tee /tmp/pages-preview.log
+          URL=$(grep -Eo 'https://[A-Za-z0-9._-]+\.pages\.dev' /tmp/pages-preview.log | tail -1)
+          test -n "$URL"
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+      - name: Preview smoke
+        env:
+          URL: ${{ steps.preview.outputs.url }}
+          APP: ${{ inputs.app }}
+        run: |
+          set -euo pipefail
+          curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/" -o /tmp/home.html
+          case "$APP" in
+            workshop-news) grep -qi "Workshop News" /tmp/home.html ;;
+            workshop-labs) grep -qi "Workshop Labs" /tmp/home.html ;;
+            wolfpack-crypto) grep -qi "WolfPack Crypto Lab" /tmp/home.html ;;
+          esac
+      - name: Promote same artifact to production
+        if: ${{ inputs.promote_production }}
+        env:
+          PROJECT: ${{ steps.meta.outputs.project }}
+          SHA: ${{ inputs.commit_sha }}
+        run: |
+          set -euo pipefail
+          npx wrangler@4 pages deploy release-download/deploy --project-name="$PROJECT" --branch=main --commit-hash="$SHA" --commit-message="immutable production $SHA"
+      - name: Production smoke
+        if: ${{ inputs.promote_production }}
+        env:
+          URL: ${{ steps.meta.outputs.url }}
+          APP: ${{ inputs.app }}
+        run: |
+          set -euo pipefail
+          curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/" -o /tmp/home.html
+          case "$APP" in
+            workshop-news) grep -qi "Workshop News" /tmp/home.html ;;
+            workshop-labs) grep -qi "Workshop Labs" /tmp/home.html ;;
+            wolfpack-crypto) grep -qi "WolfPack Crypto Lab" /tmp/home.html ;;
+          esac
+      - name: Record release evidence
+        if: always()
+        env:
+          APP: ${{ inputs.app }}
+          SHA: ${{ inputs.commit_sha }}
+          PREVIEW: ${{ steps.preview.outputs.url }}
+          PROD: ${{ steps.meta.outputs.url }}
+        run: |
+          {
+            echo "## Pages release evidence"
+            echo "- App: $APP"
+            echo "- Commit: \`$SHA\`"
+            echo "- Preview: $PREVIEW"
+            echo "- Production requested: \`${{ inputs.promote_production }}\`"
+            echo "- Canonical production URL: $PROD"
+            echo "- Rollback: promote the immediately previous successful Pages deployment in Cloudflare."
+          } >> "$GITHUB_STEP_SUMMARY"
