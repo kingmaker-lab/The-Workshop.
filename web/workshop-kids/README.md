@@ -15,6 +15,13 @@ Divisão infantil da The Workshop. Portal gratuito, sem cadastro, sem publicidad
 - Sem perfis, comentários, telemetria da aplicação, cookies, persistência ou chamadas de rede pelo jogo.
 - Testes: `node --test web/workshop-kids/tests/*.test.mjs`.
 
+## Mascotes oficiais (2/11/2026)
+- **Heart**: guia infantil, presente na página inicial, no jogo /jogar/ e no chat /heart/.
+- **Blade**: guardião da oficina, apresentado na página inicial.
+- Artes originais fornecidas para este lançamento; versões WebP otimizadas em `assets/heart.webp` e `assets/blade.webp` (640 × 640).
+- Servidas nas rotas `/assets/heart.webp` e `/assets/blade.webp` pelo próprio Worker, sem carregamento externo pelo navegador.
+- Política de conteúdo `img-src 'self'` e testes automatizados com `node --test web/workshop-kids/tests/*.test.mjs`.
+
 ## Deploy
 Código fonte: `web/workshop-kids/worker.js`. Implantado como Worker independente `workshop-kids` no Cloudflare. URL prevista: `https://workshop-kids.wolfpackworkshop.workers.dev/`.
 
