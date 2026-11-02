@@ -26,3 +26,12 @@ jobs:
           node-version: '22'
       - name: Rodar testes de rotas, segurança e soluções
         run: node --test web/workshop-kids/tests/*.test.mjs
+
+      - name: Verificar Blade na Cloudflare de teste
+        run: |
+          set -euo pipefail
+          URL="https://workshop-kids-blade-preview.wolfpackworkshop.workers.dev"
+          curl --max-time 25 --fail --silent --show-error "$URL/blade/" -o /tmp/blade-preview.html
+          grep -q 'Converse com Blade' /tmp/blade-preview.html
+          curl --max-time 25 --fail --silent --show-error -X POST "$URL/api/blade" -H "Origin: $URL" -H "Content-Type: application/json" -d '{"message":"Como criar uma senha forte?","band":"4-6","aiOptIn":false}' -o /tmp/blade-preview.json
+          python3 -c "import json; a=json.load(open('/tmp/blade-preview.json')); assert a['category']=='passwords' and a['mode']=='guided',a; print('Blade Preview OK')"
