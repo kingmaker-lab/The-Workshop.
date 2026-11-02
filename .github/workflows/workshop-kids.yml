@@ -45,3 +45,12 @@ jobs:
           assert data['category']=='quiz'
           print('Preview: Heart route, game and guided API OK')
           PY
+          curl --connect-timeout 8 --max-time 45 -fsS -X POST "$URL/api/heart" \
+            -H 'Content-Type: application/json' -H "Origin: $URL" \
+            --data '{"message":"Como um robô usa sensores?","band":"10-12","aiOptIn":true}' -o /tmp/heart-liveai.json
+          python3 - <<'PY'
+          import json
+          data=json.load(open('/tmp/heart-liveai.json'))
+          assert data.get('mode') in ('ai','guided'), data
+          print('AI response mode:', data['mode'], 'category:', data.get('category'))
+          PY
