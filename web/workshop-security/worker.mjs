@@ -11,7 +11,7 @@ const MISSIONS=[
 {id:'json',title:'Arquivo 07',category:'Análise de dados',level:'Avançado',points:170,summary:'Interprete um JSON e desfaça duas transformações.',hint:'Inverta a sequência de payload, depois aplique Base64 decode.'}
 ];
 const BY_ID=new Map(MISSIONS.map(x=>[x.id,x]));
-const HEAD={'X-Content-Type-Options':'nosniff','X-Frame-Options':'DENY','Referrer-Policy':'no-referrer','Permissions-Policy':'geolocation=(),camera=(),microphone=()','Cross-Origin-Resource-Policy':'same-origin','Content-Security-Policy':"default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"};
+const HEAD={'X-Content-Type-Options':'nosniff','X-Frame-Options':'DENY','Referrer-Policy':'no-referrer','Permissions-Policy':'geolocation=(),camera=(),microphone=()','Cross-Origin-Resource-Policy':'same-origin','Strict-Transport-Security':'max-age=31536000; includeSubDomains','Content-Security-Policy':"default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"};
 const reply=(v,status=200,extra={})=>new Response(JSON.stringify(v),{status,headers:{...HEAD,'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store',...extra}});
 const error=(message,status=400)=>reply({error:message},status);
 const asset=(body,contentType)=>new Response(body,{headers:{...HEAD,'Content-Type':contentType,'Cache-Control':'public, max-age=300'}});
@@ -55,6 +55,19 @@ async function board(env){
 function allowed(req){const o=req.headers.get('Origin');return (!o||o===new URL(req.url).origin)&&req.headers.get('Sec-Fetch-Site')!=='cross-site'&&/^application\/json(?:;|$)/i.test(req.headers.get('Content-Type')||'');}
 async function readBody(req){if(Number(req.headers.get('Content-Length')||0)>1000)throw Error();let s=await req.text();if(s.length>1000)throw Error();let o=JSON.parse(s);if(!o||typeof o!=='object'||Array.isArray(o))throw Error();return o;}
 const validNick=n=>typeof n==='string'&&/^[\p{L}\p{N}_-]{3,20}$/u.test(n);
+async function distributedLimit(env,binding,key,scope){
+ const limiter=env?.[binding];
+ if(!limiter||typeof limiter.limit!=='function')return true;
+ try{
+   const result=await limiter.limit({key});
+   if(!result?.success)console.warn(JSON.stringify({event:'rate_limited',scope}));
+   return Boolean(result?.success);
+ }catch(_){
+   console.warn(JSON.stringify({event:'rate_limiter_unavailable',scope}));
+   return true;
+ }
+}
+const clientKey=req=>req.headers.get('CF-Connecting-IP')||'anonymous';
 async function api(req,env,path){
  if(!env.DB)return error('Arena temporariamente indisponível.',503);
  if(req.method==='GET'){
@@ -72,6 +85,7 @@ async function api(req,env,path){
  if(!allowed(req))return error('Requisição não permitida.',403);
  let body;try{body=await readBody(req);}catch{return error('JSON inválido ou muito grande.',400);}
  if(path==='/api/session'){
+   if(!(await distributedLimit(env,'CTF_AUTH_LIMITER','session:'+clientKey(req),'ctf_session')))return reply({error:'Muitas tentativas. Tente novamente em instantes.'},429,{'Retry-After':'60'});
    if(await player(req,env))return error('Você já tem um codinome nesta sessão.',409);
    const nick=typeof body.nickname==='string'?body.nickname.trim():'';
    if(!validNick(nick))return error('Use 3 a 20 caracteres: letras, números, _ ou -.',400);
@@ -81,6 +95,7 @@ async function api(req,env,path){
    return reply({ok:true,nickname:nick,recovery},201,{'Set-Cookie':setCookie(s)});
  }
  if(path==='/api/restore'){
+   if(!(await distributedLimit(env,'CTF_AUTH_LIMITER','restore:'+clientKey(req),'ctf_restore')))return reply({error:'Muitas tentativas. Tente novamente em instantes.'},429,{'Retry-After':'60'});
    let n=typeof body.nickname==='string'?body.nickname.trim():'',recovery=body.recovery;
    if(!validNick(n)||typeof recovery!=='string'||!/^[A-Za-z0-9_-]{32}$/.test(recovery))return error('Dados inválidos.',400);
    const p=await env.DB.prepare('SELECT id FROM players WHERE nickname_key=? AND recovery_hash=?').bind(n.toLocaleLowerCase('pt-BR'),await hash(recovery)).first();
@@ -94,6 +109,7 @@ async function api(req,env,path){
    return reply({ok:true},200,{'Set-Cookie':setCookie('',0)});
  }
  if(path==='/api/submit'){
+   if(!(await distributedLimit(env,'CTF_SUBMIT_LIMITER','submit:'+clientKey(req),'ctf_submit')))return reply({error:'Limite temporário de submissões atingido.'},429,{'Retry-After':'60'});
    const p=await player(req,env);if(!p)return error('Você precisa entrar na arena.',401);
    const x=BY_ID.get(body.id);
    if(!x||typeof body.flag!=='string'||body.flag.length>120)return error('Flag ou missão inválida.',400);
@@ -114,6 +130,6 @@ export default {async fetch(req,env){
  if(req.method==='GET'&&p==='/styles.css')return asset(CSS,'text/css; charset=utf-8');
  if(req.method==='GET'&&p==='/app.js')return asset(JS,'text/javascript; charset=utf-8');
  if(req.method==='GET'&&p==='/assets/argus.avif')return new Response(Uint8Array.from(atob(ARGUS_B64),c=>c.charCodeAt(0)),{headers:{...HEAD,'Content-Type':'image/avif','Cache-Control':'public, max-age=604800'}});
- if(p.startsWith('/api/'))try{return await api(req,env,p);}catch(e){console.error('arena API failure',String(e).slice(0,120));return error('Serviço temporariamente indisponível.',503);}
+ if(p.startsWith('/api/'))try{return await api(req,env,p);}catch(_){console.error(JSON.stringify({event:'arena_api_failure',path:p}));return error('Serviço temporariamente indisponível.',503);}
  return error('Página não encontrada.',404);
 }};
