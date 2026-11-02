@@ -116,12 +116,26 @@ function heartAllowed(m){return /\b(robo\w*|robotic\w*|sensor\w*|arduino|algorit
 function heartRisk(m){return /\b(matar|morte|ferir|machucar|suicid\w*|abus\w*|assedi\w*|violenc\w*|sex\w*|porn\w*|arma\w*|explosi\w*|bomba\w*|droga\w*|invadir|roubar|virus|malware|ransomware|sangue|me bata|me ameac\w*|ameac\w*|senha\w*|email|telefone|cpf|escola|endereco|rua)\b/.test(m);}
 function heartLimit(key){const now=Date.now();if(heartRateBuckets.size>2000){for(const [k,v] of heartRateBuckets){if(now-v.start>300000)heartRateBuckets.delete(k);}if(heartRateBuckets.size>2000)heartRateBuckets.clear();}const old=heartRateBuckets.get(key);if(!old||now-old.start>300000){heartRateBuckets.set(key,{start:now,used:1});return true;}if(old.used>=4)return false;old.used++;return true;}
 async function heartLimitedText(request,max=1024){if(!request.body)throw new Error("bad");const r=request.body.getReader();const buf=[];let len=0;while(true){const {done,value}=await r.read();if(done)break;len+=value.byteLength;if(len>max){await r.cancel();throw new Error("large");}buf.push(value);}const all=new Uint8Array(len);let pos=0;for(const part of buf){all.set(part,pos);pos+=part.byteLength;}return new TextDecoder("utf-8",{fatal:true}).decode(all);}
-function heartJson(value,status=200){return new Response(JSON.stringify(value),{status,headers:{"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer","Access-Control-Allow-Origin":"none"}});}
+function heartJson(value,status=200,extra={}){return new Response(JSON.stringify(value),{status,headers:{"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer","Access-Control-Allow-Origin":"none",...extra}});}
+async function distributedLimit(env,binding,key,scope){
+ const limiter=env?.[binding];
+ if(!limiter||typeof limiter.limit!=="function")return true;
+ try{
+   const result=await limiter.limit({key});
+   if(!result?.success)console.warn(JSON.stringify({event:"rate_limited",scope}));
+   return Boolean(result?.success);
+ }catch(_){
+   console.warn(JSON.stringify({event:"rate_limiter_unavailable",scope}));
+   return true;
+ }
+}
 async function heartApi(request,env,url){
  if(request.method!=="POST")return heartJson({error:"method_not_allowed"},405);
  if(request.headers.get("Origin")!==url.origin)return heartJson({error:"forbidden_origin"},403);
  if(!/^application\/json(?:\s*;|$)/i.test(request.headers.get("Content-Type")||""))return heartJson({error:"unsupported_type"},415);
  if(Number(request.headers.get("Content-Length")||0)>1024)return heartJson({error:"too_large"},413);
+ const edgeIdentity=request.headers.get("CF-Connecting-IP")||"anonymous";
+ if(!(await distributedLimit(env,"KIDS_API_LIMITER","heart:"+edgeIdentity,"kids_heart_api")))return heartJson({error:"rate_limited"},429,{"Retry-After":"60"});
  let data;try{data=JSON.parse(await heartLimitedText(request));}catch(e){return heartJson({error:e.message==="large"?"too_large":"bad_json"},e.message==="large"?413:400);}
  if(!data||typeof data!=="object"||Array.isArray(data)||Object.keys(data).some(k=>k!=="message"&&k!=="band"&&k!=="aiOptIn")||typeof data.message!=="string"||!["4-6","7-9","10-12"].includes(data.band)||data.message.length>220)return heartJson({error:"invalid_request"},400);
  const message=data.message.trim();
@@ -134,6 +148,7 @@ async function heartApi(request,env,url){
  if(!env||!env.AI||typeof env.AI.run!=="function")return heartJson(guide);
  // A per-isolate safety budget; production-wide rate limits must also be configured at the edge.
  const identity=request.headers.get("CF-Connecting-IP")||"anonymous";
+ if(!(await distributedLimit(env,"KIDS_AI_LIMITER","heart:"+identity,"kids_heart_ai")))return heartJson({reply:"Pausa das patinhas! 🐾 Faça uma missão guiada e tente outra pergunta mais tarde.",options:HEART_SUGGESTIONS,mode:"guided",category:"rate_limit"},429,{"Retry-After":"60"});
  if(!heartLimit(identity))return heartJson({reply:"Pausa das patinhas! 🐾 Faça uma missão guiada e tente outra pergunta mais tarde.",options:HEART_SUGGESTIONS,mode:"guided",category:"rate_limit"});
  try{
    const pre=await env.AI.run(HEART_GUARD,{messages:[{role:"user",content:message}],max_tokens:18});
@@ -209,6 +224,8 @@ async function bladeApi(request,env,url){
  if(request.headers.get("Origin")!==url.origin)return heartJson({error:"forbidden_origin"},403);
  if(!/^application\/json(?:\s*;|$)/i.test(request.headers.get("Content-Type")||""))return heartJson({error:"unsupported_type"},415);
  if(Number(request.headers.get("Content-Length")||0)>1024)return heartJson({error:"too_large"},413);
+ const edgeIdentity=request.headers.get("CF-Connecting-IP")||"anonymous";
+ if(!(await distributedLimit(env,"KIDS_API_LIMITER","blade:"+edgeIdentity,"kids_blade_api")))return heartJson({error:"rate_limited"},429,{"Retry-After":"60"});
  let data;
  try{data=JSON.parse(await heartLimitedText(request));}
  catch(e){return heartJson({error:e.message==="large"?"too_large":"bad_json"},e.message==="large"?413:400);}
@@ -218,6 +235,7 @@ async function bladeApi(request,env,url){
  if(data.band==="4-6"||data.aiOptIn!==true||!bladeEducation(n))return heartJson(guided);
  if(!env?.AI||typeof env.AI.run!=="function")return heartJson(guided);
  const key="blade:"+(request.headers.get("CF-Connecting-IP")||"unknown");
+ if(!(await distributedLimit(env,"KIDS_AI_LIMITER",key,"kids_blade_ai")))return heartJson(bladeResponse("As patinhas precisam descansar! 🐾 Faça uma missão guiada e volte mais tarde.","rate_limit"),429,{"Retry-After":"60"});
  if(!heartLimit(key))return heartJson(bladeResponse("As patinhas precisam descansar! 🐾 Faça uma missão guiada e volte mais tarde.","rate_limit"));
  try{
    const before=await env.AI.run(HEART_GUARD,{messages:[{role:"user",content:data.message}],max_tokens:18});
