@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090d13"><meta name="description" content="The Workshop Security Division. Arena CTF gratuita e controlada para iniciantes e white hats: aprenda, investigue e conquiste seu lugar no ranking.">
+<title>Security Division | The Workshop CTF Arena</title>
+<link rel="stylesheet" href="/styles.css">
+<script src="/app.js" defer></script>
+</head>
+<body>
+<a href="#main" class="skip">Pular para o conteúdo</a>
+<div class="ambient" aria-hidden="true"></div>
+<header class="top">
+ <div class="shell top-inner">
+  <a href="/" class="brand" aria-label="The Workshop Security Division, início"><span class="brand-symbol">⛨</span><span>THE WORKSHOP<small>SECURITY DIVISION</small></span></a>
+  <nav aria-label="Menu principal"><a href="#missoes">MISSÕES</a><a href="#ranking">RANKING</a><a href="#regras">REGRAS</a><a href="https://github.com/kingmaker-lab/The-Workshop." target="_blank" rel="noopener noreferrer">GITHUB ↗</a></nav>
+  <span class="live"><span class="live-dot"></span> CTF / BETA 0.1</span>
+ </div>
+</header>
+<main id="main">
+<section class="hero shell">
+ <div class="hero-copy">
+  <p class="eyebrow"><span class="accent">◆</span> KINGMAKER LAB / EDUCATIONAL CYBER RANGE</p>
+  <h1>O conhecimento não se entrega.<br><em>Ele se conquista.</em></h1>
+  <p class="intro">Bem-vindo à <strong>The Workshop Security Division.</strong> Aqui, curiosidade é sua primeira ferramenta. Aprenda a observar, investigar, compreender e encontrar respostas em desafios projetados para praticar com segurança.</p>
+  <div class="hero-actions"><a class="btn primary" href="#missoes">EXPLORAR DESAFIOS <span>↗</span></a><a class="btn ghost" href="#regras">CONHECER AS REGRAS</a></div>
+  <p class="hero-note">ACESSO GRATUITO <span>•</span> INICIANTES BEM-VINDOS <span>•</span> ALVOS 100% SIMULADOS</p>
+ </div>
+ <div class="host-card" aria-label="Mensagem do anfitrião Oni">
+  <div class="host-top"><span>HOST TRANSMISSION</span><span class="signal">● ENCRYPTED CHANNEL / SIMULATION</span></div>
+  <div class="oni-symbol" aria-hidden="true"><span class="horn left"></span><span class="horn right"></span><span class="mask"><span class="eye"></span><span class="eye"></span><span class="fang"></span><span class="fang"></span></span></div>
+  <div class="terminal-msg"><p><span class="prompt">oni@workshop:~$</span> ./welcome.sh</p>
+   <p class="host-quote">“Eu serei seu anfitrião. Não importa de onde você está começando. Na minha arena, cada erro ensina e cada descoberta abre uma nova porta.”</p>
+   <p class="host-signature">— ONI <span>// FOUNDER &amp; HOST</span></p></div>
+  <div class="host-foot"><span>ACCESS: LEARNING MODE</span><span>STATUS: READY_</span></div>
+ </div>
+</section>
+<section class="metrics"><div class="shell metric-grid">
+ <div><strong id="statMissions">07</strong><span>MISSÕES DISPONÍVEIS</span></div>
+ <div><strong id="statPlayers">0</strong><span>EXPLORADORES</span></div>
+ <div><strong id="statSolves">0</strong><span>FLAGS CAPTURADAS</span></div>
+ <div><strong>770 <small>XP</small></strong><span>PONTOS EM JOGO</span></div>
+</div></section>
+<section id="identidade" class="shell identity-section">
+ <div class="identity-intro"><p class="eyebrow">01 / IDENTIDADE DIGITAL</p><h2>Escolha seu <span>codinome.</span></h2><p>Nenhum e-mail. Nenhuma senha convencional. Seu apelido e uma chave privada de recuperação são suficientes para registrar sua jornada.</p></div>
+ <div class="identity-panel">
+  <div id="guestPanel">
+    <form id="registerForm" class="inline-form"><label for="nickname">SEU CODINOME</label><div class="input-row"><input id="nickname" name="nickname" minlength="3" maxlength="20" pattern="[\p{L}\p{N}_\-]{3,20}" placeholder="ex: whitefox_01" autocomplete="off" required><button type="submit" class="btn primary">ENTRAR NA ARENA</button></div></form>
+    <button class="text-button" id="toggleRestore" type="button">Já tenho um codinome. Recuperar acesso ↗</button>
+    <form id="restoreForm" class="restore-form" hidden><label for="recoverNick">CODINOME</label><input id="recoverNick" autocomplete="username" maxlength="20" required><label for="recoverKey">CÓDIGO DE RECUPERAÇÃO</label><input id="recoverKey" autocomplete="off" maxlength="32" required><button class="btn secondary" type="submit">RESTAURAR ACESSO</button></form>
+  </div>
+  <div id="profilePanel" hidden><p class="profile-heading">OPERADOR AUTENTICADO <span class="verified">● ONLINE</span></p><div class="profile-row"><div><strong id="profileNick"></strong><span>Seu progresso está salvo nesta arena.</span></div><div class="profile-score"><strong id="profileScore">0</strong><small>PONTOS</small></div></div><button class="text-button" type="button" id="logoutBtn">Encerrar sessão</button></div>
+  <div id="recoveryPanel" hidden class="recovery"><strong>GUARDE SUA CHAVE DE RECUPERAÇÃO</strong><p>Esse código aparece apenas agora. Guarde-o em local seguro para recuperar seu codinome em outro navegador.</p><code id="recoveryValue"></code><button id="dismissRecovery" class="text-button" type="button">Guardei minha chave ✓</button></div>
+  <p class="status" id="identityStatus" role="status" aria-live="polite"></p>
+ </div>
+</section>
+<section id="missoes" class="shell section">
+ <div class="section-head"><div><p class="eyebrow">02 / MISSIONS TERMINAL</p><h2>Escolha seu <span>desafio.</span></h2></div><p>Comece pelo básico e avance no seu ritmo. Cada flag é um aprendizado, não uma corrida.</p></div>
+ <div class="mission-grid" id="missionGrid" aria-live="polite"><p class="muted">Carregando missões...</p></div>
+ <div id="missionDetail" class="mission-detail" hidden>
+  <div class="detail-head"><div><span class="eyebrow" id="detailCategory"></span><h3 id="detailTitle"></h3></div><button type="button" id="closeDetail" class="icon-button" aria-label="Fechar missão">✕</button></div>
+  <p id="detailInstruction" class="muted"></p>
+  <div class="code-frame"><div class="code-header"><span class="three-dots">● ● ●</span><span id="detailFilename"></span><span>READ ONLY</span></div><pre><code id="detailArtifact"></code></pre></div>
+  <div class="detail-actions"><button type="button" id="hintBtn" class="text-button">Solicitar dica [+]</button><p id="hintText" class="hint" hidden></p></div>
+  <form id="flagForm" class="flag-form"><label for="flagInput">ENVIE SUA FLAG</label><div class="input-row"><input id="flagInput" placeholder="WS{...}" autocomplete="off" autocapitalize="off" spellcheck="false" required maxlength="120"><button type="submit" class="btn primary">VALIDAR FLAG ↗</button></div></form>
+  <p id="flagStatus" class="status" role="status" aria-live="polite"></p>
+ </div>
+</section>
+<section id="ranking" class="section leaderboard-wrap"><div class="shell">
+ <div class="section-head"><div><p class="eyebrow">03 / THE HALL OF MINDS</p><h2>Hall dos <span>investigadores.</span></h2></div><p>Aqui o mérito está no que você descobriu. Pontos são só um mapa da sua jornada.</p></div>
+ <div class="leaderboard"><div class="board-title"><span>TOP 30 OPERADORES</span><span>ARENA / TEMPORADA 00</span></div><div class="table-scroll"><table><thead><tr><th scope="col">POS</th><th scope="col">CODINOME</th><th scope="col">FLAGS</th><th scope="col" class="right">PONTOS</th></tr></thead><tbody id="rankRows"><tr><td colspan="4">Nenhum investigador ainda. Seu nome pode ser o primeiro.</td></tr></tbody></table></div></div>
+ </div></section>
+<section id="regras" class="shell section rules"><div class="section-head"><div><p class="eyebrow">04 / RULES OF ENGAGEMENT</p><h2>Um laboratório livre.<br><span>Limites bem definidos.</span></h2></div></div>
+ <div class="rule-grid"><article><b>01 / ESCOPO</b><h3>Somente alvos simulados</h3><p>Use apenas os arquivos e simulações disponibilizados nas missões. Esta arena não autoriza testar outros sites, APIs, pessoas ou serviços reais.</p></article><article><b>02 / CONDUTA</b><h3>Pesquise, não prejudique</h3><p>Sem força bruta, ataques de indisponibilidade, invasões externas, fraudes no placar ou obtenção de dados de terceiros.</p></article><article><b>03 / APRENDIZADO</b><h3>Construa conhecimento</h3><p>Compartilhe métodos e conceitos. Respeite quem está começando. Explique o raciocínio antes de entregar a resposta.</p></article></div>
+ <div class="scope-note"><span>⛨</span><p>Esta é uma arena educativa, não um convite para atacar infraestrutura real. Reporte falhas de maneira responsável ao mantenedor do projeto.</p></div>
+</section>
+</main>
+<footer><div class="shell footer-inner"><div><strong>⛨ THE WORKSHOP / SECURITY DIVISION</strong><small>BUILD. BREAK. UNDERSTAND. REBUILD.</small></div><span>CRIADO PARA MENTES CURIOSAS · © 2026 THE WORKSHOP</span></div></footer>
+</body></html>
