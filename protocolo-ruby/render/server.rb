@@ -16,8 +16,10 @@ def response_json(res, code, data)
   res['Cache-Control'] = 'no-store'
   res['X-Content-Type-Options'] = 'nosniff'
   res['X-Frame-Options'] = 'DENY'
+  res['Referrer-Policy'] = 'no-referrer'
+  res['Permissions-Policy'] = 'camera=(), microphone=(), geolocation=(), payment=()'
+  res['Allow'] = 'GET' if code == 405
   res['Content-Security-Policy'] = "default-src 'none'; frame-ancestors 'none'"
-  res['Access-Control-Allow-Origin'] = 'null'
   res.body = JSON.generate(data)
 end
 
