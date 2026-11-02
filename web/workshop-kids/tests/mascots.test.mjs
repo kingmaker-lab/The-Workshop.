@@ -15,11 +15,11 @@ test("Blade e Heart presentes nas três telas",async()=>{
  const home=await request("/").text();
  const game=await request("/jogar/").text();
  const chat=await request("/heart/").text();
- assert.match(home,/<img[^>]+src="\/assets\/blade.webp"[^>]+alt="Blade,/);
- assert.match(home,/<img[^>]+src="\/assets\/heart.webp"[^>]+alt="Heart,/);
- assert.match(game,/src="\/assets\/heart.webp"/);
- assert.match(chat,/src="\/assets\/heart.webp"/);
- assert.match(getText("GAME_JS"),/avatar\.src="\/assets\/heart.webp"/);
+ assert.match(home,/<img[^>]+src="\/assets\/blade.webp\?v=e04bfb99"[^>]+alt="Blade,/);
+ assert.match(home,/<img[^>]+src="\/assets\/heart.webp\?v=f588d298"[^>]+alt="Heart,/);
+ assert.match(game,/src="\/assets\/heart.webp\?v=f588d298"/);
+ assert.match(chat,/src="\/assets\/heart.webp\?v=f588d298"/);
+ assert.match(getText("GAME_JS"),/avatar\.src="\/assets\/heart.webp\?v=f588d298"/);
 });
 test("Sprites WebP são válidos, autocontidos e respondem a HEAD",async()=>{
  for(const name of ["blade","heart"]){
@@ -52,7 +52,7 @@ test("Blade v2 mantém a arte completa e orienta para seção de responsáveis",
  const home=await request("/").text();
  assert.match(home,/id="blade" aria-labelledby="blade-title"/);
  assert.match(home,/class="blade-showcase section"/);
- assert.match(home,/src="\/assets\/blade.webp"/);
+ assert.match(home,/src="\/assets\/blade.webp\?v=e04bfb99"/);
  assert.match(home,/Guardião Digital|guardião digital/);
  assert.match(home,/href="#responsaveis"/);
  const css=await request("/styles.css").text();
