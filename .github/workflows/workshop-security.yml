@@ -33,6 +33,13 @@ jobs:
         run: node web/workshop-security/build.mjs
       - name: Run Security Division tests
         run: node --test web/workshop-security/tests/*.test.mjs
+      - name: Upload immutable Worker artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: workshop-security-worker-${{ github.sha }}
+          path: web/workshop-security/dist/worker.mjs
+          if-no-files-found: error
+          retention-days: 7
       - name: Verify build has no placeholders or secret material
         shell: bash
         run: |
