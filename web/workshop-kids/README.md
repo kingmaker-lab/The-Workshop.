@@ -32,3 +32,11 @@ Deploy manual: `npx wrangler deploy web/workshop-kids/worker.js --name workshop-
 2. Conteúdos revisados por faixa etária e orientação de educadores.
 3. Política de privacidade e mecanismos para responsáveis antes de ampliar a plataforma.
 4. Integração editorial no portal da The Workshop após validação.
+
+## Heart Core 0.3: chatbot educativo integrado
+- Rota `/heart/` e assets `/heart.js`, `/heart.css`, diretamente no mesmo Worker do portal.
+- API `POST /api/heart`, apenas mesma origem, JSON limitado a 1024 bytes e mensagens de até 220 caracteres.
+- Faixa Exploradores (4–6) recebe respostas guiadas; para Inventores/Criadores, assuntos escolares previamente delimitados podem usar Workers AI (Llama 3.2 3B) com Llama Guard na entrada e na saída. Se AI indisponível, resposta guiada.
+- Nenhum dado de conversa é guardado em banco/localStorage; rate limit temporário na memória da instância do Worker (não é rate limit global). O provedor pode tratar logs operacionais e textos enviados para inferência. Não existem autenticação infantil, chat entre usuários ou ferramentas executáveis.
+- Os filtros são incompletos e não garantem segurança. Revisão de salvaguardas, carga, acessibilidade e LGPD/ECA Digital antes de expandir chat. Limites globais Cloudflare devem ser configurados no painel.
+- Deploy exige Workers AI binding `AI` (`{type:"ai",name:"AI"}`). O modelo utiliza a franquia e pode gerar custos conforme o plano da conta.
