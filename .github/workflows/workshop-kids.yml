@@ -35,3 +35,6 @@ jobs:
           grep -q 'Converse com Blade' /tmp/blade-preview.html
           curl --max-time 25 --fail --silent --show-error -X POST "$URL/api/blade" -H "Origin: $URL" -H "Content-Type: application/json" -d '{"message":"Como criar uma senha forte?","band":"4-6","aiOptIn":false}' -o /tmp/blade-preview.json
           python3 -c "import json; a=json.load(open('/tmp/blade-preview.json')); assert a['category']=='passwords' and a['mode']=='guided',a; print('Blade Preview OK')"
+
+          curl --max-time 35 --fail --silent --show-error -X POST "$URL/api/blade" -H "Origin: $URL" -H "Content-Type: application/json" -d '{"message":"Como reconhecer uma mensagem falsa?","band":"10-12","aiOptIn":true}' -o /tmp/blade-ai-preview.json
+          python3 -c "import json; a=json.load(open('/tmp/blade-ai-preview.json')); print('Blade inference:',a['mode'],a['category']); assert a['mode']=='ai',a"
