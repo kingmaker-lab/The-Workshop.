@@ -63,3 +63,9 @@ Deploy manual: `npx wrangler deploy web/workshop-kids/worker.js --name workshop-
 - Chamada para responsáveis aponta para `https://workshop-news.pages.dev/#workshop`.
 - Nova página com `script-src 'none'`, `connect-src 'none'`, assets somente da própria origem; sem formulário ou coleta de dados.
 - Executar `node --test web/workshop-kids/tests/*.test.mjs` antes de publicar novas mudanças.
+
+
+## Blade: espaço de perguntas sobre segurança infantil
+- Mantida a página `/blade/` e o quadrinho de quatro cenas sem JavaScript.
+- Nova rota `/blade/conversar/` com respostas guiadas e IA moderada, opcional para 7–12 anos com participação do responsável.
+- Conteúdos: golpes, senhas, privacidade e cidadania digital. Documentação: `web/workshop-kids/BLADE-CHAT.md`.
