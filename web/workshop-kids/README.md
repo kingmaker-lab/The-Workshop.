@@ -54,3 +54,10 @@ Deploy manual: `npx wrangler deploy web/workshop-kids/worker.js --name workshop-
 - A seção direciona famílias e educadores ao aviso `/#responsaveis`; o aviso mantém o acesso a `https://workshop-news.pages.dev/#workshop`.
 - A rota pública `/assets/blade.webp` mantém-se interna ao Worker, sem chamada a fornecedores de imagens.
 - O binding `AI` do Heart foi preservado no deploy.
+
+
+## Base Blade: aprendizado de segurança digital 🛡️
+- Rota `/blade/` integrada ao destaque visual Blade 2.0, com conteúdo preparado para crianças.
+- Senhas, phishing, privacidade, cyberbullying e segurança de aplicativos, além de missão educativa.
+- API `POST /api/blade`; modo guiado padrão e IA opcional para 7–12 anos com seleção de responsável e moderação.
+- Detalhes de privacidade, limitações e segurança: `web/workshop-kids/BLADE.md`.
