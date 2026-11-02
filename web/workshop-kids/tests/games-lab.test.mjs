@@ -29,7 +29,7 @@ test("Portal e três novos jogos possuem rotas, assets e metadados corretos",asy
   assert.match(res.headers.get("Content-Type"),/text\/html/);
   assert.ok((await res.text()).includes(title),path+" title");
   assert.match(res.headers.get("Content-Security-Policy"),/connect-src 'none'/);
-  assert.match(home,new RegExp("href=\""+path.replace(/\//g,"\\/")+"\""));
+  assert.ok(home.includes('href="'+path+'"'),"link do jogo "+path);
   const head=route(path,"HEAD");
   assert.equal(head.status,200);
   assert.equal(await head.text(),"");
@@ -50,11 +50,11 @@ test("Códigos dos jogos são locais, sem coleta ou rede",()=>{
   assert.doesNotThrow(()=>new Function(js));
  }
  const catalog=content("KIDS_GAMES_HTML");
- assert.match(catalog,//assets/heart.webp\?v=f588d298/);
- assert.match(catalog,//assets/blade.webp\?v=e04bfb99/);
+ assert.ok(catalog.includes("/assets/heart.webp?v=f588d298"));
+ assert.ok(catalog.includes("/assets/blade.webp?v=e04bfb99"));
  for(const n of ["ROBOT_HTML","GUARDIAN_HTML","CIRCUIT_HTML"]){
   const html=content(n);
-  assert.match(html,/workshop-news\.pages\.dev/#workshop/);
+  assert.ok(html.includes("https://workshop-news.pages.dev/#workshop"));
   assert.match(html,/role="status"/);
  }
 });
