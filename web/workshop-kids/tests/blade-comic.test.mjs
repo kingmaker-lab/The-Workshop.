@@ -15,7 +15,7 @@ test("Blade tem página exclusiva, ligações internas e quatro quadros",async()
  assert.match(p.headers.get("Content-Type"),/text\/html/);
  const html=await p.text();
  assert.match(html,/<title>Blade \| Guardião Digital da Workshop Kids<\/title>/);
- assert.match(html,/src="\/assets\/blade.webp"/);
+ assert.match(html,/src="\/assets\/blade.webp\?v=e04bfb99"/);
  assert.match(html,/id="quadrinho"/);
  assert.equal((html.match(/class="panel p[1-4]"/g)||[]).length,4);
  assert.match(html,/O clique misterioso/);
