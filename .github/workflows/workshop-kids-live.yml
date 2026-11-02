@@ -1,0 +1,36 @@
+name: Workshop Kids live smoke
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web/workshop-kids/**"
+      - ".github/workflows/workshop-kids-live.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - name: Check homepage, game, Heart chat and guided API
+        run: |
+          set -euo pipefail
+          URL="https://workshop-kids.wolfpackworkshop.workers.dev"
+          curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/" -o /tmp/home.html
+          grep -q 'href="/heart/"' /tmp/home.html
+          curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/jogar/" -o /tmp/game.html
+          grep -q 'Missão dos Algoritmos' /tmp/game.html
+          curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/heart/" -o /tmp/heart.html
+          grep -q 'Conversar com Heart' /tmp/heart.html
+          curl --connect-timeout 8 --max-time 25 -fsS "$URL/heart.js" -o /tmp/heart.js
+          grep -q 'aiOptIn' /tmp/heart.js
+          curl --connect-timeout 8 --max-time 25 -fsS -X POST "$URL/api/heart" \
+            -H 'Content-Type: application/json' -H "Origin: $URL" \
+            --data '{"message":"Quero um desafio de lógica","band":"4-6"}' -o /tmp/kids-response.json
+          python3 - <<'PY'
+          import json
+          data=json.load(open('/tmp/kids-response.json',encoding='utf8'))
+          assert data['mode']=='guided' and data['category']=='quiz', 'guided API failed'
+          print('Production paths and guided API OK')
+          PY
