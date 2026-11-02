@@ -1,0 +1,38 @@
+name: Workshop Discord · source gate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web/workshop-discord/**"
+      - ".github/workflows/workshop-discord.yml"
+  pull_request:
+    paths:
+      - "web/workshop-discord/**"
+      - ".github/workflows/workshop-discord.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  discord-gateway:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate JavaScript syntax
+        run: |
+          node --check web/workshop-discord/worker.mjs
+          node --check web/workshop-discord/commands.mjs
+          node --check web/workshop-discord/register.mjs
+      - name: Run signed-interaction and fail-closed tests
+        run: node --test web/workshop-discord/tests/*.test.mjs
+      - name: Guard against committed credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -RIE --exclude='*.test.mjs' --exclude='README.md' '(DISCORD_BOT_TOKEN|DISCORD_PUBLIC_KEY|ALLOWED_GUILD_IDS)\s*=\s*["'"']?[A-Za-z0-9_-]{20,}' web/workshop-discord
