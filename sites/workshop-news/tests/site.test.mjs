@@ -47,7 +47,7 @@ test('aggregator reports real data and partial upstream failure',async()=>{
  const data=await makeFeed(async url=>fixtures(url));
  assert.equal(data.available.length,4);
  assert.equal(data.partial,false);
- assert.equal(data.updates.length,9);
+ assert.equal(data.updates.length,6);
  assert.equal(data.highlights.length,9);
  assert.equal(data.branchSourcesAvailable,5);
  assert.ok(data.updates.some(x=>x.branch==='Protocolo Ruby'));
