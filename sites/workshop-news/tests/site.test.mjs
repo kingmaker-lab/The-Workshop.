@@ -47,8 +47,8 @@ test('aggregator reports real data and partial upstream failure',async()=>{
  const data=await makeFeed(async url=>fixtures(url));
  assert.equal(data.available.length,4);
  assert.equal(data.partial,false);
- assert.equal(data.updates.length,6);
- assert.equal(data.highlights.length,6);
+ assert.equal(data.updates.length,9);
+ assert.equal(data.highlights.length,9);
  assert.equal(data.branchSourcesAvailable,5);
  assert.ok(data.updates.some(x=>x.branch==='Protocolo Ruby'));
  assert.ok(data.updates.some(x=>x.branch==='Ouroboros EXP-008'));
@@ -136,8 +136,11 @@ test('editorial updates survive total upstream outage and never impersonate rele
  assert.equal(data.updates.length,6);
  assert.equal(data.sourceStatus.fallbackUsed,true);
  assert.equal(data.sourceStatus.githubMode,'snapshot');
- assert.equal(data.highlights.length,6);
+ assert.equal(data.highlights.length,9);
  const byId=Object.fromEntries(data.highlights.map(x=>[x.id,x]));
+ assert.equal(byId['security-ruby-20261102'].status,'SEGURANÇA');
+ assert.equal(byId['kids-20261102'].status,'NO AR');
+ assert.equal(byId['security-division-20261102'].status,'EM PREPARAÇÃO');
  assert.equal(byId['ouroboros-exp009'].status,'PESQUISA NO AR');
  assert.equal(byId['ruby-tool-live'].status,'NO AR');
  assert.equal(byId['argus-v02-20261030'].status,'LAB NO AR');
