@@ -77,3 +77,14 @@ test("No adult opt-in means no model call",async()=>{
  assert.equal(value.mode,"guided");
  assert.equal(calls,0);
 });
+
+test("Distributed rate limits protect Heart API and AI without exposing user content",async()=>{
+ const deny={limit:async()=>({success:false})},allow={limit:async()=>({success:true})};
+ const apiReq=new Request(site+"/api/heart",{method:"POST",headers:{Origin:site,"Content-Type":"application/json","CF-Connecting-IP":"198.51.100.200"},body:JSON.stringify({message:"Como um robô usa sensores?",band:"10-12",aiOptIn:true})});
+ const apiLimited=await context.respond(apiReq,{KIDS_API_LIMITER:deny,AI:{run:async()=>{throw Error("must not run")}}});
+ assert.equal(apiLimited.status,429);assert.equal(apiLimited.headers.get("Retry-After"),"60");
+ let aiCalls=0;
+ const aiReq=new Request(site+"/api/heart",{method:"POST",headers:{Origin:site,"Content-Type":"application/json","CF-Connecting-IP":"198.51.100.201"},body:JSON.stringify({message:"Como um robô usa sensores?",band:"10-12",aiOptIn:true})});
+ const aiLimited=await context.respond(aiReq,{KIDS_API_LIMITER:allow,KIDS_AI_LIMITER:deny,AI:{run:async()=>{aiCalls++;return {response:"safe"}}}});
+ assert.equal(aiLimited.status,429);assert.equal(aiLimited.headers.get("Retry-After"),"60");assert.equal(aiCalls,0);
+});
