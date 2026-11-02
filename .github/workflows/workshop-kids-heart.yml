@@ -1,0 +1,29 @@
+name: Workshop Kids Heart checks
+on:
+  push:
+    paths:
+      - "Kids/Heart/**"
+      - ".github/workflows/workshop-kids-heart.yml"
+  pull_request:
+    paths:
+      - "Kids/Heart/**"
+      - ".github/workflows/workshop-kids-heart.yml"
+permissions:
+  contents: read
+jobs:
+  heart:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Syntax
+        run: |
+          node --check Kids/Heart/src/heart-core.mjs
+          node --check Kids/Heart/src/worker.mjs
+          node --check Kids/Heart/public/app.js
+      - name: Unit and API tests
+        working-directory: Kids/Heart
+        run: node --test tests/heart.test.mjs

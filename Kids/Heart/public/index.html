@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102034">
+  <meta name="description" content="Heart: aventuras educativas e seguras da The Workshop Kids.">
+  <title>Heart | The Workshop Kids</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div class="avatar" aria-hidden="true">🐺</div>
+      <div>
+        <p class="eyebrow">THE WORKSHOP KIDS · HEART CORE 0.1</p>
+        <h1>Oi! Eu sou o Heart <span>💙</span></h1>
+        <p>Um lobinho netrunner que adora perguntas e desafios.</p>
+      </div>
+    </header>
+    <section class="card" aria-labelledby="chat-title">
+      <h2 id="chat-title">Nosso laboratório de ideias ✨</h2>
+      <p class="notice">Eu sou um programa, não uma pessoa. Peça ajuda a um adulto para usar a internet. Não escreva nomes completos, endereços, números, senhas ou o nome da sua escola.</p>
+      <div id="messages" class="messages" role="log" aria-label="Conversa com Heart" aria-live="polite" aria-relevant="additions">
+        <p class="bubble bot">Auuuu! 🐺💙 Qual aventura vamos explorar hoje?</p>
+      </div>
+      <div id="suggestions" class="suggestions" aria-label="Missões sugeridas"></div>
+      <form id="chat" autocomplete="off">
+        <label for="message">Sua pergunta</label>
+        <div class="entry">
+          <input id="message" name="message" type="text" maxlength="220" placeholder="Pergunte sobre robôs, lógica ou ciência..." required>
+          <button id="send" type="submit">Enviar 🐾</button>
+        </div>
+      </form>
+      <p class="footnote">🔒 Não criamos contas nem salvamos a conversa no navegador ou em um banco de dados. O Heart usa respostas educativas preparadas, não IA generativa.</p>
+    </section>
+    <footer>Feito para aprender, experimentar e fazer perguntas. © The Workshop Kids</footer>
+  </main>
+</body>
+</html>
