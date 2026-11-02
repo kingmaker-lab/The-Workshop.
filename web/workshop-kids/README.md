@@ -69,3 +69,9 @@ Deploy manual: `npx wrangler deploy web/workshop-kids/worker.js --name workshop-
 - Mantida a página `/blade/` e o quadrinho de quatro cenas sem JavaScript.
 - Nova rota `/blade/conversar/` com respostas guiadas e IA moderada, opcional para 7–12 anos com participação do responsável.
 - Conteúdos: golpes, senhas, privacidade e cidadania digital. Documentação: `web/workshop-kids/BLADE-CHAT.md`.
+
+## Próximo mascote: teaser e interação futura (02/11/2026)
+- A página inicial ganhou a seção `/#novidades-mascotes` com Blade, Heart e a silhueta preta de um mascote misterioso (`?`).
+- Card responsivo usando somente `/assets/blade.webp`, `/assets/heart.webp` e CSS interno, sem dependências nem chamadas a serviços de imagens.
+- Mensagem editorial: futuramente todos os mascotes da The Workshop poderão interagir com visitantes nas plataformas do ecossistema. O novo mascote ainda está em preparação.
+- Os links de conversa que já existem são `/heart/` e `/blade/conversar/`; interações com crianças mantêm orientações de privacidade, supervisão de responsáveis e revisão de segurança antes de expansão.
