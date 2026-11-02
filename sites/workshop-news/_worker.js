@@ -200,6 +200,14 @@ async function handler(request,env={},ctx={}) {
       'Content-Type':'text/plain; charset=utf-8'
     }});
   }
+  if(pathname==='/kids'||pathname==='/kids/'){
+    return new Response(null,{status:302,headers:{
+      ...SECURITY,
+      'Location':'https://workshop-kids.wolfpackworkshop.workers.dev/',
+      'Cache-Control':'no-store',
+      'Content-Type':'text/plain; charset=utf-8'
+    }});
+  }
   if(pathname==='/ruby'||pathname==='/ruby/'){
     return new Response(null,{status:302,headers:{
       ...SECURITY,
