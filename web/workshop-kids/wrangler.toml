@@ -1,0 +1,26 @@
+name = "workshop-kids"
+main = "worker.js"
+compatibility_date = "2026-11-02"
+workers_dev = true
+
+[ai]
+binding = "AI"
+
+[[ratelimits]]
+name = "KIDS_API_LIMITER"
+namespace_id = "202611021"
+  [ratelimits.simple]
+  limit = 30
+  period = 60
+
+[[ratelimits]]
+name = "KIDS_AI_LIMITER"
+namespace_id = "202611022"
+  [ratelimits.simple]
+  limit = 8
+  period = 60
+
+[observability]
+enabled = true
+head_sampling_rate = 0.1
+redact_query_string = true
