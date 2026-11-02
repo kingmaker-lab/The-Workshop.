@@ -47,3 +47,10 @@ Deploy manual: `npx wrangler deploy web/workshop-kids/worker.js --name workshop-
 - Nenhum dado de conversa é guardado em banco/localStorage; rate limit temporário na memória da instância do Worker (não é rate limit global). O provedor pode tratar logs operacionais e textos enviados para inferência. Não existem autenticação infantil, chat entre usuários ou ferramentas executáveis.
 - Os filtros são incompletos e não garantem segurança. Revisão de salvaguardas, carga, acessibilidade e LGPD/ECA Digital antes de expandir chat. Limites globais Cloudflare devem ser configurados no painel.
 - Deploy exige Workers AI binding `AI` (`{type:"ai",name:"AI"}`). O modelo utiliza a franquia e pode gerar custos conforme o plano da conta.
+
+
+## Base Blade 🛡️ (segurança digital infantil)
+- Nova rota `/blade/`, dedicada ao personagem Blade e a educação de autoproteção digital.
+- Missões guiadas de senhas, mensagens suspeitas, privacidade, respeito e aplicativos.
+- Conversa usando `/api/blade` com conteúdo preparado por padrão; IA opcional nas trilhas 7–12 com seleção de responsável, controles de segurança e sem histórico persistente no aplicativo.
+- Informações e limitações detalhadas no arquivo `web/workshop-kids/BLADE.md`.
