@@ -1,5 +1,5 @@
 // The Workshop Security Division. Compiled HTML/CSS/JS placeholders below.
-const HTML=__INLINE_HTML__, CSS=__INLINE_CSS__, JS=__INLINE_JS__;
+const HTML=__INLINE_HTML__, CSS=__INLINE_CSS__, JS=__INLINE_JS__, ARGUS_B64=__INLINE_ARGUS_AVIF__;
 const ENC=new TextEncoder();
 const MISSIONS=[
 {id:'base64',title:'Primeiro sinal',category:'Encoding',level:'Iniciante',points:50,summary:'Decodifique um telegrama Base64.',hint:'Base64 é codificação, não criptografia. Decodifique o texto completo.'},
@@ -113,6 +113,7 @@ export default {async fetch(req,env){
  if(req.method==='GET'&&(p==='/'||p==='/index.html'))return asset(HTML,'text/html; charset=utf-8');
  if(req.method==='GET'&&p==='/styles.css')return asset(CSS,'text/css; charset=utf-8');
  if(req.method==='GET'&&p==='/app.js')return asset(JS,'text/javascript; charset=utf-8');
+ if(req.method==='GET'&&p==='/assets/argus.avif')return new Response(Uint8Array.from(atob(ARGUS_B64),c=>c.charCodeAt(0)),{headers:{...HEAD,'Content-Type':'image/avif','Cache-Control':'public, max-age=604800'}});
  if(p.startsWith('/api/'))try{return await api(req,env,p);}catch(e){console.error('arena API failure',String(e).slice(0,120));return error('Serviço temporariamente indisponível.',503);}
  return error('Página não encontrada.',404);
 }};
