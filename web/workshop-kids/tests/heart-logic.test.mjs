@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import vm from "node:vm";
 
-const worker = fs.readFileSync(new URL("../worker.js", import.meta.url), "utf8");
+const worker = fs.readFileSync(new URL("../worker.js", import.meta.url), "utf8").replace(/export default \{ fetch\(request,env\)\{return respond\(request,env\);\} \};\s*$/, "");
 const ctx = vm.createContext({ Request, Response, URL, addEventListener() {} });
 vm.runInContext(worker, ctx, { timeout: 5000 });
 
