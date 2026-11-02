@@ -19,10 +19,13 @@ jobs:
           URL="https://workshop-kids.wolfpackworkshop.workers.dev"
           curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/" -o /tmp/home.html
           grep -q 'href="/heart/"' /tmp/home.html
+          grep -q 'href="/blade/"' /tmp/home.html
           curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/jogar/" -o /tmp/game.html
           grep -q 'Missão dos Algoritmos' /tmp/game.html
           curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/heart/" -o /tmp/heart.html
           grep -q 'Conversar com Heart' /tmp/heart.html
+          curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/blade/" -o /tmp/blade.html
+          grep -q 'Converse com Blade' /tmp/blade.html
           curl --connect-timeout 8 --max-time 25 -fsS "$URL/heart.js" -o /tmp/heart.js
           grep -q 'aiOptIn' /tmp/heart.js
           curl --connect-timeout 8 --max-time 25 -fsS -X POST "$URL/api/heart" \
