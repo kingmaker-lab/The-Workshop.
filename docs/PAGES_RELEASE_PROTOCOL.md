@@ -33,8 +33,8 @@ Cloudflare Pages retains previous deployments. If production smoke fails, promot
 
 ## Source mapping
 
-- Workshop News: `web/workshop-news/_worker.js`
+- Workshop News 2.0: `sites/workshop-news/` (Worker + current static assets)
 - Workshop Labs: `web/workshop-labs/_worker.js`
 - WolfPack Crypto: `sites/wolfpack-crypto/worker.mjs`
 
-The builder copies the chosen source byte-for-byte to `deploy/_worker.js`; it does not minify, bundle, rewrite, or modify runtime behavior.
+The builder copies each declared source file byte-for-byte into the deployment directory, records a SHA-256 for every file plus an aggregate manifest hash, and does not minify, bundle, rewrite, or modify runtime behavior.
