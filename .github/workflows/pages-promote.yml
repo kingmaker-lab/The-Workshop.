@@ -45,16 +45,25 @@ jobs:
           set -euo pipefail
           mkdir -p release-download
           gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name "pages-$APP-$SHA" --dir release-download
-      - name: Verify commit and artifact hash
+      - name: Verify commit and every artifact hash
         env:
           SHA: ${{ inputs.commit_sha }}
         run: |
           set -euo pipefail
-          MANIFEST="release-download/release-manifest.json"
-          test "$(node -e "console.log(require('./'+process.argv[1]).commit)" "$MANIFEST")" = "$SHA"
-          EXPECTED=$(node -e "console.log(require('./'+process.argv[1]).sha256)" "$MANIFEST")
-          GOT=$(sha256sum release-download/deploy/_worker.js | awk '{print $1}')
-          test "$EXPECTED" = "$GOT"
+          node - "$SHA" <<'NODE'
+          const fs=require('fs'),crypto=require('crypto'),path=require('path');
+          const sha=process.argv[2],root='release-download';
+          const m=JSON.parse(fs.readFileSync(path.join(root,'release-manifest.json'),'utf8'));
+          if(m.commit!==sha)throw Error('commit mismatch');
+          const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+          for(const f of m.files){
+            const bytes=fs.readFileSync(path.join(root,'deploy',f.dest));
+            if(hash(bytes)!==f.sha256)throw Error('hash mismatch: '+f.dest);
+          }
+          const aggregate=hash(Buffer.from([...m.files].sort((a,b)=>a.dest.localeCompare(b.dest)).map(f=>f.dest+':'+f.sha256).join('\n')));
+          if(aggregate!==m.aggregate_sha256)throw Error('aggregate hash mismatch');
+          console.log('verified immutable release',m.app,m.aggregate_sha256);
+          NODE
       - name: Resolve project and canonical URL
         id: meta
         env:
