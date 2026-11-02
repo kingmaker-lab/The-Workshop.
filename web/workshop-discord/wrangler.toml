@@ -1,0 +1,9 @@
+name = "workshop-discord"
+main = "worker.mjs"
+compatibility_date = "2026-11-02"
+workers_dev = true
+
+# Optional: set ENABLE_AI=true only after moderation and budget review.
+# Enable the Workers AI binding if you want Heart's model-assisted educational answers.
+[ai]
+binding = "AI"
