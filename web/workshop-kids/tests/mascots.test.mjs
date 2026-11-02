@@ -47,3 +47,14 @@ test("Imagens são permitidas pela CSP sem relaxar a segurança",()=>{
  assert.match(request("/heart/").headers.get("Content-Security-Policy"),/connect-src 'self'/);
  assert.match(request("/jogar/").headers.get("Content-Security-Policy"),/connect-src 'none'/);
 });
+
+test("Blade v2 mantém a arte completa e orienta para seção de responsáveis",async()=>{
+ const home=await request("/").text();
+ assert.match(home,/id="blade" aria-labelledby="blade-title"/);
+ assert.match(home,/class="blade-showcase section"/);
+ assert.match(home,/src="\/assets\/blade.webp"/);
+ assert.match(home,/Guardião Digital|guardião digital/);
+ assert.match(home,/href="#responsaveis"/);
+ const css=await request("/styles.css").text();
+ assert.match(css,/\.blade-poster img\{[^}]*object-fit:contain/);
+});
