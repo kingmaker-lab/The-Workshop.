@@ -54,3 +54,12 @@ Deploy manual: `npx wrangler deploy web/workshop-kids/worker.js --name workshop-
 - A seção direciona famílias e educadores ao aviso `/#responsaveis`; o aviso mantém o acesso a `https://workshop-news.pages.dev/#workshop`.
 - A rota pública `/assets/blade.webp` mantém-se interna ao Worker, sem chamada a fornecedores de imagens.
 - O binding `AI` do Heart foi preservado no deploy.
+
+## Blade v3: página própria com quadrinho educativo
+- Nova arte fornecida pelo projeto e otimizada para `assets/blade.webp` (960 × 960), incorporada ao Worker sem rede de terceiros.
+- Acesso em `/blade/` (`/blade`, `/blade/index.html`) com CSS dedicado `/blade.css`; sem JavaScript de cliente.
+- Apresentação do personagem, três princípios (proteger, questionar, pedir ajuda) e quadrinho de quatro cenas: "O clique misterioso", sobre mensagens suspeitas, privacidade e adulto de confiança.
+- Link permanente no menu, no card do mascote e na seção `/#blade` da página inicial. Links de retorno para a Heart e o jogo.
+- Chamada para responsáveis aponta para `https://workshop-news.pages.dev/#workshop`.
+- Nova página com `script-src 'none'`, `connect-src 'none'`, assets somente da própria origem; sem formulário ou coleta de dados.
+- Executar `node --test web/workshop-kids/tests/*.test.mjs` antes de publicar novas mudanças.
