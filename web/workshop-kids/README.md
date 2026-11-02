@@ -8,7 +8,7 @@ Divisão infantil da The Workshop. Portal gratuito, sem cadastro, sem publicidad
 - Área para responsáveis e educadores.
 - Sem dependências, cookies da aplicação, analytics de terceiros, chamadas de API, chat, upload ou conta infantil.
 
-## Jogo de programação: Heart e a Missão dos Algoritmos (v0.2)
+## Jogo de programação: A Heart e a Missão dos Algoritmos (v0.2)
 - Nova rota `/jogar/`, acessível diretamente na página inicial.
 - Cinco fases com tabuleiro 5×5, comandos de movimento, algoritmo ordenado, animação por etapas, dicas, desfazer, limpar e repetição `N vezes`.
 - Conteúdo sobre sequência, decomposição, planejamento, depuração e laços.
@@ -16,9 +16,9 @@ Divisão infantil da The Workshop. Portal gratuito, sem cadastro, sem publicidad
 - Testes: `node --test web/workshop-kids/tests/*.test.mjs`.
 
 ## Mascotes oficiais (2/11/2026)
-- **Heart**: guia infantil, presente na página inicial, no jogo /jogar/ e no chat /heart/.
+- **A Heart**: a lobinha exploradora e guia das descobertas, presente na página inicial, no jogo `/jogar/` e no chat `/heart/`.
 - **Blade**: guardião da oficina, apresentado na página inicial.
-- Artes originais fornecidas para este lançamento; versões WebP otimizadas em `assets/heart.webp` e `assets/blade.webp` (640 × 640).
+- Artes oficiais: Heart (`assets/heart.webp`, 640 × 640) e Blade (`assets/blade.webp`, 960 × 960), com WebP otimizado.
 - Servidas nas rotas `/assets/heart.webp` e `/assets/blade.webp` pelo próprio Worker, sem carregamento externo pelo navegador.
 - Política de conteúdo `img-src 'self'` e testes automatizados com `node --test web/workshop-kids/tests/*.test.mjs`.
 
@@ -53,7 +53,7 @@ Deploy manual: `npx wrangler deploy web/workshop-kids/worker.js --name workshop-
 - Imagem substituída na vitrine dos mascotes e exibida integralmente na seção `/#blade`, com destaque para privacidade, direitos, proteção e navegação consciente.
 - A seção direciona famílias e educadores ao aviso `/#responsaveis`; o aviso mantém o acesso a `https://workshop-news.pages.dev/#workshop`.
 - A rota pública `/assets/blade.webp` mantém-se interna ao Worker, sem chamada a fornecedores de imagens.
-- O binding `AI` do Heart foi preservado no deploy.
+- O binding `AI` da Heart foi preservado no deploy.
 
 ## Blade v3: página própria com quadrinho educativo
 - Nova arte fornecida pelo projeto e otimizada para `assets/blade.webp` (960 × 960), incorporada ao Worker sem rede de terceiros.
@@ -76,11 +76,20 @@ Deploy manual: `npx wrangler deploy web/workshop-kids/worker.js --name workshop-
 - Mensagem editorial: futuramente todos os mascotes da The Workshop poderão interagir com visitantes nas plataformas do ecossistema. O novo mascote ainda está em preparação.
 - Os links de conversa que já existem são `/heart/` e `/blade/conversar/`; interações com crianças mantêm orientações de privacidade, supervisão de responsáveis e revisão de segurança antes de expansão.
 
-## Heart e Blade: chats separados, apresentação v4 (02/11/2026)
+## A Heart e o Blade: chats separados, apresentação v4 (02/11/2026)
 - O portal passa a oferecer **dois cards de conversa** em `/#conversar`, um para cada mascote.
-- **Heart:** `/heart/`, chat independente `/api/heart`, visual claro, roxo/rosa e assuntos de ciência, programação e descobertas.
+- **A Heart:** `/heart/`, chat independente `/api/heart`, visual claro, roxo/rosa e assuntos de ciência, programação e descobertas.
 - **Blade:** `/blade/conversar/`, chat independente `/api/blade`, visual preto/vermelho, acesso direto à arte atual `/assets/blade.webp?v=e04bfb99` e conteúdos educativos de segurança digital.
 - Ambos possuem navegação cruzada com seleção explícita do chat ativo, trilhas por faixa etária e avisos aos responsáveis.
 - A arte do Blade recebe um parâmetro de versão para evitar o cache da imagem anterior. O backend de IA, os controles de privacidade e os filtros preexistentes não foram alterados.
 - Política infantil: sem chat entre usuários, sem armazenamento de histórico no site, perguntas limitadas, orientação a não fornecer informações pessoais e IA opcional para maiores faixas supervisionadas. Limites do provedor permanecem aplicáveis.
 - Smoke tests e testes de interface via `node --test web/workshop-kids/tests/*.test.mjs` e `.github/workflows/workshop-kids-live.yml`.
+
+## Identidade canônica e artes atualizadas (02/11/2026)
+- A Heart é **fêmea**. Em toda a plataforma, os textos e as respostas do bot devem usar **a Heart / ela / lobinha / guia**, nunca `o Heart` ou `lobinho` para se referir a ela.
+- O jogo `/jogar/`, a página inicial, os cards, os anúncios de mascotes e o chat `/heart/` usam o feminino em títulos, textos, descrições acessíveis e mensagens.
+- O prompt interno da assistente da Heart foi ajustado para a identidade feminina, sem remover os limites de segurança infantil.
+- A imagem oficial vigente da Heart está versionada como `/assets/heart.webp?v=f588d298`. A imagem oficial vigente do Blade está versionada como `/assets/blade.webp?v=e04bfb99`.
+- Imagens antigas não devem mais ser utilizadas no HTML, no JavaScript ou nos avatares. As versões são baseadas nos blobs WebP atuais do repositório. Não há dependência de imagens externas.
+- No próximo lançamento de cada mascote, atualizar o WebP canônico e o parâmetro de versão em **todas** as páginas, inclusive o quadrinho, a capa do jogo, o tabuleiro e os chats.
+- Validação automática em `tests/heart-feminine-canon.test.mjs` e suíte `node --test web/workshop-kids/tests/*.test.mjs`.
