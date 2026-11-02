@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 4
     steps:
-      - name: Check homepage, game, Heart chat and guided API
+      - name: Check homepage, Heart, Blade comic and Blade security chat
         run: |
           set -euo pipefail
           URL="https://workshop-kids.wolfpackworkshop.workers.dev"
@@ -23,6 +23,22 @@ jobs:
           grep -q 'Missão dos Algoritmos' /tmp/game.html
           curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/heart/" -o /tmp/heart.html
           grep -q 'Conversar com Heart' /tmp/heart.html
+          curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/blade/" -o /tmp/blade-comic.html
+          grep -q 'O clique misterioso' /tmp/blade-comic.html
+          curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/blade/conversar/" -o /tmp/blade-chat.html
+          grep -q 'Converse com Blade' /tmp/blade-chat.html
+          curl --connect-timeout 8 --max-time 25 -fsS "$URL/blade/chat.js" -o /tmp/blade-chat.js
+          grep -q 'aiOptIn' /tmp/blade-chat.js
+          curl --connect-timeout 8 --max-time 25 -fsS -X POST "$URL/api/blade" \
+            -H 'Content-Type: application/json' -H "Origin: $URL" \
+            --data '{"message":"O que é phishing?","band":"4-6","aiOptIn":false}' -o /tmp/blade-response.json
+          python3 - <<'PY'
+          import json
+          data=json.load(open('/tmp/blade-response.json',encoding='utf8'))
+          assert data['mode']=='guided' and data['category']=='phishing',data
+          print('Blade comic + chat + guided API live: OK')
+          PY
+
           curl --connect-timeout 8 --max-time 25 -fsS "$URL/heart.js" -o /tmp/heart.js
           grep -q 'aiOptIn' /tmp/heart.js
           curl --connect-timeout 8 --max-time 25 -fsS -X POST "$URL/api/heart" \
