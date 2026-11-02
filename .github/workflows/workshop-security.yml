@@ -1,0 +1,44 @@
+name: Workshop Security Division · source gate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web/workshop-security/**"
+      - ".github/workflows/workshop-security.yml"
+  pull_request:
+    paths:
+      - "web/workshop-security/**"
+      - ".github/workflows/workshop-security.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  security-division:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate source syntax
+        run: |
+          node --check web/workshop-security/worker.mjs
+          node --check web/workshop-security/app.js
+          node --check web/workshop-security/build.mjs
+      - name: Build deployable Worker
+        run: node web/workshop-security/build.mjs
+      - name: Run Security Division tests
+        run: node --test web/workshop-security/tests/*.test.mjs
+      - name: Verify build has no placeholders or secret material
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f web/workshop-security/dist/worker.mjs
+          ! grep -q '__INLINE_' web/workshop-security/dist/worker.mjs
+          ! grep -Eq 'FLAG_SECRET\s*=|recovery_hash\s*=|session_hash\s*=' web/workshop-security/dist/worker.mjs
+          grep -q "Content-Security-Policy" web/workshop-security/dist/worker.mjs
+          grep -q "Cache-Control':'no-store" web/workshop-security/dist/worker.mjs
