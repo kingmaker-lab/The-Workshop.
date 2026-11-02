@@ -218,6 +218,28 @@ test('public homepage does not expose the retired roadmap',async()=>{
 });
 
 
+test('Workshop Kids entry is a fixed redirect with no open redirect',async()=>{
+ for(const method of ['GET','HEAD']){
+   for(const path of ['/kids','/kids/','/kids?next=https://evil.invalid']){
+     const response=await handler(new Request(new URL(path,base),{method}),fakeAssets);
+     assert.equal(response.status,302,path);
+     assert.equal(response.headers.get('location'),'https://workshop-kids.wolfpackworkshop.workers.dev/');
+     assert.equal(response.headers.get('cache-control'),'no-store');
+     assert.equal(response.headers.get('x-content-type-options'),'nosniff');
+     assert.equal(await response.text(),'');
+   }
+ }
+ for(const method of ['POST','OPTIONS']){
+   const response=await handler(new Request(new URL('/kids',base),{method}),fakeAssets);
+   assert.equal(response.status,405);
+   assert.equal(response.headers.get('allow'),'GET, HEAD');
+ }
+ const {readFile}=await import('node:fs/promises');
+ const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
+ assert.equal((html.match(/href="\/kids"/g)||[]).length,2);
+ assert.match(html,/Workshop Kids/);
+});
+
 test('Ruby Tool entry is a fixed redirect to the standalone Protocolo Ruby tool',async()=>{
  for(const method of ['GET','HEAD']){
    for(const path of ['/ruby','/ruby/','/ruby?next=https://evil.invalid']){
