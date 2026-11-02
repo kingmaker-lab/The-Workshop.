@@ -26,3 +26,22 @@ jobs:
           node-version: '22'
       - name: Rodar testes de rotas, segurança e soluções
         run: node --test web/workshop-kids/tests/*.test.mjs
+
+      - name: Smoke HTTP do Heart no Worker de previa
+        run: |
+          set -euo pipefail
+          URL="https://workshop-kids-heart-preview.wolfpackworkshop.workers.dev"
+          curl --connect-timeout 8 --max-time 25 --retry 2 --retry-delay 2 -fsS "$URL/heart/" -o /tmp/heart-kids.html
+          grep -q 'Conversar com Heart' /tmp/heart-kids.html
+          curl --connect-timeout 8 --max-time 25 -fsS "$URL/jogar/" -o /tmp/heart-game.html
+          grep -q 'Missão dos Algoritmos' /tmp/heart-game.html
+          curl --connect-timeout 8 --max-time 25 -fsS -X POST "$URL/api/heart" \
+            -H 'Content-Type: application/json' -H "Origin: $URL" \
+            --data '{"message":"Quero um desafio de lógica","band":"4-6"}' -o /tmp/heart-chat.json
+          python3 - <<'PY'
+          import json
+          data=json.load(open('/tmp/heart-chat.json'))
+          assert data['mode']=='guided'
+          assert data['category']=='quiz'
+          print('Preview: Heart route, game and guided API OK')
+          PY
