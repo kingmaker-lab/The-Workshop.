@@ -1,0 +1,71 @@
+name: Pages · immutable artifact gate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web/workshop-news/**"
+      - "web/workshop-labs/**"
+      - "sites/wolfpack-crypto/**"
+      - "scripts/pages-release.mjs"
+      - ".github/workflows/pages-artifact-gate.yml"
+  pull_request:
+    paths:
+      - "web/workshop-news/**"
+      - "web/workshop-labs/**"
+      - "sites/wolfpack-crypto/**"
+      - "scripts/pages-release.mjs"
+      - ".github/workflows/pages-artifact-gate.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [workshop-news, workshop-labs, wolfpack-crypto]
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Source validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "${{ matrix.app }}" in
+            workshop-news)
+              node --check web/workshop-news/_worker.js
+              node --test web/workshop-news/tests/*.test.mjs
+              ;;
+            workshop-labs)
+              node --check web/workshop-labs/_worker.js
+              node --test web/workshop-labs/tests/*.test.mjs
+              ;;
+            wolfpack-crypto)
+              node --check sites/wolfpack-crypto/worker.mjs
+              ;;
+          esac
+      - name: Build immutable artifact
+        env:
+          RELEASE_SHA: ${{ github.sha }}
+        run: node scripts/pages-release.mjs "${{ matrix.app }}"
+      - name: Verify artifact hash
+        shell: bash
+        run: |
+          set -euo pipefail
+          APP="${{ matrix.app }}"
+          EXPECTED=$(node -e "console.log(require('./release/'+process.argv[1]+'/release-manifest.json').sha256)" "$APP")
+          GOT=$(sha256sum "release/$APP/deploy/_worker.js" | awk '{print $1}')
+          test "$EXPECTED" = "$GOT"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pages-${{ matrix.app }}-${{ github.sha }}
+          path: release/${{ matrix.app }}/
+          if-no-files-found: error
+          retention-days: 14
