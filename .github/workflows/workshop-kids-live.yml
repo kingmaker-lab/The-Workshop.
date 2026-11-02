@@ -19,10 +19,13 @@ jobs:
           URL="https://workshop-kids.wolfpackworkshop.workers.dev"
           curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/" -o /tmp/home.html
           grep -q 'href="/heart/"' /tmp/home.html
+          grep -q 'href="/blade/"' /tmp/home.html
           curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/jogar/" -o /tmp/game.html
           grep -q 'Missão dos Algoritmos' /tmp/game.html
           curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/heart/" -o /tmp/heart.html
           grep -q 'Conversar com Heart' /tmp/heart.html
+          curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/blade/" -o /tmp/blade.html
+          grep -q 'Converse com Blade' /tmp/blade.html
           curl --connect-timeout 8 --max-time 25 -fsS "$URL/heart.js" -o /tmp/heart.js
           grep -q 'aiOptIn' /tmp/heart.js
           curl --connect-timeout 8 --max-time 25 -fsS -X POST "$URL/api/heart" \
@@ -33,4 +36,14 @@ jobs:
           data=json.load(open('/tmp/kids-response.json',encoding='utf8'))
           assert data['mode']=='guided' and data['category']=='quiz', 'guided API failed'
           print('Production paths and guided API OK')
+          PY
+
+          curl --connect-timeout 8 --max-time 25 -fsS -X POST "$URL/api/blade" \
+            -H 'Content-Type: application/json' -H "Origin: $URL" \
+            --data '{"message":"O que é phishing?","band":"4-6","aiOptIn":false}' -o /tmp/blade-response.json
+          python3 - <<'PY'
+          import json
+          data=json.load(open('/tmp/blade-response.json',encoding='utf8'))
+          assert data['mode']=='guided' and data['category']=='phishing',data
+          print('Blade HTTP guided API OK')
           PY
