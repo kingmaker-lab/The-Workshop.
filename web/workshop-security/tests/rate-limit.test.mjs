@@ -49,3 +49,12 @@ test('static security baseline now includes HSTS',async()=>{
  assert.equal(r.status,200);
  assert.match(r.headers.get('Strict-Transport-Security')||'',/max-age=31536000/);
 });
+
+
+test('D1 observability classifies failures without logging exception or request content',async()=>{
+ const source=await readFile(path.join(root,'worker.mjs'),'utf8');
+ assert.match(source,/d1_failure/);
+ assert.match(source,/String\(e\?\.message\|\|''\)/);
+ assert.doesNotMatch(source,/console\.error\([^;\n]*e\?\.message/);
+ assert.doesNotMatch(source,/console\.error\([^;\n]*body\./);
+});
