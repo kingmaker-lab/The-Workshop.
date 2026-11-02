@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="/styles.css">
   <title>Workshop News 2.0 | Notícias além do código</title>
   <script src="/app.js" defer></script>
+  <link rel="stylesheet" href="/fake-walker.css">
+  <script src="/fake-walker.js" defer></script>
 </head>
 <body>
 <a class="skip" href="#conteudo">Pular para as notícias</a>
@@ -114,5 +116,11 @@
     </main>
   </div>
 </div>
+  <div id="fake-walker" data-facing="right" data-moving="false" aria-label="Fake, mascote interativo">
+    <button id="fw-character" class="fw-character" type="button" aria-label="Fake: abrir minha coluna de novidades"><img src="/fake.svg" width="88" height="88" alt=""></button>
+    <span id="fw-bubble" class="fw-bubble" role="status" hidden></span>
+    <button id="fw-hide" class="fw-hide" type="button" title="Ocultar Fake" aria-label="Ocultar mascote Fake">×</button>
+  </div>
+  <button id="fake-walker-toggle" type="button" aria-label="Mostrar mascote Fake novamente" title="Mostrar Fake" hidden>🐺</button>
 </body>
 </html>
