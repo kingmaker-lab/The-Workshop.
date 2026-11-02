@@ -50,7 +50,7 @@ test("Códigos dos jogos são locais, sem coleta ou rede",()=>{
   assert.doesNotThrow(()=>new Function(js));
  }
  const catalog=content("KIDS_GAMES_HTML");
- assert.ok(catalog.includes("/assets/heart.webp?v=f588d298"));
+ assert.ok(catalog.includes("/assets/heart.webp?v=00ff52e6"));
  assert.ok(catalog.includes("/assets/blade.webp?v=e04bfb99"));
  for(const n of ["ROBOT_HTML","GUARDIAN_HTML","CIRCUIT_HTML"]){
   const html=content(n);

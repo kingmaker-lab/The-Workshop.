@@ -89,7 +89,7 @@ Deploy manual: `npx wrangler deploy web/workshop-kids/worker.js --name workshop-
 - A Heart é **fêmea**. Em toda a plataforma, os textos e as respostas do bot devem usar **a Heart / ela / lobinha / guia**, nunca `o Heart` ou `lobinho` para se referir a ela.
 - O jogo `/jogar/`, a página inicial, os cards, os anúncios de mascotes e o chat `/heart/` usam o feminino em títulos, textos, descrições acessíveis e mensagens.
 - O prompt interno da assistente da Heart foi ajustado para a identidade feminina, sem remover os limites de segurança infantil.
-- A imagem oficial vigente da Heart está versionada como `/assets/heart.webp?v=f588d298`. A imagem oficial vigente do Blade está versionada como `/assets/blade.webp?v=e04bfb99`.
+- A imagem oficial vigente da Heart está versionada como `/assets/heart.webp?v=00ff52e6`. A imagem oficial vigente do Blade está versionada como `/assets/blade.webp?v=e04bfb99`.
 - Imagens antigas não devem mais ser utilizadas no HTML, no JavaScript ou nos avatares. As versões são baseadas nos blobs WebP atuais do repositório. Não há dependência de imagens externas.
 - No próximo lançamento de cada mascote, atualizar o WebP canônico e o parâmetro de versão em **todas** as páginas, inclusive o quadrinho, a capa do jogo, o tabuleiro e os chats.
 - Validação automática em `tests/heart-feminine-canon.test.mjs` e suíte `node --test web/workshop-kids/tests/*.test.mjs`.
@@ -104,3 +104,9 @@ Deploy manual: `npx wrangler deploy web/workshop-kids/worker.js --name workshop-
 - Sem cadastro, cookies de aplicação, chat entre crianças, placar público, anúncios ou coleta de escolhas/comandos. Jogos não fazem chamadas de rede no navegador.
 - Apps preexistentes (Missão dos Algoritmos, chat da Heart, chat do Blade, quadrinhos e políticas para responsáveis) preservados. O Workers AI binding `AI`, os dois limites de requisição distribuídos e as configurações de observabilidade foram preservados durante a publicação.
 - Testes Node: `node --test web/workshop-kids/tests/*.test.mjs`; novo arquivo `games-lab.test.mjs` valida rotas, soluções das missões, proteção dos circuitos e manutenção dos chats. GitHub Actions `workshop-kids-live.yml` verifica as URLs reais.
+
+## Nova arte oficial da Heart (02/11/2026)
+- A arte mais recente enviada para a Heart substitui o asset anterior em `web/workshop-kids/assets/heart.webp`, agora otimizado para 960 × 960 pixels (WebP).
+- URL versionada: `/assets/heart.webp?v=00ff52e6`; a versão anterior deixa de ser referenciada nas telas.
+- Substituição aplicada na home, retratos, chat, jogo de algoritmos e avatar do tabuleiro, Game Lab e Heart's Robot Factory.
+- Os testes automatizados e o smoke test de produção verificam a nova versão.

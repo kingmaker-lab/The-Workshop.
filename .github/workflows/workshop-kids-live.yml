@@ -20,13 +20,13 @@ jobs:
           curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/" -o /tmp/home.html
           grep -q 'href="/heart/"' /tmp/home.html
           grep -q 'blade.webp?v=e04bfb99' /tmp/home.html
-          grep -q 'heart.webp?v=f588d298' /tmp/home.html
+          grep -q 'heart.webp?v=00ff52e6' /tmp/home.html
           curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/jogar/" -o /tmp/game.html
           grep -q 'Missão dos Algoritmos' /tmp/game.html
           grep -q 'A Heart e a' /tmp/game.html
           curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/heart/" -o /tmp/heart.html
           grep -q 'Conversar com a Heart' /tmp/heart.html
-          grep -q 'heart.webp?v=f588d298' /tmp/heart.html
+          grep -q 'heart.webp?v=00ff52e6' /tmp/heart.html
           curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/blade/" -o /tmp/blade-comic.html
           grep -q 'O clique misterioso' /tmp/blade-comic.html
           curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/blade/conversar/" -o /tmp/blade-chat.html

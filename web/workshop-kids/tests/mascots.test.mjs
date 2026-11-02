@@ -16,10 +16,10 @@ test("Blade e Heart presentes nas três telas",async()=>{
  const game=await request("/jogar/").text();
  const chat=await request("/heart/").text();
  assert.match(home,/<img[^>]+src="\/assets\/blade.webp\?v=e04bfb99"[^>]+alt="Blade,/);
- assert.match(home,/<img[^>]+src="\/assets\/heart.webp\?v=f588d298"[^>]+alt="Heart,/);
- assert.match(game,/src="\/assets\/heart.webp\?v=f588d298"/);
- assert.match(chat,/src="\/assets\/heart.webp\?v=f588d298"/);
- assert.match(getText("GAME_JS"),/avatar\.src="\/assets\/heart.webp\?v=f588d298"/);
+ assert.match(home,/<img[^>]+src="\/assets\/heart.webp\?v=00ff52e6"[^>]+alt="Heart,/);
+ assert.match(game,/src="\/assets\/heart.webp\?v=00ff52e6"/);
+ assert.match(chat,/src="\/assets\/heart.webp\?v=00ff52e6"/);
+ assert.match(getText("GAME_JS"),/avatar\.src="\/assets\/heart.webp\?v=00ff52e6"/);
 });
 test("Sprites WebP são válidos, autocontidos e respondem a HEAD",async()=>{
  for(const name of ["blade","heart"]){

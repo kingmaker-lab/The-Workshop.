@@ -35,14 +35,14 @@ test("Identidade da Heart é feminina também nas respostas e instruções de IA
   assert.equal(guided.mode,"guided");
 });
 test("Imagens oficiais atuais são usadas em todas as telas e avatares",async()=>{
-  const heartVersion="/assets/heart.webp?v=f588d298",bladeVersion="/assets/blade.webp?v=e04bfb99";
+  const heartVersion="/assets/heart.webp?v=00ff52e6",bladeVersion="/assets/blade.webp?v=e04bfb99";
   for(const name of ["HTML","GAME_HTML","HEART_HTML"]){
-    assert.match(constant(name),/\/assets\/heart.webp\?v=f588d298/);
+    assert.match(constant(name),/\/assets\/heart.webp\?v=00ff52e6/);
   }
   for(const name of ["HTML","BLADE_HTML","BLADE_CHAT_HTML"]){
     assert.match(constant(name),/\/assets\/blade.webp\?v=e04bfb99/);
   }
-  assert.match(constant("GAME_JS"),/avatar\.src="\/assets\/heart.webp\?v=f588d298"/);
+  assert.match(constant("GAME_JS"),/avatar\.src="\/assets\/heart.webp\?v=00ff52e6"/);
   for(const path of [heartVersion,bladeVersion]){
     const response=get(path);
     assert.equal(response.status,200);
