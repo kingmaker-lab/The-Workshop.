@@ -183,6 +183,7 @@ function bladeGuided(message){
  const n=bladeNormalize(message.trim());
  if(bladePrivate(message,n))return bladeResponse("Seus dados são um tesouro! 🔐 Não compartilhe nome, escola, telefone, endereço, fotos, senhas ou códigos. Caso já tenha enviado algo pessoal, conte a um adulto de confiança.","privacy",[]);
  if(bladeEmergency(n))return bladeResponse("Você merece se sentir seguro. 💙 Conte agora a um adulto de confiança se alguém está ameaçando ou machucando você. Se houver perigo imediato, procure ajuda de pessoas por perto ou dos serviços de emergência.","safety",[]);
+ if(/\b(o que e|como funciona|o que significa)\b.*\b(virus|malware)\b/.test(n))return bladeResponse("Vírus e outros programas maliciosos podem prejudicar computadores e roubar informações. 🦠 Para se proteger: não instale arquivos desconhecidos, mantenha seus aparelhos atualizados e peça ajuda a um adulto.","malware_lesson");
  if(bladeUnsafe(n))return bladeResponse("Na Base Blade aprendemos a proteger, nunca a invadir. 🛡️ Vamos aprender a reconhecer golpes e cuidar das nossas contas!","boundaries");
  const quiz=n.match(/^missao blade resposta:\s*([abc])$/);
  if(quiz)return quiz[1]==="b"?bladeResponse("Missão cumprida! 🎉 Não compartilhe senhas, mesmo se prometerem prêmios. Um adulto de confiança pode verificar a mensagem.","quiz"):
