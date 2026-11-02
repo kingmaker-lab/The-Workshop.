@@ -75,3 +75,12 @@ Deploy manual: `npx wrangler deploy web/workshop-kids/worker.js --name workshop-
 - Card responsivo usando somente `/assets/blade.webp`, `/assets/heart.webp` e CSS interno, sem dependências nem chamadas a serviços de imagens.
 - Mensagem editorial: futuramente todos os mascotes da The Workshop poderão interagir com visitantes nas plataformas do ecossistema. O novo mascote ainda está em preparação.
 - Os links de conversa que já existem são `/heart/` e `/blade/conversar/`; interações com crianças mantêm orientações de privacidade, supervisão de responsáveis e revisão de segurança antes de expansão.
+
+## Heart e Blade: chats separados, apresentação v4 (02/11/2026)
+- O portal passa a oferecer **dois cards de conversa** em `/#conversar`, um para cada mascote.
+- **Heart:** `/heart/`, chat independente `/api/heart`, visual claro, roxo/rosa e assuntos de ciência, programação e descobertas.
+- **Blade:** `/blade/conversar/`, chat independente `/api/blade`, visual preto/vermelho, acesso direto à arte atual `/assets/blade.webp?v=e04bfb99` e conteúdos educativos de segurança digital.
+- Ambos possuem navegação cruzada com seleção explícita do chat ativo, trilhas por faixa etária e avisos aos responsáveis.
+- A arte do Blade recebe um parâmetro de versão para evitar o cache da imagem anterior. O backend de IA, os controles de privacidade e os filtros preexistentes não foram alterados.
+- Política infantil: sem chat entre usuários, sem armazenamento de histórico no site, perguntas limitadas, orientação a não fornecer informações pessoais e IA opcional para maiores faixas supervisionadas. Limites do provedor permanecem aplicáveis.
+- Smoke tests e testes de interface via `node --test web/workshop-kids/tests/*.test.mjs` e `.github/workflows/workshop-kids-live.yml`.
