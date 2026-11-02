@@ -18,7 +18,7 @@ test("Heart chat integrated with landing and games intact",async()=>{
  const chat=context.respond(new Request(site+"/heart/"));
  assert.equal(chat.status,200);
  assert.match(chat.headers.get("Content-Security-Policy"),/connect-src 'self'/);
- assert.match(await chat.text(),/Conversar com Heart/);
+ assert.match(await chat.text(),/Conversar com a Heart/);
  for(const route of ["/heart.js","/heart.css","/jogar/","/game.js"]){
   assert.equal(context.respond(new Request(site+route)).status,200);
  }
