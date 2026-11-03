@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'digest'
+require_relative 'binary_inspector'
 module ProtocoloRuby
   class Analyzer
     MAX_BYTES = 20 * 1024 * 1024
@@ -17,16 +18,36 @@ module ProtocoloRuby
                else 'Unknown' end
       text = strings.join("\n")
       {
-        schema_version: '0.1.0', filename: File.basename(filename.to_s).byteslice(0, 128),
+        schema_version: '0.4.0', filename: File.basename(filename.to_s).byteslice(0, 128),
         size_bytes: data.bytesize,
         hashes: { sha256: Digest::SHA256.hexdigest(data), sha1: Digest::SHA1.hexdigest(data), md5: Digest::MD5.hexdigest(data) },
-        format: format, entropy: entropy.round(4), strings: strings,
+        format: format, binary_header: BinaryInspector.inspect(data),
+        hex_preview: BinaryInspector.hex_preview(data), entropy: entropy.round(4), strings: strings,
         indicators: {
           urls: text.scan(%r{https?://[a-zA-Z0-9._~:/?#\[\]@!$&'()*+,;=%-]+}).uniq.first(100),
           ipv4: text.scan(/\b(?:\d{1,3}\.){3}\d{1,3}\b/).uniq.select { |ip| ip.split('.').all? { |n| n.to_i <= 255 } }.first(100)
         },
-        status: 'indeterminate', note: 'Static analysis only; not a malware verdict.'
+        findings: investigative_hints(data, entropy, text),
+        status: 'indeterminate', note: 'Static evidence only; findings are not a malware verdict.'
       }
+    end
+    private
+
+    def investigative_hints(data, entropy, text)
+      findings = []
+      if data.bytesize >= 1024 && entropy >= 7.2
+        findings << { code: 'HIGH_ENTROPY', confidence: 'low', evidence: "Shannon entropy #{entropy.round(3)} bits/byte" }
+      end
+      urls = text.scan(%r{https?://[a-zA-Z0-9._~:/?#\\[\\]@!
+  end
+end
+'()*+,;=%-]+}).uniq
+      findings << { code: 'URL_STRINGS', confidence: 'informational', evidence: "#{urls.size} URL(s) in printable strings" } unless urls.empty?
+      hdr = BinaryInspector.inspect(data)
+      if %w[PE ELF].include?(hdr[:type]) && !hdr[:valid_header]
+        findings << { code: 'INVALID_EXECUTABLE_HEADER', confidence: 'low', evidence: hdr[:reason] }
+      end
+      findings
     end
   end
 end
