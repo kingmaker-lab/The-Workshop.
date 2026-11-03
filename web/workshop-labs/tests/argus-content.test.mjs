@@ -40,11 +40,7 @@ test('ARGUS v0.3 educational page documents local-only streaming controls',async
     'id="continuo"',
     'href="#continuo"',
     'watch',
-    'stream_checkpoints',
-  ]) {
-    if(phrase==='stream_checkpoints') continue; // DB table is intentionally an implementation detail.
-    assert.ok(html.includes(phrase),'Missing '+phrase);
-  }
+  ]) assert.ok(html.includes(phrase),'Missing '+phrase);
   for(const phrase of [
     '64 KiB por linha',
     '50.000 linhas completas',
@@ -57,7 +53,7 @@ test('ARGUS v0.3 educational page documents local-only streaming controls',async
   ]) assert.ok(html.includes(phrase),'Missing '+phrase);
   assert.ok(html.includes('ENTREGUE / v0.3'));
   assert.ok(html.includes('Regras Sigma'));
-  assert.doesNotMatch(html,/<script\\b/i);
+  assert.doesNotMatch(html,/<script\b/i);
   const response=await fetchPage('/argus/');
   assert.ok(response.headers.get('content-security-policy').includes("script-src 'none'"));
   assert.ok(response.headers.get('content-security-policy').includes("connect-src 'none'"));
