@@ -1,0 +1,24 @@
+name: Workshop Security Division Tests
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'web/workshop-security/**'
+      - '.github/workflows/workshop-security-tests.yml'
+  pull_request:
+    paths:
+      - 'web/workshop-security/**'
+      - '.github/workflows/workshop-security-tests.yml'
+  workflow_dispatch:
+jobs:
+  test-ctf:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test all CTF challenges and Argus
+        run: node --test web/workshop-security/tests/*.test.mjs

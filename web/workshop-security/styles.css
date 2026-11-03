@@ -17,3 +17,12 @@
 .argus-outro .btn{flex-shrink:0}
 @media(max-width:790px){.argus-heading,.argus-outro{align-items:flex-start;flex-direction:column;gap:16px}.argus-heading>p{max-width:100%}.argus-section{padding:18px 0 58px}.argus-outro .btn{width:100%}}
 @media(max-width:480px){.argus-figure{border-radius:9px}.argus-figure figcaption{padding:11px 13px;font-size:9px}.argus-heading h2{font-size:38px}}
+
+
+/* Challenge catalogue v0.2: responsive, keyboard-accessible filters. */
+.mission-filters{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:-4px 0 24px}
+.filter-chip{border:1px solid #3d5663;background:#111e26;color:#b5c8d1;border-radius:8px;padding:10px 13px;font:800 10px var(--mono);letter-spacing:.06em}
+.filter-chip:hover{border-color:#8de4af;color:#eaf6eb}
+.filter-chip.selected{background:#bbf786;color:#0b1610;border-color:#bbf786}
+.filter-info{font:700 10px var(--mono);color:var(--muted);margin-left:auto}
+@media(max-width:610px){.mission-filters{gap:7px}.filter-chip{flex:1 1 auto;padding:10px 11px}.filter-info{flex-basis:100%;margin:3px 0 0}}
