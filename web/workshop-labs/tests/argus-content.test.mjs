@@ -33,6 +33,36 @@ test('ARGUS editorial sections are accessible and accurately scoped',async()=>{
   assert.ok(source.includes('href="#conteudo"'));
 });
 
+test('ARGUS v0.3 educational page documents local-only streaming controls',async()=>{
+  const html=await (await fetchPage('/argus/')).text();
+  for(const phrase of [
+    'ARGUS v0.3 / CONTINUOUS INGEST',
+    'id="continuo"',
+    'href="#continuo"',
+    'watch',
+    'stream_checkpoints',
+  ]) {
+    if(phrase==='stream_checkpoints') continue; // DB table is intentionally an implementation detail.
+    assert.ok(html.includes(phrase),'Missing '+phrase);
+  }
+  for(const phrase of [
+    '64 KiB por linha',
+    '50.000 linhas completas',
+    'uma nova geração',
+    'python -m argus.main watch',
+    '--poll-interval 0.5',
+    '--from-end',
+    '--max-lines',
+    'estado de correlação e as baselines continuam em memória'
+  ]) assert.ok(html.includes(phrase),'Missing '+phrase);
+  assert.ok(html.includes('ENTREGUE / v0.3'));
+  assert.ok(html.includes('Regras Sigma'));
+  assert.doesNotMatch(html,/<script\\b/i);
+  const response=await fetchPage('/argus/');
+  assert.ok(response.headers.get('content-security-policy').includes("script-src 'none'"));
+  assert.ok(response.headers.get('content-security-policy').includes("connect-src 'none'"));
+});
+
 test('ARGUS remains static with defensive CSP; sibling labs are untouched',async()=>{
   const r=await fetchPage('/argus/');
   const csp=r.headers.get('content-security-policy');
