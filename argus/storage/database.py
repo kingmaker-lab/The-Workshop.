@@ -36,7 +36,8 @@ class Database:
                     path TEXT PRIMARY KEY,
                     device INTEGER NOT NULL,
                     inode INTEGER NOT NULL,
-                    offset INTEGER NOT NULL CHECK(offset >= 0)
+                    offset INTEGER NOT NULL CHECK(offset >= 0),
+                    generation INTEGER NOT NULL DEFAULT 0 CHECK(generation >= 0)
                 );
                 """
             )
@@ -71,20 +72,20 @@ class Database:
             )
 
 
-    def stream_checkpoint(self, path: str) -> tuple[int, int, int] | None:
-        """Read the committed (device, inode, byte offset) for a local log."""
+    def stream_checkpoint(self, path: str) -> tuple[int, int, int, int] | None:
+        """Read the committed (device, inode, byte offset, generation)."""
         with self._connect() as connection:
             row = connection.execute(
-                "SELECT device, inode, offset FROM stream_checkpoints WHERE path = ?",
+                "SELECT device, inode, offset, generation FROM stream_checkpoints WHERE path = ?",
                 (path,),
             ).fetchone()
-        return (row["device"], row["inode"], row["offset"]) if row else None
+        return (row["device"], row["inode"], row["offset"], row["generation"]) if row else None
 
     def commit_stream_line(
         self,
         path: str,
-        expected: tuple[int, int, int] | None,
-        checkpoint: tuple[int, int, int],
+        expected: tuple[int, int, int, int] | None,
+        checkpoint: tuple[int, int, int, int],
         event: Event | None = None,
         alert: Alert | None = None,
     ) -> None:
@@ -93,18 +94,18 @@ class Database:
         A stale writer fails rather than silently replaying the input.
         Correlation state itself remains in-memory per process.
         """
-        device, inode, offset = checkpoint
-        if not (isinstance(path, str) and path) or min(device, inode, offset) < 0:
+        device, inode, offset, generation = checkpoint
+        if not (isinstance(path, str) and path) or min(device, inode, offset, generation) < 0:
             raise ValueError("invalid stream checkpoint")
         if alert is not None and event is None:
             raise ValueError("alert requires its event")
         with self._connect() as connection:
             connection.execute("BEGIN IMMEDIATE")
             row = connection.execute(
-                "SELECT device, inode, offset FROM stream_checkpoints WHERE path = ?",
+                "SELECT device, inode, offset, generation FROM stream_checkpoints WHERE path = ?",
                 (path,),
             ).fetchone()
-            current = (row["device"], row["inode"], row["offset"]) if row else None
+            current = (row["device"], row["inode"], row["offset"], row["generation"]) if row else None
             if current != expected:
                 raise ValueError("stream checkpoint modified by another writer")
             if event is not None:
@@ -125,10 +126,11 @@ class Database:
                      alert.risk_score, json.dumps(payload, sort_keys=True)),
                 )
             connection.execute(
-                "INSERT INTO stream_checkpoints (path, device, inode, offset) "
-                "VALUES (?, ?, ?, ?) ON CONFLICT(path) DO UPDATE SET "
-                "device=excluded.device, inode=excluded.inode, offset=excluded.offset",
-                (path, device, inode, offset),
+                "INSERT INTO stream_checkpoints (path, device, inode, offset, generation) "
+                "VALUES (?, ?, ?, ?, ?) ON CONFLICT(path) DO UPDATE SET "
+                "device=excluded.device, inode=excluded.inode, "
+                "offset=excluded.offset, generation=excluded.generation",
+                (path, device, inode, offset, generation),
             )
 
     def list_alerts(self, limit: int = 100) -> list[dict[str, Any]]:
