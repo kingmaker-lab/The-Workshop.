@@ -33,7 +33,7 @@
 <header><div class="wrap">
   <a class="brand" href="/" aria-label="Workshop Labs, voltar ao catálogo"><span class="brandmark" aria-hidden="true">◉</span><span>ARGUS <small>THE WORKSHOP / DEFENSIVE RESEARCH</small></span></a>
   <nav class="nav" aria-label="Navegação do ARGUS">
-    <a href="#visao">VISÃO</a><a href="#arquitetura">ARQUITETURA</a><a href="#deteccoes">DETECÇÕES</a><a href="#evidencia">EVIDÊNCIA</a><a href="#telemetria">TELEMETRIA</a><a href="#executar">EXECUTAR</a><a href="#seguranca">SEGURANÇA</a><a href="#roadmap">ROADMAP</a>
+    <a href="#visao">VISÃO</a><a href="#arquitetura">ARQUITETURA</a><a href="#deteccoes">DETECÇÕES</a><a href="#evidencia">EVIDÊNCIA</a><a href="#telemetria">TELEMETRIA</a><a href="#executar">EXECUTAR</a><a href="#continuo">v0.3 / WATCH</a><a href="#seguranca">SEGURANÇA</a><a href="#roadmap">ROADMAP</a>
   </nav>
 </div></header>
 <main id="conteudo">
@@ -42,7 +42,7 @@
       <div class="eyebrow">THE WORKSHOP / PROTOCOLO ARGUS / DETECTION ENGINEERING</div>
       <h1>ARGUS<span>.</span></h1>
       <p class="lead">Um observador de eventos, não um oráculo. O ARGUS transforma logs em sinais investigáveis por meio de <strong>regras transparentes, correlação temporal e análise estatística experimental</strong>.</p>
-      <div class="pills"><span class="tag">PYTHON / LOCAL-FIRST</span><span class="tag">THREAT HUNTING</span><span class="tag">v0.2 / LAB</span><span class="tag">OPEN SOURCE</span></div>
+      <div class="pills"><span class="tag">PYTHON / LOCAL-FIRST</span><span class="tag">THREAT HUNTING</span><span class="tag">v0.3 / LAB</span><span class="tag">OPEN SOURCE</span></div>
       <div class="cta-row"><a class="button primary" href="#executar">COMEÇAR PELO LABORATÓRIO ↓</a><a class="button" href="https://github.com/kingmaker-lab/The-Workshop./tree/main/argus" rel="noopener noreferrer">CÓDIGO NO GITHUB ↗</a></div>
       <p class="smallprint">Vitrine estática: esta é uma página educativa. Nenhum log real ou evento do seu computador é coletado aqui; o motor Python funciona separadamente na sua máquina.</p>
     </div>
@@ -56,7 +56,7 @@
   <section class="block" id="arquitetura"><div class="wrap">
     <div class="section-head"><div><div class="eyebrow">01 / ARQUITETURA</div><h2>Do registro isolado ao contexto.</h2></div><p>Componentes pequenos, comportamento verificável e uma cadeia de evidências que pode ser estudada e reproduzida.</p></div>
     <div class="pipeline" aria-label="Pipeline de análise">
-      <div class="stage"><span class="index">01 / INGEST</span><strong>Coleta</strong><p>Arquivos JSONL, syslog e registros Zeek conn.log em JSON.</p></div>
+      <div class="stage"><span class="index">01 / INGEST</span><strong>Coleta</strong><p>Arquivos JSONL, syslog e registros Zeek conn.log em JSON; a v0.3 adiciona leitura incremental local.</p></div>
       <div class="stage"><span class="index">02 / NORMALIZE</span><strong>Normalização</strong><p>Eventos compatíveis para data, origem, IP, tipo e atributos.</p></div>
       <div class="stage"><span class="index">03 / DETECT</span><strong>Detecção</strong><p>Regras YAML, comportamento e baseline opcional.</p></div>
       <div class="stage"><span class="index">04 / CORRELATE</span><strong>Correlação</strong><p>Janela temporal, fonte e score agregado por IP.</p></div>
@@ -140,10 +140,30 @@ python -m argus.main serve</code></pre><p>Use a timeline para estudar a sequênc
       <article class="card"><span class="index">GATE / PUBLICAÇÃO</span><h3>LAB ONLY</h3><p>O motor defensivo não é oferecido como serviço web. A página pública mostra somente documentação e dados demonstrativos.</p></article>
     </div>
   </div></section>
+
+  <section class="block" id="continuo"><div class="wrap">
+    <div class="section-head"><div><div class="eyebrow">07 / ARGUS v0.3 / CONTINUOUS INGEST</div><h2>O laboratório agora acompanha o fluxo.</h2></div><p>O novo modo <code>watch</code> processa logs à medida que linhas completas são adicionadas a um arquivo local. O site não executa a análise.</p></div>
+    <div class="grid">
+      <article class="card"><span class="index">01 / CHECKPOINT</span><h3>Retomada por cursor</h3><p>Cada linha processada avança um offset persistido no SQLite, na mesma transação dos eventos e alertas. Reiniciar não relê o intervalo confirmado.</p><span class="hint">LOCAL / SQLITE</span></article>
+      <article class="card"><span class="index">02 / ROTAÇÃO</span><h3>Arquivos que mudam</h3><p>Troca de inode e truncamento observado reiniciam a leitura com uma nova geração. Um truncamento seguido de preenchimento entre polls ainda pode escapar à detecção.</p><span class="hint amber">LIMITE CONHECIDO</span></article>
+      <article class="card"><span class="index">03 / CONTROLE</span><h3>Orçamento de processamento</h3><p>Limites padrão: 64 KiB por linha, 200 linhas por ciclo, 50.000 linhas completas por processo. Um lock local evita dois watchers usando o mesmo banco.</p><span class="hint">BOUNDED / NO NETWORK</span></article>
+    </div>
+    <div class="twocol" style="margin-top:17px">
+      <div class="pane"><div class="code-caption">EXPERIMENTO v0.3 / ARQUIVO SINTÉTICO</div><pre><code>python -m argus.main watch \
+  argus/samples/ssh_bruteforce.jsonl \
+  --format jsonl --db ./argus-watch.db \
+  --batch-size 100 --once</code></pre><p>Execute novamente usando o mesmo banco: o checkpoint impede a reingestão das linhas já confirmadas. O arquivo deve terminar com quebra de linha.</p></div>
+      <div class="pane"><div class="code-caption">WATCH / LOG LOCAL CRESCENTE</div><pre><code>python -m argus.main watch \
+  ./local-auth.log --format syslog \
+  --db ./argus-watch.db \
+  --poll-interval 0.5</code></pre><p>Também aceita Zeek JSON com <code>--format network</code>, <code>--from-end</code> na primeira execução e <code>--max-lines</code> para ajustar o teto de linhas processadas.</p></div>
+    </div>
+    <div class="notice warn"><strong>Importante:</strong> o cursor é durável, mas o estado de correlação e as baselines continuam em memória. Reiniciar o processo limpa as janelas de detecção. Não há garantia de exatamente uma vez para os efeitos da correlação, nem monitoramento de rede ou dashboard público. Use apenas arquivos e diretórios confiáveis, preferencialmente sem privilégios de root.</div>
+  </div></section>
   <section class="block" id="roadmap"><div class="wrap">
-    <div class="section-head"><div><div class="eyebrow">07 / PRÓXIMOS EXPERIMENTOS</div><h2>O que vem depois da v0.2?</h2></div><p>Possibilidades de pesquisa, não funcionalidades publicadas nem compromissos de lançamento.</p></div>
+    <div class="section-head"><div><div class="eyebrow">08 / PRÓXIMOS EXPERIMENTOS</div><h2>O que vem depois da v0.3?</h2></div><p>Possibilidades de pesquisa, não funcionalidades publicadas nem compromissos de lançamento.</p></div>
     <div class="roadmap">
-      <div class="future"><span class="index">PESQUISA / 01</span><h3>Ingestão contínua</h3><p>Leitura incremental de novos eventos com quotas e retomada segura.</p></div>
+      <div class="future"><span class="index">ENTREGUE / v0.3</span><h3>Ingestão contínua local</h3><p>Watcher de arquivos em lote limitado, checkpoint transacional e retomada experimental.</p></div>
       <div class="future"><span class="index">PESQUISA / 02</span><h3>Regras Sigma</h3><p>Estudo de um subconjunto compatível, com validação e testes.</p></div>
       <div class="future"><span class="index">PESQUISA / 03</span><h3>Correlação multi-host</h3><p>Contexto entre máquinas, identidade de fontes e deduplicação.</p></div>
       <div class="future"><span class="index">PESQUISA / 04</span><h3>Dashboard protegido</h3><p>Visão de investigação conectada a um backend autenticado, se aprovada pelo gate.</p></div>
