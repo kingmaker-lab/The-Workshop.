@@ -75,3 +75,19 @@ HTTP and deployed Worker security checks. No live API, frontend-to-backend
 connection, log uploads, elevated runtime or remote listener authorized.
 
 Public production deployment and HTTP checks: pending at document creation.
+
+## Public static preview verification
+
+- Cloudflare Pages preview deployment:
+  `16dbb09b-ed5e-4bb3-87fb-94d9c528a43e`,
+  `https://16dbb09b.workshop-labs.pages.dev/argus/`: **SUCCESS**.
+- Browser Rendering confirmed **HTTP 200**, v0.3 section, `watch`
+  example, quotas, existing ARGUS architecture/roadmap and HeartAI
+  link present.
+- Workshop Labs CI for this code: **14/14 PASS**;
+  https://github.com/kingmaker-lab/The-Workshop./actions/runs/41687570184
+- ARGUS Python CI for release document revision: **PASS**;
+  https://github.com/kingmaker-lab/The-Workshop./actions/runs/41687691197
+
+Pending: production Cloudflare deployment and live smoke. No changes to
+the local-only release restriction for the executable ARGUS engine.
