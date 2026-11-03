@@ -38,10 +38,7 @@ module ProtocoloRuby
       if data.bytesize >= 1024 && entropy >= 7.2
         findings << { code: 'HIGH_ENTROPY', confidence: 'low', evidence: "Shannon entropy #{entropy.round(3)} bits/byte" }
       end
-      urls = text.scan(%r{https?://[a-zA-Z0-9._~:/?#\\[\\]@!
-  end
-end
-'()*+,;=%-]+}).uniq
+      urls = text.scan(%r{https?://[^\s"'<>]+}).uniq
       findings << { code: 'URL_STRINGS', confidence: 'informational', evidence: "#{urls.size} URL(s) in printable strings" } unless urls.empty?
       hdr = BinaryInspector.inspect(data)
       if %w[PE ELF].include?(hdr[:type]) && !hdr[:valid_header]
