@@ -357,4 +357,4 @@ A publicação no Cloudflare Pages requer deploy dos arquivos estáticos; atuali
 
 ## Crypto Lab — Blockchain Fundamentals (EXP-001)
 
-Laboratório educacional estático sobre encadeamento de blocos e SHA-256, com demonstração interativa de adulteração; sem tokens reais nem transações financeiras. **Código:** [web/crypto-lab/](web/crypto-lab/). **Status:** código versionado, publicação no Pages pendente por usar Direct Upload independente do GitHub.
+Laboratório educacional estático sobre encadeamento de blocos e SHA-256, com demonstração interativa de adulteração; sem tokens reais nem transações financeiras. **Código:** [web/crypto-lab/](web/crypto-lab/). **Status:** publicado no Workshop Labs por deployment Direct Upload com integração de Worker (2026-11-03).
