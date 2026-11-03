@@ -352,3 +352,9 @@ E algumas provavelmente vão crescer muito além do planejado.
 - [Genesis e roadmap técnico](IA/Heart/docs/HEARTAI-GENESIS.md)
 
 A publicação no Cloudflare Pages requer deploy dos arquivos estáticos; atualizar este repositório não altera automaticamente o projeto Pages configurado como Direct Upload.
+
+---
+
+## Crypto Lab — Blockchain Fundamentals (EXP-001)
+
+Laboratório educacional estático sobre encadeamento de blocos e SHA-256, com demonstração interativa de adulteração; sem tokens reais nem transações financeiras. **Código:** [web/crypto-lab/](web/crypto-lab/). **Status:** código versionado, publicação no Pages pendente por usar Direct Upload independente do GitHub.
