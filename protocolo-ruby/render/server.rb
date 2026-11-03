@@ -33,8 +33,11 @@ server.mount_proc('/') do |req, res|
     response_json(res, 200, {status: 'ok', app: 'protocolo-ruby', runtime: 'ruby', mode: 'staging'})
   when '/v1/capabilities'
     response_json(res, 200, {
-      version: '0.3-staging',
+      version: '0.4-staging',
       static_analysis: 'demo_only',
+      binary_header_inspection: 'pe_elf_basic',
+      hex_preview: true,
+      findings: 'informational_only',
       real_file_uploads: 'disabled',
       yara_x: 'offline_adapter_only',
       background_jobs: 'not_deployed',
