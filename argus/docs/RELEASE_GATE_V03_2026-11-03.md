@@ -91,3 +91,21 @@ Public production deployment and HTTP checks: pending at document creation.
 
 Pending: production Cloudflare deployment and live smoke. No changes to
 the local-only release restriction for the executable ARGUS engine.
+
+## Production release (verified)
+
+- Squash merge of PR #29: `b06e82ca6d46967c0108751efe917a1197c32f52`.
+- `workshop-labs` Cloudflare Pages production deployment
+  `104f1000-7823-4aae-94cd-fc85bba0702b`: **SUCCESS**.
+- Public page `https://workshop-labs.pages.dev/argus/`: browser rendering
+  confirmed **HTTP 200**, v0.3 watcher commands, checkpoint details,
+  processing limits, legacy ARGUS architecture, roadmap and HeartAI link.
+- Post-merge main branch GitHub Actions: ARGUS tests **SUCCESS**
+  https://github.com/kingmaker-lab/The-Workshop./actions/runs/41688085433;
+  Workshop Labs tests **SUCCESS**
+  https://github.com/kingmaker-lab/The-Workshop./actions/runs/41688085333;
+  immutable artifact gate **SUCCESS**
+  https://github.com/kingmaker-lab/The-Workshop./actions/runs/41688085746.
+- The Python `watch` process is **not** deployed to Cloudflare. Its
+  release status remains **LAB ONLY**; the published artifact is
+  documentation, not remote ingestion.
