@@ -117,11 +117,14 @@ def watch(
     poll_interval: float,
     batch_size: int,
     max_line_bytes: int,
+    max_lines: int,
     from_end: bool,
 ) -> None:
     """Follow trusted local log files without opening a network port."""
     if not math.isfinite(poll_interval) or not 0.1 <= poll_interval <= 60:
         raise ValueError("poll_interval must be finite in [0.1, 60] seconds")
+    if type(max_lines) is not int or not 1 <= max_lines <= 100000:
+        raise ValueError("max_lines must be in [1, 100000]")
     engine = build_engine(rules_path, correlation_config, anomaly_config)
     follower = FileFollower(
         input_path,
@@ -133,13 +136,16 @@ def watch(
         from_end=from_end,
         emit=lambda alert: print(json.dumps(alert.to_dict(), sort_keys=True), flush=True),
     )
+    completed_lines = 0
     with exclusive_stream_lock(database.path):
         while True:
+            follower.batch_size = min(batch_size, max_lines - completed_lines)
             processed, alerts, skipped = follower.poll()
+            completed_lines += processed + skipped
             if processed or alerts or skipped or once:
                 print(json.dumps({"processed": processed, "alerts": alerts, "skipped": skipped},
                                  sort_keys=True), flush=True)
-            if once:
+            if once or completed_lines >= max_lines:
                 return
             time.sleep(poll_interval)
 
@@ -161,6 +167,8 @@ def build_parser() -> argparse.ArgumentParser:
     watch_parser.add_argument("--poll-interval", type=float, default=0.5)
     watch_parser.add_argument("--batch-size", type=int, default=200)
     watch_parser.add_argument("--max-line-bytes", type=int, default=65536)
+    watch_parser.add_argument("--max-lines", type=int, default=50000,
+                              help="stop after at most N completed lines (bounded correlation state)")
     watch_parser.add_argument("--from-end", action="store_true",
                               help="start with new lines only if no checkpoint exists")
     watch_parser.add_argument("--once", action="store_true",
@@ -210,6 +218,7 @@ def main() -> int:
                 poll_interval=arguments.poll_interval,
                 batch_size=arguments.batch_size,
                 max_line_bytes=arguments.max_line_bytes,
+                max_lines=arguments.max_lines,
                 from_end=arguments.from_end,
             )
         elif arguments.command == "serve":
