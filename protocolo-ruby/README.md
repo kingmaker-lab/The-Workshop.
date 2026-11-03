@@ -1,4 +1,4 @@
-# 💎 Protocolo Ruby
+# 💎 Protocolo Ruby · v0.4 Browser Alpha / Ruby Staging
 **The Workshop / Kingmaker Lab · MVP v0.1**
 
 Open-source static malware analysis in Ruby, with browser UI, CLI and JSON API. It does not execute samples or claim a file is safe or malicious.
@@ -29,3 +29,13 @@ v0.2 verified PE/ELF parsing and YARA-X; v0.3 Rails authentication and queued wo
 
 ## Licensing
 Apache License 2.0; complete license text is included in the downloadable release ZIP. See https://www.apache.org/licenses/LICENSE-2.0.
+
+## v0.4 additions (November 2026)
+
+- Basic, bounded PE (COFF machine, declared section count, PE32/PE32+ optional-header marker) and ELF (32/64-bit class, endianness, e_type and e_machine) header inspection.
+- First 128 bytes in hexadecimal for triage. This is a preview, not a full hex editor.
+- Explainable informational hints for high entropy, extracted URL strings and truncated executable headers. Findings never determine maliciousness.
+- Browser-only implementation on Cloudflare and corresponding Ruby engine on Render staging; no real sample upload to the Ruby backend.
+- Cloudflare's deployed Worker is version-controlled in `cloudflare/worker.js`.
+
+**Limits:** PE/ELF checks are partial header inspection, not validation of full executable structure. The live frontend uses JavaScript; Ruby analysis is available only through a synthetic fixture demo on Render. Additional tests were performed locally for the inspector, but browser and cloud end-to-end behavior has not been independently verified.
