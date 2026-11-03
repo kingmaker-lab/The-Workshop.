@@ -1,6 +1,8 @@
 """ARGUS v0.3 streaming ingestion regression and hostile-input tests."""
 import json
 import os
+import io
+from contextlib import redirect_stderr, redirect_stdout
 import tempfile
 import unittest
 from pathlib import Path
@@ -152,6 +154,37 @@ class StreamingTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "already holds the lock"):
                 with exclusive_stream_lock(str(self.db_path)):
                     pass
+
+    def test_cli_watch_honors_total_line_budget(self):
+        from argus.main import watch
+
+        self.append("".join(authentication(i) for i in range(6)))
+        stdout = io.StringIO()
+        for _ in range(3):
+            with redirect_stdout(stdout):
+                watch(
+                    self.path, "jsonl", self.database,
+                    PROJECT_DIR / "rules/default.yaml",
+                    {"failure_threshold": 15, "window_seconds": 30, "risk_window_seconds": 300},
+                    {}, once=True, poll_interval=.1, batch_size=20,
+                    max_line_bytes=65536, max_lines=2, from_end=False,
+                )
+        self.assertEqual(len(self.database.timeline()), 6)
+        self.assertEqual(stdout.getvalue().count('"processed": 2'), 3)
+
+    def test_cli_rejects_unsafe_watch_budgets(self):
+        from argus.main import watch
+
+        with self.assertRaises(ValueError):
+            watch(self.path, "jsonl", self.database,
+                  PROJECT_DIR / "rules/default.yaml", {}, {},
+                  once=True, poll_interval=.01, batch_size=2,
+                  max_line_bytes=65536, max_lines=10, from_end=False)
+        with self.assertRaises(ValueError):
+            watch(self.path, "jsonl", self.database,
+                  PROJECT_DIR / "rules/default.yaml", {}, {},
+                  once=True, poll_interval=.5, batch_size=2,
+                  max_line_bytes=65536, max_lines=0, from_end=False)
 
     def test_bad_limits_fail_closed(self):
         with self.assertRaises(ValueError):
