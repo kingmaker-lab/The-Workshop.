@@ -107,20 +107,21 @@ class FileFollower:
             identity = (info.st_dev, info.st_ino)
             if checkpoint is None and self.from_end:
                 self.database.commit_stream_line(
-                    self.path, None, (*identity, info.st_size),
+                    self.path, None, (*identity, info.st_size, 0),
                 )
                 return 0, 0, 0
+            generation = checkpoint[3] if checkpoint is not None else 0
             if checkpoint is not None and checkpoint[:2] == identity and info.st_size >= checkpoint[2]:
                 offset = checkpoint[2]
             else:
                 # A different inode or smaller file means rotation/truncation.
-                # No checkpoint is persisted until the reset is committed.
                 offset = 0
                 if checkpoint is not None:
+                    generation += 1  # Distinguish reused offsets after copytruncate.
                     self.database.commit_stream_line(
-                        self.path, checkpoint, (*identity, offset),
+                        self.path, checkpoint, (*identity, offset, generation),
                     )
-                    checkpoint = (*identity, offset)
+                    checkpoint = (*identity, offset, generation)
 
             stream.seek(offset)
             processed = alerts = skipped = 0
@@ -142,12 +143,12 @@ class FileFollower:
                     try:
                         record = self._record(line)
                         # The offset-derived ID prevents input-supplied ID collisions.
-                        identity_token = f"{self.path}\0{identity[0]}\0{identity[1]}\0{start}"
+                        identity_token = f"{self.path}\0{identity[0]}\0{identity[1]}\0{generation}\0{start}"
                         record["id"] = "stream-" + hashlib.sha256(
                             identity_token.encode("utf-8")
                         ).hexdigest()
                         event = normalize_event(record)
-                    except (UnicodeError, ValueError, TypeError, OverflowError) as error:
+                    except (UnicodeError, ValueError, TypeError, OverflowError, RecursionError) as error:
                         # Never print untrusted log contents to stderr.
                         print(f"ARGUS stream: discarded invalid record at offset {start}: {type(error).__name__}",
                               file=sys.stderr)
@@ -158,9 +159,9 @@ class FileFollower:
                         if alert is not None:
                             alerts += 1
                 self.database.commit_stream_line(
-                    self.path, checkpoint, (*identity, finish), event, alert,
+                    self.path, checkpoint, (*identity, finish, generation), event, alert,
                 )
-                checkpoint = (*identity, finish)
+                checkpoint = (*identity, finish, generation)
                 if alert is not None and self.emit is not None:
                     self.emit(alert)
             return processed, alerts, skipped
