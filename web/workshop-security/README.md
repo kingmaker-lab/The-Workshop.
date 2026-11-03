@@ -1,6 +1,6 @@
 # The Workshop Security Division / CTF Arena
 
-MVP 0.1: sete desafios simulados (Base64, ROT13, HTML, logs HTTP, XOR, JavaScript e JSON), com pontuação permanente em Cloudflare D1.
+MVP 0.2: quinze desafios simulados de encoding, web, redes, SQL, logs defensivos, DNS, Python e criptografia, com 1855 pontos possíveis e pontuação permanente em Cloudflare D1.
 
 ## Modelo de segurança
 - Desafios confinados a artefatos fictícios apresentados pelo portal. Não existe sandbox de exploração real, shell ou execução arbitrária.
@@ -27,3 +27,6 @@ Argus é o guardião da Security Division e acompanha o onboarding da arena. A a
 
 ## Compilação reproduzível
 Execute `node web/workshop-security/build.mjs` antes de publicar com `wrangler deploy --config web/workshop-security/wrangler.toml` (ajuste o diretório de trabalho conforme o Wrangler). O build injeta HTML/CSS/JS e AVIF no Worker, mantendo o conteúdo servido por rotas `GET` de mesma origem. `FLAG_SECRET` deve continuar configurado como segredo, nunca versionado. Testes: `node --test web/workshop-security/tests/argus.test.mjs`.
+
+## Expansão v0.2 | 8 novas missões
+Bits na Escuridão (60), Rota Percentual (85), Fragmentos de Rede (120), Consulta das Evidências (130), Detector de Eventos (140), Sussurros no DNS (160), Python sob a Lupa (180) e O Cofre das Camadas (210). Não altera IDs ou pontos das sete missões originais. Nenhuma migração de D1. Todos os exercícios permanecem restritos a conteúdo sintético, com flags vinculadas ao jogador e validadas no backend. Filtros no catálogo são exclusivamente visuais. Testes: `node --test web/workshop-security/tests/challenges-v02.test.mjs`.

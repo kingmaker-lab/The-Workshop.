@@ -49,10 +49,10 @@
  <div class="argus-outro"><p><strong>Defender também é compreender.</strong> Treine com evidências fictícias e desenvolva seu olhar de investigador. O laboratório é seguro, mas o aprendizado é real.</p><a class="btn secondary" href="#missoes">CONHECER AS MISSÕES ↗</a></div>
 </section>
 <section class="metrics"><div class="shell metric-grid">
- <div><strong id="statMissions">07</strong><span>MISSÕES DISPONÍVEIS</span></div>
+ <div><strong id="statMissions">15</strong><span>MISSÕES DISPONÍVEIS</span></div>
  <div><strong id="statPlayers">0</strong><span>EXPLORADORES</span></div>
  <div><strong id="statSolves">0</strong><span>FLAGS CAPTURADAS</span></div>
- <div><strong>770 <small>XP</small></strong><span>PONTOS EM JOGO</span></div>
+ <div><strong><span id="statPoints">1855</span> <small>XP</small></strong><span>PONTOS EM JOGO</span></div>
 </div></section>
 <section id="identidade" class="shell identity-section">
  <div class="identity-intro"><p class="eyebrow">01 / IDENTIDADE DIGITAL</p><h2>Escolha seu <span>codinome.</span></h2><p>Nenhum e-mail. Nenhuma senha convencional. Seu apelido e uma chave privada de recuperação são suficientes para registrar sua jornada.</p></div>
@@ -69,6 +69,13 @@
 </section>
 <section id="missoes" class="shell section">
  <div class="section-head"><div><p class="eyebrow">02 / MISSIONS TERMINAL</p><h2>Escolha seu <span>desafio.</span></h2></div><p>Comece pelo básico e avance no seu ritmo. Cada flag é um aprendizado, não uma corrida.</p></div>
+ <div id="missionFilters" class="mission-filters" role="group" aria-label="Filtrar desafios por dificuldade">
+  <button class="filter-chip selected" type="button" data-level="Todos" aria-pressed="true">TODOS</button>
+  <button class="filter-chip" type="button" data-level="Iniciante" aria-pressed="false">INICIANTE</button>
+  <button class="filter-chip" type="button" data-level="Intermediário" aria-pressed="false">INTERMEDIÁRIO</button>
+  <button class="filter-chip" type="button" data-level="Avançado" aria-pressed="false">AVANÇADO</button>
+  <span id="missionFilterInfo" class="filter-info" aria-live="polite"></span>
+ </div>
  <div class="mission-grid" id="missionGrid" aria-live="polite"><p class="muted">Carregando missões...</p></div>
  <div id="missionDetail" class="mission-detail" hidden>
   <div class="detail-head"><div><span class="eyebrow" id="detailCategory"></span><h3 id="detailTitle"></h3></div><button type="button" id="closeDetail" class="icon-button" aria-label="Fechar missão">✕</button></div>

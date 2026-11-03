@@ -1,6 +1,6 @@
 'use strict';
 const $ = s => document.querySelector(s);
-const state={missions:[],me:null,ranking:[],active:null};
+const state={missions:[],me:null,ranking:[],active:null,level:'Todos'};
 const elem=(tag,cls,txt)=>{let n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=String(txt);return n;};
 function say(selector,message,isError=false){let n=$(selector);n.textContent=message;n.classList.toggle('error',isError);}
 async function request(path,options={}){
@@ -16,10 +16,13 @@ function renderAccount(){
 }
 function renderMissions(){
  const grid=$('#missionGrid');grid.replaceChildren();
+ const visible=state.missions.filter(c=>state.level==='Todos'||c.level===state.level);
+ $('#missionFilterInfo').textContent=visible.length+' de '+state.missions.length+' missões';
  state.missions.forEach((c,i)=>{
+  if(state.level!=='Todos'&&c.level!==state.level)return;
   const solved=Boolean(state.me?.solved?.includes(c.id));
   const card=elem('article','mission-card'+(solved?' solved':''));
-  const top=elem('div','mission-top');top.append(elem('span','mission-num',String(i+1).padStart(2,'0')+' / 07'),elem('span','mission-points','+'+c.points+' XP'));
+  const top=elem('div','mission-top');top.append(elem('span','mission-num',String(i+1).padStart(2,'0')+' / '+String(state.missions.length).padStart(2,'0')),elem('span','mission-points','+'+c.points+' XP'));
   const kind=elem('div','mission-category',c.category.toUpperCase());
   const title=elem('h3','',c.title),summary=elem('p','',c.summary);
   const foot=elem('div','mission-foot');foot.append(elem('span','mission-level',solved?'✓ CONCLUÍDO':c.level.toUpperCase()));
@@ -37,6 +40,7 @@ function renderBoard(){
 async function refresh(){
  const data=await request('/api/bootstrap');state.missions=data.challenges||[];state.me=data.me||null;state.ranking=data.ranking||[];
  $('#statMissions').textContent=String(state.missions.length).padStart(2,'0');
+ $('#statPoints').textContent=state.missions.reduce((sum,c)=>sum+c.points,0).toLocaleString('pt-BR');
  $('#statPlayers').textContent=data.totals?.players||0;$('#statSolves').textContent=data.totals?.solves||0;
  renderAccount();renderMissions();renderBoard();
 }
@@ -51,6 +55,16 @@ async function openMission(id){
   $('#detailArtifact').textContent=d.artifact.content;$('#hintText').textContent=d.hint;
  }catch(e){say('#flagStatus',e.message,true);$('#detailTitle').textContent='Não foi possível abrir a missão.';}
 }
+$('#missionFilters').addEventListener('click',event=>{
+ const button=event.target.closest('button[data-level]');
+ if(!button||!$('#missionFilters').contains(button))return;
+ state.level=button.dataset.level;
+ $('#missionFilters').querySelectorAll('button[data-level]').forEach(b=>{
+   const active=b===button;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',String(active));
+ });
+ $('#missionDetail').hidden=true;state.active=null;
+ renderMissions();
+});
 $('#closeDetail').addEventListener('click',()=>{$('#missionDetail').hidden=true;state.active=null;});
 $('#hintBtn').addEventListener('click',()=>{$('#hintText').hidden=!$('#hintText').hidden;});
 $('#toggleRestore').addEventListener('click',()=>{$('#restoreForm').hidden=!$('#restoreForm').hidden;});
