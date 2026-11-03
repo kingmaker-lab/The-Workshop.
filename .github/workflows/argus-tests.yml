@@ -32,3 +32,8 @@ jobs:
         run: |
           python -m argus.main analyze argus/samples/ssh_bruteforce.jsonl --db /tmp/argus-ci.db
           python -m argus.main timeline --db /tmp/argus-ci.db --limit 5
+      - name: Streaming checkpoint and resume CLI smoke
+        run: |
+          python -m argus.main watch argus/samples/ssh_bruteforce.jsonl --db /tmp/argus-stream-ci.db --batch-size 100 --once
+          python -m argus.main watch argus/samples/ssh_bruteforce.jsonl --db /tmp/argus-stream-ci.db --batch-size 100 --once
+          python -m argus.main timeline --db /tmp/argus-stream-ci.db --limit 5

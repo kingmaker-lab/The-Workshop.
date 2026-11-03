@@ -1,6 +1,9 @@
 import argparse
 import json
+import math
+import sqlite3
 import sys
+import time
 from pathlib import Path
 from typing import Any
 
@@ -17,6 +20,7 @@ from argus.detection.anomaly_engine import AnomalyEngine
 from argus.detection.behavioral import BehavioralEngine
 from argus.detection.rules import RuleEngine
 from argus.storage.database import Database
+from argus.stream.follower import FileFollower, exclusive_stream_lock
 
 
 PROJECT_DIR = Path(__file__).resolve().parent
@@ -57,24 +61,7 @@ def analyze(
     anomaly_config: dict[str, Any] | None = None,
 ) -> tuple[int, int]:
     database = Database(database_path)
-    rules = RuleEngine.from_yaml(rules_path)
-    window_seconds = int(correlation_config.get("window_seconds", 30))
-    threshold = int(correlation_config.get("failure_threshold", 15))
-    risk_window_seconds = int(correlation_config.get("risk_window_seconds", 300))
-    anomaly_config = anomaly_config or {}
-    anomaly = None
-    if anomaly_config.get("enabled", False):
-        anomaly = AnomalyEngine(
-            metrics=tuple(anomaly_config.get("metrics", ["orig_bytes", "resp_bytes"])),
-            minimum_samples=int(anomaly_config.get("minimum_samples", 20)),
-            z_threshold=float(anomaly_config.get("z_threshold", 4.0)),
-        )
-    engine = CorrelationEngine(
-        rules,
-        BehavioralEngine(threshold, window_seconds),
-        RiskScorer(risk_window_seconds),
-        anomaly=anomaly,
-    )
+    engine = build_engine(rules_path, correlation_config, anomaly_config)
     collector = _collector(Path(input_path), input_format)
     processed = 0
     alert_count = 0
@@ -94,6 +81,75 @@ def analyze(
     return processed, alert_count
 
 
+def build_engine(
+    rules_path: str | Path,
+    correlation_config: dict[str, Any],
+    anomaly_config: dict[str, Any] | None = None,
+) -> CorrelationEngine:
+    rules = RuleEngine.from_yaml(rules_path)
+    window_seconds = int(correlation_config.get("window_seconds", 30))
+    threshold = int(correlation_config.get("failure_threshold", 15))
+    risk_window_seconds = int(correlation_config.get("risk_window_seconds", 300))
+    anomaly_config = anomaly_config or {}
+    anomaly = None
+    if anomaly_config.get("enabled", False):
+        anomaly = AnomalyEngine(
+            metrics=tuple(anomaly_config.get("metrics", ["orig_bytes", "resp_bytes"])),
+            minimum_samples=int(anomaly_config.get("minimum_samples", 20)),
+            z_threshold=float(anomaly_config.get("z_threshold", 4.0)),
+        )
+    return CorrelationEngine(
+        rules,
+        BehavioralEngine(threshold, window_seconds),
+        RiskScorer(risk_window_seconds),
+        anomaly=anomaly,
+    )
+
+def watch(
+    input_path: Path,
+    input_format: str,
+    database: Database,
+    rules_path: Path,
+    correlation_config: dict[str, Any],
+    anomaly_config: dict[str, Any],
+    *,
+    once: bool,
+    poll_interval: float,
+    batch_size: int,
+    max_line_bytes: int,
+    max_lines: int,
+    from_end: bool,
+) -> None:
+    """Follow trusted local log files without opening a network port."""
+    if not math.isfinite(poll_interval) or not 0.1 <= poll_interval <= 60:
+        raise ValueError("poll_interval must be finite in [0.1, 60] seconds")
+    if type(max_lines) is not int or not 1 <= max_lines <= 100000:
+        raise ValueError("max_lines must be in [1, 100000]")
+    engine = build_engine(rules_path, correlation_config, anomaly_config)
+    follower = FileFollower(
+        input_path,
+        database,
+        engine,
+        input_format=input_format,
+        batch_size=batch_size,
+        max_line_bytes=max_line_bytes,
+        from_end=from_end,
+        emit=lambda alert: print(json.dumps(alert.to_dict(), sort_keys=True), flush=True),
+    )
+    completed_lines = 0
+    with exclusive_stream_lock(database.path):
+        while True:
+            follower.batch_size = min(batch_size, max_lines - completed_lines)
+            processed, alerts, skipped = follower.poll()
+            completed_lines += processed + skipped
+            if processed or alerts or skipped or once:
+                print(json.dumps({"processed": processed, "alerts": alerts, "skipped": skipped},
+                                 sort_keys=True), flush=True)
+            if once or completed_lines >= max_lines:
+                return
+            time.sleep(poll_interval)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Defensive event hunting and correlation")
     parser.add_argument("--config", default=str(PROJECT_DIR / "config.yaml"))
@@ -103,6 +159,20 @@ def build_parser() -> argparse.ArgumentParser:
     analyze_parser.add_argument("input", type=Path)
     analyze_parser.add_argument("--format", choices=("auto", "jsonl", "syslog", "network"), default="auto")
     analyze_parser.add_argument("--db", type=Path)
+
+    watch_parser = subparsers.add_parser("watch", help="follow a local growing log file (v0.3)")
+    watch_parser.add_argument("input", type=Path)
+    watch_parser.add_argument("--format", choices=("auto", "jsonl", "syslog", "network"), default="auto")
+    watch_parser.add_argument("--db", type=Path)
+    watch_parser.add_argument("--poll-interval", type=float, default=0.5)
+    watch_parser.add_argument("--batch-size", type=int, default=200)
+    watch_parser.add_argument("--max-line-bytes", type=int, default=65536)
+    watch_parser.add_argument("--max-lines", type=int, default=50000,
+                              help="stop after at most N completed lines (bounded correlation state)")
+    watch_parser.add_argument("--from-end", action="store_true",
+                              help="start with new lines only if no checkpoint exists")
+    watch_parser.add_argument("--once", action="store_true",
+                              help="process one bounded poll, then exit")
 
     serve_parser = subparsers.add_parser("serve", help="start the read-only local API")
     serve_parser.add_argument("--db", type=Path)
@@ -135,6 +205,22 @@ def main() -> int:
                 configuration.get("anomaly", {}),
             )
             print(json.dumps({"processed": processed, "alerts": alert_count}, sort_keys=True))
+        elif arguments.command == "watch":
+            rules_path = _configured_path(configuration, "rules", "rules/default.yaml")
+            watch(
+                arguments.input,
+                arguments.format,
+                database,
+                rules_path,
+                configuration.get("correlation", {}),
+                configuration.get("anomaly", {}),
+                once=arguments.once,
+                poll_interval=arguments.poll_interval,
+                batch_size=arguments.batch_size,
+                max_line_bytes=arguments.max_line_bytes,
+                max_lines=arguments.max_lines,
+                from_end=arguments.from_end,
+            )
         elif arguments.command == "serve":
             api_config = configuration.get("api", {})
             serve(
@@ -144,7 +230,9 @@ def main() -> int:
             )
         else:
             print(json.dumps({"timeline": database.timeline(arguments.src_ip, arguments.limit)}, sort_keys=True))
-    except (OSError, ValueError, yaml.YAMLError) as error:
+    except KeyboardInterrupt:
+        return 0
+    except (OSError, ValueError, sqlite3.Error, yaml.YAMLError) as error:
         print(f"argus: {error}", file=sys.stderr)
         return 1
     return 0
