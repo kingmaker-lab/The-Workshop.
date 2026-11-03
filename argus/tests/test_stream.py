@@ -144,8 +144,8 @@ class StreamingTests(unittest.TestCase):
         self.append(json.dumps(record) + "\n")
         self.assertEqual(self.follower(fmt="network").poll(), (1, 0, 0))
         timeline = self.database.timeline()
-        self.assertEqual(timeline[0]["event"]["event_type"], "network_connection")
-        self.assertEqual(timeline[0]["event"]["fields"]["orig_bytes"], 128)
+        self.assertEqual(timeline[0]["event"], "network_connection")
+        self.assertEqual(timeline[0]["orig_bytes"], 128)
 
     def test_writer_lock_is_nonblocking_and_exclusive(self):
         with exclusive_stream_lock(str(self.db_path)):
