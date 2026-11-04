@@ -37,6 +37,7 @@ jobs:
         working-directory: research/cryptography/ouroboros-low-level/experiments/014-research-consolidation
     steps:
       - name: Fetch exact repository revision without submodule hooks
+        working-directory: .
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
