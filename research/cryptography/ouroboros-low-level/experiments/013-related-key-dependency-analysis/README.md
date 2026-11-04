@@ -51,6 +51,18 @@ For every delta, record total output Hamming distance and the Hamming distance i
 
 This scan is exhaustive over the selected byte-delta family, but the master-key base values are sampled. It is not exhaustive over all 2^32 master keys or all 2^32 possible related-key deltas.
 
+
+
+## 4. Exact algebraic relation in the emitted stream
+
+The state shifts one byte per round. Let (d_0) be the least-significant byte of the original master key and let (t_r) be the new low byte appended to the 32-bit state at round (r). The current subkey is (K_r=t_r\oplus d_r), while the next state's low byte is (d_{r+1}=t_r). Therefore:
+
+- (K_0=t_0\oplus d_0)
+- (K_r=t_r\oplus t_{r-1}), for (r\geq1)
+- (K_0\oplus K_1\oplus\cdots\oplus K_r=t_r\oplus d_0)
+
+This is an exact telescoping XOR identity, not a statistical observation. EXP-013 computes the internal (t_r) sequence independently from the canonical round-key output and verifies the identity for every master key in the main deterministic sample. It establishes a deterministic relation among the emitted bytes and the internal state trajectory; it does not by itself demonstrate exploitable key recovery or identify the original master key uniquely.
+
 ## 4. What would count as evidence?
 
 Potential warning signals:
