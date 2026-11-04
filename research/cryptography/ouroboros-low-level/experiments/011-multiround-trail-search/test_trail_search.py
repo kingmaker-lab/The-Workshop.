@@ -1,6 +1,9 @@
 """Tests for OUROBOROS EXP-011 exact multi-round propagation."""
 import sys
 import unittest
+import csv
+import json
+import tempfile
 from pathlib import Path
 from collections import Counter
 
@@ -10,7 +13,7 @@ sys.path.insert(0, str(EXP008))
 from feistel16 import expand_key
 from trail_search import (
     DOMAIN, build_round_tables, differential_model, feistel_round,
-    _linear_transition_hull, _exact_linear_walsh,
+    _linear_transition_hull, _exact_linear_walsh, save_results,
 )
 
 
@@ -53,6 +56,33 @@ class Exp011Tests(unittest.TestCase):
             for output_mask in candidates:
                 exact = _exact_linear_walsh(outputs, input_mask, output_mask)
                 self.assertEqual(hull.get(output_mask, 0) * DOMAIN, exact * 256)
+
+    def test_save_results_serializes_ranked_observed_differences(self):
+        report = {
+            "fixed_key_observations": [{
+                "master_key": "0x01234567",
+                "input_delta": "0x0001",
+                "rounds": 8,
+                "pairs": DOMAIN,
+                "max_observed_probability": 0.01,
+                "max_observed_count": 655,
+                "markov_hull_max_probability": 0.02,
+                "total_variation_distance": 0.1,
+                "top_observed_output_differences": [
+                    {"output_delta": "0x0003", "count": 655, "probability": 0.01}
+                ],
+            }],
+            "linear_hull_metrics": [],
+            "linear_exact_checks": {"records": []},
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            save_results(report, Path(tmp))
+            csv_path = Path(tmp) / "observed_differentials.csv"
+            with csv_path.open(encoding="utf-8", newline="") as handle:
+                rows = list(csv.DictReader(handle))
+            self.assertEqual(len(rows), 1)
+            parsed = json.loads(rows[0]["top_observed_output_differences"])
+            self.assertEqual(parsed[0]["output_delta"], "0x0003")
 
     def test_linear_hull_sums_signed_trails(self):
         result = _linear_transition_hull(0x0101, expand_key(0xFFFFFFFF), self.lat)
