@@ -1,6 +1,10 @@
 """Tests for exhaustive EXP-010 Feistel prefix analysis."""
 import unittest
+import sys
+from pathlib import Path
 
+EXP008 = Path(__file__).resolve().parent.parent / "008-reduced-feistel"
+sys.path.insert(0, str(EXP008))
 from feistel16 import encrypt_block, expand_key
 from feistel_trails import (
     BLOCK_MASK, DOMAIN, analyze_key, decrypt_prefix, encrypt_prefix, round_step,
