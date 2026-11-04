@@ -84,9 +84,24 @@
     }
   ],
   "independent_conformance_campaign": {
-    "status": "implemented; CI pending",
+    "status": "completed; both EXP-014 CI jobs succeeded",
     "branch": "exp-014-research-consolidation",
-    "scope": "five fixed master keys, 25 known-answer vectors, all 65,536 plaintext blocks per key, permutation check per key, canonical schedule and reference-oracle comparison.",
+    "successful_ci": {
+      "run_id": 41868697489,
+      "commit": "915b2d60bb7a444209b10774d95bfe7ff7020391",
+      "conclusion": "success",
+      "url": "https://github.com/kingmaker-lab/The-Workshop./actions/runs/41868697489",
+      "artifact_id": 13343851246
+    },
+    "metrics": {
+      "selected_master_keys": 5,
+      "round_key_byte_comparisons": 40,
+      "known_answer_vector_checks": 25,
+      "full_domain_block_comparisons": 327680,
+      "reference_encrypt_decrypt_pairs": 327680,
+      "permutation_checks": 5,
+      "historical_regression_suites": "EXP-008 through EXP-013 all passed"
+    },
     "master_key_space_exhaustively_enumerated": false,
     "reference_implementation": "independent Python specification oracle, not a second optimized implementation."
   },
