@@ -74,7 +74,7 @@ def build_round_tables() -> tuple[list[list[int]], list[list[int]]]:
     return ddt, lat
 
 
-def differential_model(start_delta: int, ddt: list[list[int]]) -> dict[str, Any]:
+def differential_model(\n    start_delta: int, ddt: list[list[int]], *, retain_hulls: bool = False, retain_parents: bool = False\n) -> dict[str, Any]:
     """Propagate exact DDT transition counts as a Markov differential hull model.
 
     State delta is (dL << 8) | dR.
@@ -114,8 +114,7 @@ def differential_model(start_delta: int, ddt: list[list[int]]) -> dict[str, Any]
         if sum(next_hull) != 256 * sum(hull):
             raise AssertionError("Differential Markov mass was not conserved")
         hull, best = next_hull, next_best
-        hulls_by_round.append(hull.copy())
-        parents.append(parent)
+        if retain_hulls:\n            hulls_by_round.append(hull.copy())\n        if retain_parents:\n            parents.append(parent)
 
         denominator = 256 ** round_number
         ranked_hulls = sorted(
@@ -140,7 +139,7 @@ def differential_model(start_delta: int, ddt: list[list[int]]) -> dict[str, Any]
     endpoint = max(range(DOMAIN), key=best.__getitem__)
     cursor = endpoint
     trail_reversed = []
-    for round_index in range(ROUNDS - 1, -1, -1):
+    for round_index in range(ROUNDS - 1, -1, -1) if retain_parents else ():
         previous, gamma = parents[round_index][cursor]
         trail_reversed.append({
             "round": round_index + 1,
@@ -161,6 +160,7 @@ def differential_model(start_delta: int, ddt: list[list[int]]) -> dict[str, Any]
             "probability": best[endpoint] / (256 ** ROUNDS),
             "steps": trail,
         },
+        **({"_hulls_by_round": hulls_by_round} if retain_hulls else {}),
         "_final_hull_numerators": hull,
     }
 
@@ -169,6 +169,7 @@ def _linear_transition_hull(
     start_mask: int,
     round_keys: tuple[int, ...],
     lat: list[list[int]],
+    *, retain_parents: bool = True,
 ) -> dict[str, Any]:
     """Sum signed products of all linear trails for a fixed key schedule.
 
@@ -215,8 +216,7 @@ def _linear_transition_hull(
 
         hull, best_abs, best_signed = next_hull, next_best_abs, next_best_signed
         hulls_by_round.append(hull.copy())
-        parents.append(parent)
-        denominator = 256 ** round_number
+        if retain_parents:\n            parents.append(parent)\n        denominator = 256 ** round_number
         ranked = sorted(
             ((abs(value), state, value) for state, value in hull.items()),
             reverse=True,
@@ -241,7 +241,7 @@ def _linear_transition_hull(
     endpoint = max(best_abs, key=best_abs.__getitem__)
     cursor = endpoint
     trail_reversed = []
-    for round_index in range(ROUNDS - 1, -1, -1):
+    for round_index in range(ROUNDS - 1, -1, -1) if retain_parents else ():
         previous, alpha, signed_walsh = parents[round_index][cursor]
         beta = previous >> 8
         trail_reversed.append({
@@ -367,7 +367,7 @@ def run_campaign(
                 key_report["observed_differentials"].append(row)
 
         for input_mask in linear_starts:
-            result = _linear_transition_hull(input_mask, round_keys, lat)
+            result = _linear_transition_hull(\n                input_mask, round_keys, lat, retain_parents=(input_mask == LINEAR_START_MASKS[0])\n            )
             hull = result["_final_hull_numerators"]
             key_report["linear_hulls"].append({
                 "input_mask": result["input_mask"],
