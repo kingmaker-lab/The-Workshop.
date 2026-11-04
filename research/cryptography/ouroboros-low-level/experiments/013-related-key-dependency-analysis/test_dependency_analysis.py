@@ -7,7 +7,7 @@ from pathlib import Path
 
 from dependency_analysis import (
     analyze, bit_pair_analysis, dense_byte_delta_scan, joint_metrics,
-    output_bitplanes, sample_keys, save_results, schedule_stream, verify_telescoping_xor_identity,
+    output_bitplanes, sample_keys, save_results, schedule_stream, verify_telescoping_xor_identity,\n    invert_internal_state_transition, recover_master_keys_from_schedule,
 )
 
 
@@ -15,6 +15,29 @@ class Exp013Tests(unittest.TestCase):
     def test_exact_subkey_telescoping_xor_identity(self):
         for key in (0, 1, 0x01234567, 0x89ABCDEF, 0xFFFFFFFF):
             self.assertTrue(verify_telescoping_xor_identity(key))
+
+    def test_internal_state_transition_inverse(self):
+        from key_schedule_analysis import ks1_transition
+        for key in (0, 1, 0x01234567, 0x89ABCDEF, 0xFFFFFFFF):
+            state = key
+            for round_index in range(8):
+                next_state, _ = ks1_transition(state, round_index)
+                self.assertEqual(invert_internal_state_transition(next_state, round_index), state)
+                state = next_state
+
+    def test_schedule_preimage_recovery_with_256_initial_byte_guesses(self):
+        keys = (0, 1, 0x01234567, 0x89ABCDEF, 0xFFFFFFFF)
+        for master_key in keys:
+            schedule = tuple(__import__("feistel16").expand_key(master_key))
+            candidates = recover_master_keys_from_schedule(schedule)
+            self.assertIn(master_key, candidates)
+            self.assertTrue(all(tuple(__import__("feistel16").expand_key(candidate)) == schedule for candidate in candidates))
+
+    def test_schedule_preimage_recovery_rejects_malformed_schedule(self):
+        with self.assertRaises(ValueError):
+            recover_master_keys_from_schedule((0, 1, 2))
+        with self.assertRaises(ValueError):
+            recover_master_keys_from_schedule((0,) * 7 + (256,))
 
     def test_sample_is_deterministic_and_pins_corner_keys(self):
         a = sample_keys(64, 12345)
