@@ -30,7 +30,7 @@ class Exp013Tests(unittest.TestCase):
         for master_key in keys:
             schedule = expand_key(master_key)
             candidates = recover_master_keys_from_schedule(schedule)
-            self.assertIn(master_key, candidates)
+            self.assertEqual(candidates, (master_key,))
             self.assertTrue(all(expand_key(candidate) == schedule for candidate in candidates))
 
     def test_schedule_preimage_recovery_rejects_malformed_schedule(self):
