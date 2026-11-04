@@ -30,7 +30,7 @@ class Exp011Tests(unittest.TestCase):
 
     def test_one_round_differential_model_matches_direct_enumeration(self):
         delta = 0x0101
-        result = differential_model(delta, self.ddt)
+        result = differential_model(delta, self.ddt, retain_hulls=True)
         expected = Counter()
         for x in range(DOMAIN):
             left, right = x >> 8, x & 0xFF
