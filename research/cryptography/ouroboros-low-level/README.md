@@ -196,3 +196,10 @@ O [EXP-012](./experiments/012-key-schedule-analysis/README.md) analisa a expans�
 O [EXP-013](./experiments/013-related-key-dependency-analysis/README.md) investiga a hipótese levantada no EXP-012: dependências entre bits de subchaves emitidas em rodadas diferentes e padrões sistemáticos de baixa difusão sob chaves relacionadas. A campanha mede os 2.016 pares de bits do fluxo de subchaves, a matriz de influência master-key-bit → subkey-bit e todos os 1.020 deltas não nulos que alteram um byte da chave mestra por vez, usando amostras determinísticas separadas e declaradas.
 
 **Limite:** não enumera o espaço completo de (2^{32}) chaves mestras. Correlação e informação mútua empíricas são diagnósticos por pares, não prova de dependência estrutural nem teste de segurança.
+
+
+## Experimento 014 — consolidação científica e conformidade independente
+
+O [EXP-014](./experiments/014-research-consolidation/README.md) reúne a evidência dos EXP-008 a EXP-013 e adiciona um oráculo Python independente derivado da especificação congelada. A campanha compara a implementação canônica para todos os 65.536 blocos, em cinco chaves mestras fixas, com 25 vetores de referência e verificação de permutação do domínio.
+
+**Limite de implementação:** não foi encontrada uma segunda implementação C/Assembly da cifra Feistel EXP-008; o estado Assembly de 64 bits é uma construção separada. A comparação cruzada de linguagens permanece uma lacuna explícita para a fase de validação funcional.
