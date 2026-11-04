@@ -79,7 +79,65 @@ The search therefore tests at most 256 initial-byte guesses per complete schedul
 
 **Threat-model boundary:** this is recovery from a fully known eight-byte round-key schedule. It is not a ciphertext-only attack and does not claim that round subkeys are normally observable. It demonstrates that the internal schedule mapping is readily invertible when its complete output is exposed.
 
-## 6. What would count as evidence?
+
+
+## 6. Preliminary results: two independent deterministic samples
+
+An independent reference execution of the KS1 recurrence was performed with two separate seeds. Each main sample contains 8,192 master keys; each dense byte-delta scan uses 1,024 base keys and all 1,020 deltas. The results below are sample measurements, not full-domain claims.
+
+### Pairwise output-bit dependencies
+
+| Metric | Seed 0x0132026 | Seed 0xC0FFEE |
+|---|---:|---:|
+| Cross-round bit pairs | 1,792 | 1,792 |
+| Mean absolute Pearson correlation (cross-round) | 0.0089999 | 0.0085362 |
+| Maximum absolute Pearson correlation (cross-round) | 0.0422470 | 0.0427501 |
+| Mean empirical mutual information (cross-round) | 0.00009144 bit | 0.00008338 bit |
+| Maximum empirical mutual information (cross-round) | 0.00128785 bit | 0.00131872 bit |
+
+The observed mean absolute Pearson values are close to the scale expected from finite-sample fluctuations for 8,192 observations. The mean empirical mutual information is also small. The largest pairwise values are leads for follow-up, not evidence of a reproducible structural dependency by themselves.
+
+### Master-key-bit to output-bit relationships
+
+| Metric | Seed 0x0132026 | Seed 0xC0FFEE |
+|---|---:|---:|
+| Matrix cells | 2,048 | 2,048 |
+| Maximum absolute Pearson correlation | 0.0398120 | 0.0393285 |
+| Maximum empirical mutual information | 0.00114364 bit | 0.00111602 bit |
+
+### Related-key Hamming diffusion
+
+For all 32 one-bit master-key deltas, the mean output-stream Hamming distance averaged over input bits was:
+
+| Metric | Seed 0x0132026 | Seed 0xC0FFEE |
+|---|---:|---:|
+| Mean across 32 unit deltas | 30.7757 / 64 | 30.7942 / 64 |
+| Lowest-mean input bit | bit 11: 29.4314 | bit 11: 29.4427 |
+| Highest-mean input bit | bit 3: 32.5111 | bit 3: 32.5939 |
+
+The 1,020-delta dense scan, covering every nonzero byte delta at each of the four master-key byte positions, produced:
+
+| Metric | Seed 0x0132026 | Seed 0xC0FFEE |
+|---|---:|---:|
+| Mean of per-delta mean Hamming distances | 31.9790 / 64 | 31.9830 / 64 |
+| Lowest per-delta mean | 29.3662 / 64 | 29.2422 / 64 |
+| Highest per-delta mean | 33.7109 / 64 | 33.7324 / 64 |
+
+No tested single-byte delta showed a catastrophic collapse in emitted-stream Hamming distance. The same lowest-mean byte delta appeared in both samples (byte position 1, delta 0x48), but its average remained around 29.3 of 64 output bits. This is not evidence of a practical related-key distinguisher.
+
+### Bounded schedule-preimage recovery
+
+The 256-guess recovery was applied to 64 sampled keys from each main seed. It recovered the original master key uniquely in **128/128** cases; every tested schedule had exactly one valid candidate among the 256 initial-byte guesses. This is recovery from a fully exposed eight-byte subkey stream, not from ciphertext.
+
+### Preliminary interpretation
+
+The hypothesis separates into two parts:
+- **Confirmed structural relation:** the emitted subkey bytes obey the exact telescoping XOR identity, and a complete known schedule can be inverted with at most 256 guesses of the original low byte.
+- **Not supported by these samples:** a strong pairwise cross-round statistical dependency or a severe low-diffusion related-key delta. The measured averages are near the natural 50% Hamming reference and pairwise statistics are small across both seeds.
+
+This does not rule out higher-order dependencies, carefully structured related-key families outside the scan, or other cryptanalytic weaknesses. EXP-013 does not enumerate all (2^{32}) master keys.
+
+## 7. What would count as evidence?
 
 Potential warning signals:
 - a master-key input bit that has persistently low flip probability across many output bits/rounds;
@@ -91,7 +149,7 @@ A single extreme in one finite sample is only a lead. Follow-up should repeat th
 
 A low Hamming-distance response is not itself a practical key-recovery attack. The bounded schedule-preimage procedure assumes the complete internal eight-byte round-key stream is already exposed; it is not a ciphertext-only attack. Any exploitability claim still requires an explicit attacker model.
 
-## 7. Reproduction
+## 8. Reproduction
 
 Python 3.9+; standard library only:
 
@@ -106,7 +164,7 @@ For a second deterministic run:
 python3 dependency_analysis.py --samples 16384 --dense-samples 2048 --seed 0xC0FFEE --output results/replicate
 ~~~
 
-## 8. Outputs
+## 9. Outputs
 
 - `summary.json` — complete reproducibility metadata and compact headline metrics.
 - `summary_compact.json` — compact report without full 2,016- and 2,048-row internal matrices.
@@ -116,7 +174,7 @@ python3 dependency_analysis.py --samples 16384 --dense-samples 2048 --seed 0xC0F
 - `dense_byte_delta_scan.csv` — all 1,020 single-byte nonzero delta profiles.
 - `schedule_preimage_recovery` in the JSON summary — bounded 256-guess recovery validation on a subset of sampled complete schedules.
 
-## 9. Limits
+## 10. Limits
 
 - The 2^32 master-key domain is not exhaustively enumerated.
 - Pairwise Pearson correlation and mutual information do not capture all higher-order dependencies.
