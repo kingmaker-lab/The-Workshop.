@@ -477,10 +477,15 @@ def save_results(report: dict[str, Any], output: Path) -> None:
         fields = [
             "master_key", "input_delta", "rounds", "pairs", "max_observed_probability",
             "max_observed_count", "markov_hull_max_probability", "total_variation_distance",
+            "top_observed_output_differences",
         ]
         writer = csv.DictWriter(handle, fieldnames=fields)
         writer.writeheader()
-        writer.writerows(report["fixed_key_observations"])
+        for row in report["fixed_key_observations"]:
+            writer.writerow({
+                **row,
+                "top_observed_output_differences": json.dumps(row["top_observed_output_differences"]),
+            })
 
     with (output / "linear_hulls.csv").open("w", newline="", encoding="utf-8") as handle:
         fields = [
