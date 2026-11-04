@@ -13,7 +13,9 @@ const addedArchiveCards = "<article class=\"experiment-card\"><div class=\"card-
 const archiveMarker = '</a></article></div><section class="section" id="research-007">';
 const archivePos = archivePage.lastIndexOf(archiveMarker);
 if (archivePos < 0) throw new Error("Crypto Lab archive insertion anchor missing");
-archivePage = archivePage.slice(0, archivePos) + addedArchiveCards + archivePage.slice(archivePos);
+const archiveClose = '</a></article>';
+const archiveTail = '</div><section class="section" id="research-007">';
+archivePage = archivePage.slice(0, archivePos) + archiveClose + addedArchiveCards + archiveTail + archivePage.slice(archivePos + archiveMarker.length);
 pages["/experimentos/"] = archivePage;
 const meta = {"/":{"type":"text/html; charset=utf-8","status":200},"/experimentos/":{"type":"text/html; charset=utf-8","status":200},"/experimentos/001/":{"type":"text/html; charset=utf-8","status":200},"/experimentos/002/":{"type":"text/html; charset=utf-8","status":200},"/experimentos/003/":{"type":"text/html; charset=utf-8","status":200},"/experimentos/004/":{"type":"text/html; charset=utf-8","status":200},"/experimentos/005/":{"type":"text/html; charset=utf-8","status":200},"/experimentos/006/":{"type":"text/html; charset=utf-8","status":200},"/experimentos/009/":{"type":"text/html; charset=utf-8","status":200},"/assets/style.css":{"type":"text/css; charset=utf-8","status":200},"/assets/site.js":{"type":"application/javascript; charset=utf-8","status":200},"/experimentos/007/":{"type":"text/html; charset=utf-8","status":200}};
 Object.assign(meta, {"/experimentos/010/":{type:"text/html; charset=utf-8",status:200},"/experimentos/011/":{type:"text/html; charset=utf-8",status:200},"/experimentos/012/":{type:"text/html; charset=utf-8",status:200},"/experimentos/013/":{type:"text/html; charset=utf-8",status:200},"/experimentos/014/":{type:"text/html; charset=utf-8",status:200}});
