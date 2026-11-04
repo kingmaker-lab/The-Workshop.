@@ -7,11 +7,15 @@ from pathlib import Path
 
 from dependency_analysis import (
     analyze, bit_pair_analysis, dense_byte_delta_scan, joint_metrics,
-    output_bitplanes, sample_keys, save_results, schedule_stream,
+    output_bitplanes, sample_keys, save_results, schedule_stream, verify_telescoping_xor_identity,
 )
 
 
 class Exp013Tests(unittest.TestCase):
+    def test_exact_subkey_telescoping_xor_identity(self):
+        for key in (0, 1, 0x01234567, 0x89ABCDEF, 0xFFFFFFFF):
+            self.assertTrue(verify_telescoping_xor_identity(key))
+
     def test_sample_is_deterministic_and_pins_corner_keys(self):
         a = sample_keys(64, 12345)
         b = sample_keys(64, 12345)
