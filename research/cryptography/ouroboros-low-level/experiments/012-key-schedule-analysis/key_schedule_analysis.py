@@ -24,7 +24,7 @@ from typing import Any
 HERE = Path(__file__).resolve().parent
 EXP008 = HERE.parent / "008-reduced-feistel"
 sys.path.insert(0, str(EXP008))
-from feistel16 import KEY_BITS, KEY_MASK, ROUNDS, expand_key, permute8, rotl8, substitute8
+from feistel16 import KEY_BITS, KEY_MASK, ROUNDS, SBOX4, expand_key, P8, permute8, rotl8, substitute8
 
 DEFAULT_SAMPLE_COUNT = 8192
 DEFAULT_SEED = 0x012_3456
@@ -57,6 +57,42 @@ def ks1_transition(state: int, round_index: int) -> tuple[int, int]:
     key_byte = t ^ d
     next_state = ((state << 8) & KEY_MASK) | t
     return next_state, key_byte
+
+
+def inverse_permute8(value: int) -> int:
+    """Invert the exact EXP-008 P8 bit permutation."""
+    value &= 0xFF
+    result = 0
+    for output_bit, input_bit in enumerate(P8):
+        result |= ((value >> output_bit) & 1) << input_bit
+    return result
+
+
+_INVERSE_SBOX4 = tuple(SBOX4.index(value) for value in range(16))
+
+
+def inverse_substitute8(value: int) -> int:
+    value &= 0xFF
+    return (_INVERSE_SBOX4[value >> 4] << 4) | _INVERSE_SBOX4[value & 0x0F]
+
+
+def invert_ks1_transition(next_state: int, round_index: int) -> int:
+    """Invert Q_(r+1)=(b,c,d,t) back to Q_r=(a,b,c,d).
+
+    Given the next state, the shifted bytes b,c,d and emitted t are known.
+    Undo P8 and the S-box, subtract the fixed byte addends, then undo ROTL8.
+    """
+    if isinstance(next_state, bool) or not isinstance(next_state, int) or not 0 <= next_state <= KEY_MASK:
+        raise ValueError("next_state must be an unsigned 32-bit integer")
+    rc = round_constant(round_index)
+    b = (next_state >> 24) & 0xFF
+    c = (next_state >> 16) & 0xFF
+    d = (next_state >> 8) & 0xFF
+    t = next_state & 0xFF
+    mixed = inverse_substitute8(inverse_permute8(t))
+    rotated_a = (mixed - b - rotl8(c, 1) - d - rc) & 0xFF
+    a = rotl8(rotated_a, 5)
+    return (a << 24) | (b << 16) | (c << 8) | d
 
 
 def expand_key_reference(master_key: int) -> tuple[int, ...]:
