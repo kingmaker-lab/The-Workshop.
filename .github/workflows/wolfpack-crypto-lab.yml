@@ -1,0 +1,37 @@
+name: WolfPack Crypto Lab
+
+concurrency:
+  group: wolfpack-crypto-lab-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: [crypto-lab-exp014-rollup]
+    paths:
+      - 'sites/wolfpack-crypto/**'
+  pull_request:
+    paths:
+      - 'sites/wolfpack-crypto/**'
+  workflow_dispatch:
+
+jobs:
+  worker-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Fetch exact repository revision without submodule hooks
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git init .
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+          git remote set-url origin "https://github.com/${GITHUB_REPOSITORY}.git"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compile Cloudflare Pages Worker
+        run: node --check sites/wolfpack-crypto/worker.mjs
+      - name: Test legacy and new routes
+        run: node sites/wolfpack-crypto/test_worker.mjs
