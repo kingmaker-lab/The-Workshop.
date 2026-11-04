@@ -104,7 +104,34 @@ A future second implementation must be derived from the frozen specification, no
 
 None of these statements amounts to a production security claim. The 16-bit block and 32-bit key are intentionally toy-sized.
 
-## 9. EXP-015 transition gate
+
+
+## 9. Executed results and CI evidence
+
+The official EXP-014 workflow completed successfully on commit `915b2d60bb7a444209b10774d95bfe7ff7020391`.
+
+| Check | Result |
+|---|---:|
+| Round-key byte comparisons | **40 / 40** |
+| Frozen known-answer vectors | **25 / 25** |
+| Full-domain block comparisons | **327,680 / 327,680** |
+| Full-domain permutation checks | **5 / 5** |
+| Reference encrypt/decrypt pairs | **327,680 / 327,680** |
+| Historical experiment test suites (008–013) | **All passed** |
+
+Each of the five fixed master keys covered all 65,536 possible 16-bit plaintext blocks. The canonical EXP-008 Python implementation matched the separate reference transcription for every block, and each output mapping contained every 16-bit value exactly once.
+
+The conformance report is versioned at `results/conformance.json` and was also uploaded as the GitHub Actions artifact. The evidence register is at `results/research_evidence_register.json`.
+
+**CI:** [Ouroboros EXP-014 run 41868697489](https://github.com/kingmaker-lab/The-Workshop./actions/runs/41868697489). Both jobs completed successfully: independent reference conformance and historical regression. Artifact ID: `13343851246`.
+
+## 10. Final assessment
+
+EXP-014 confirms that the canonical Python implementation conforms to the separately transcribed EXP-008 specification over the entire 16-bit block domain for five selected keys. Historical test suites for EXP-008 through EXP-013 also pass in isolated processes. This is a strong functional consistency result for the tested scope, not a security proof and not an exhaustive master-key analysis.
+
+The implementation inventory remains unchanged: no second C/Assembly implementation of the EXP-008 Feistel cipher was found. Cross-language comparison remains a future functional-validation task if a second implementation is created.
+
+## 11. EXP-015 transition gate
 
 EXP-014 is the last research consolidation step. EXP-015 begins a separate functional-verification phase:
 - freeze the specification, vectors, and source revision;
