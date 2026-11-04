@@ -1,0 +1,108 @@
+{
+  "experiment": "OUROBOROS-014",
+  "purpose": "Evidence register for EXP-008 through EXP-013, with the final conformance campaign kept separate from cryptographic security claims.",
+  "source_branches": [
+    {
+      "experiment": "EXP-008",
+      "branch": "exp-008-reduced-feistel",
+      "branch_head": "7932fd744f9263156f787fac2fb208053e1642c3",
+      "successful_ci": {
+        "run_id": 41071306530,
+        "commit": "7932fd744f9263156f787fac2fb208053e1642c3",
+        "conclusion": "success",
+        "url": "https://github.com/kingmaker-lab/The-Workshop./actions/runs/41071306530"
+      },
+      "evidence": "Unit tests, fixed known-answer vectors, full 16-bit round-trip checks for three keys, permutation check for zero key."
+    },
+    {
+      "experiment": "EXP-009",
+      "branch": "exp-009-round-function-analysis",
+      "branch_head": "ed2dbac04165eb4bb1c4c24cf7af86aa1cf9b32f",
+      "successful_ci": {
+        "run_id": 41105212300,
+        "commit": "f71451af6cdfe7f88f7c975f86b44bf89ebfbc2c",
+        "conclusion": "success",
+        "url": "https://github.com/kingmaker-lab/The-Workshop./actions/runs/41105212300"
+      },
+      "verified_same_files": [
+        "round_analysis.py",
+        "test_round_analysis.py"
+      ],
+      "evidence": "Complete 256x256 component DDT and Walsh LAT; DDT max 64/256; nontrivial maximum absolute Walsh 128/256."
+    },
+    {
+      "experiment": "EXP-010",
+      "branch": "exp-010-feistel-trail-analysis",
+      "branch_head": "55a8ccab0167ce3fdc936de22c632fdca71cd9bc",
+      "successful_ci": {
+        "run_id": 41859483386,
+        "commit": "55a8ccab0167ce3fdc936de22c632fdca71cd9bc",
+        "conclusion": "success",
+        "url": "https://github.com/kingmaker-lab/The-Workshop./actions/runs/41859483386"
+      },
+      "evidence": "Exact enumeration of all 16 one-bit input differences and 16x16 weight-one mask pairs for 1..8 round prefixes, three fixed keys; explicitly restricted slices."
+    },
+    {
+      "experiment": "EXP-011",
+      "branch": "exp-011-multiround-trail-search",
+      "branch_head": "17249d66e7a0fa72d33ae012e2271b34a602d029",
+      "successful_ci": {
+        "run_id": 41862662851,
+        "commit": "17249d66e7a0fa72d33ae012e2271b34a602d029",
+        "conclusion": "success",
+        "url": "https://github.com/kingmaker-lab/The-Workshop./actions/runs/41862662851"
+      },
+      "evidence": "DDT Markov propagation separated from selected fixed-key full-domain differential observations; signed linear trails/hulls and direct Walsh checks."
+    },
+    {
+      "experiment": "EXP-012",
+      "branch": "exp-012-key-schedule-analysis",
+      "branch_head": "124a6a1b6a619116f7bc7d5327eab12e0a77c2aa",
+      "successful_ci": {
+        "run_id": 41863946878,
+        "commit": "124a6a1b6a619116f7bc7d5327eab12e0a77c2aa",
+        "conclusion": "success",
+        "url": "https://github.com/kingmaker-lab/The-Workshop./actions/runs/41863946878"
+      },
+      "evidence": "Internal KS1 state-transition bijection for fixed context, exact inverse, deterministic related-key sample and output statistics."
+    },
+    {
+      "experiment": "EXP-013",
+      "branch": "exp-013-related-key-dependency-analysis",
+      "branch_head": "aa60cfe757112c4c2c18f879b474906fb1f1b0a9",
+      "successful_ci": {
+        "run_id": 41866910767,
+        "commit": "79dce880cc956b2f3736e99dc3d25ac178243b3d",
+        "conclusion": "success",
+        "url": "https://github.com/kingmaker-lab/The-Workshop./actions/runs/41866910767"
+      },
+      "verified_same_files": [
+        "dependency_analysis.py",
+        "test_dependency_analysis.py"
+      ],
+      "evidence": "Exact telescoping XOR identity; 256-guess preimage recovery on fully known 8-byte schedules; pairwise dependency and byte-delta related-key samples; artifact upload succeeded."
+    }
+  ],
+  "independent_conformance_campaign": {
+    "status": "implemented; CI pending",
+    "branch": "exp-014-research-consolidation",
+    "scope": "five fixed master keys, 25 known-answer vectors, all 65,536 plaintext blocks per key, permutation check per key, canonical schedule and reference-oracle comparison.",
+    "master_key_space_exhaustively_enumerated": false,
+    "reference_implementation": "independent Python specification oracle, not a second optimized implementation."
+  },
+  "implementation_inventory": {
+    "canonical_exp008": "Python feistel16.py",
+    "independent_oracle": "Python reference_model.py, separate transcription of frozen equations",
+    "c_or_assembly_exp008_implementation_found": false,
+    "note": "The distinct 64-bit ouroboros_step Assembly state transition is not an implementation of the 16-bit EXP-008 Feistel cipher."
+  },
+  "security_boundaries": [
+    "EXP-008 is a 16-bit block / 32-bit key educational cipher and is not suitable for real data.",
+    "EXP-009 results characterize the round function only.",
+    "EXP-010 covers only one-bit input differences and weight-one masks.",
+    "EXP-011 Markov differential hull estimates are not automatically identical to fixed-key differential distributions.",
+    "EXP-012 and EXP-013 key-schedule statistics are sample-based and do not exhaust 2^32 master keys.",
+    "EXP-013 recovery assumes the complete eight-byte internal subkey schedule is known; it is not ciphertext-only recovery.",
+    "Passing functional conformance tests does not establish cryptographic security."
+  ]
+}
