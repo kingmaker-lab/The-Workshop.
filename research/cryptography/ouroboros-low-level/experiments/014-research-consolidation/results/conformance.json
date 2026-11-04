@@ -1,0 +1,59 @@
+{
+  "experiment": "OUROBOROS-014",
+  "target": "EXP-008 W16-K32-Feistel8-S4-P8-KS1",
+  "method": "Independent specification oracle vs canonical EXP-008 Python implementation",
+  "master_keys": [
+    "0x00000000",
+    "0x00000001",
+    "0x01234567",
+    "0x89ABCDEF",
+    "0xFFFFFFFF"
+  ],
+  "round_key_byte_comparisons": 40,
+  "known_answer_vector_checks": 25,
+  "full_domain_block_comparisons": 327680,
+  "expected_permutation_checks": 5,
+  "per_key": [
+    {
+      "master_key": "0x00000000",
+      "schedule_match": true,
+      "known_answer_vectors": 5,
+      "full_domain_blocks_compared": 65536,
+      "reference_round_trip_checks": 65536,
+      "canonical_mapping_is_permutation": true
+    },
+    {
+      "master_key": "0x00000001",
+      "schedule_match": true,
+      "known_answer_vectors": 5,
+      "full_domain_blocks_compared": 65536,
+      "reference_round_trip_checks": 65536,
+      "canonical_mapping_is_permutation": true
+    },
+    {
+      "master_key": "0x01234567",
+      "schedule_match": true,
+      "known_answer_vectors": 5,
+      "full_domain_blocks_compared": 65536,
+      "reference_round_trip_checks": 65536,
+      "canonical_mapping_is_permutation": true
+    },
+    {
+      "master_key": "0x89ABCDEF",
+      "schedule_match": true,
+      "known_answer_vectors": 5,
+      "full_domain_blocks_compared": 65536,
+      "reference_round_trip_checks": 65536,
+      "canonical_mapping_is_permutation": true
+    },
+    {
+      "master_key": "0xFFFFFFFF",
+      "schedule_match": true,
+      "known_answer_vectors": 5,
+      "full_domain_blocks_compared": 65536,
+      "reference_round_trip_checks": 65536,
+      "canonical_mapping_is_permutation": true
+    }
+  ],
+  "scope": "Exhaustive 16-bit block-domain conformance for five selected fixed keys. Not exhaustive over the 32-bit master-key space and not a cryptographic security proof."
+}
