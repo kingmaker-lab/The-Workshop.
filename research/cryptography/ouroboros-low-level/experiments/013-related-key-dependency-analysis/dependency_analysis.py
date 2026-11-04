@@ -288,15 +288,14 @@ def analyze(main_samples: int = DEFAULT_MAIN_SAMPLES,
     per_round_io = []
     for round_index in range(ROUNDS):
         selected = [row for row in io_rows if row["round_index"] == round_index]
-        ordered = sorted(selected, key=lambda row: (row["flip_probability"], row["master_key_bit"], row["round_key_bit"]))
+        ordered = sorted(selected, key=lambda row: (row["mutual_information_bits"], abs(row["pearson"]), row["master_key_bit"], row["round_key_bit"]))
         per_round_io.append({
             "round_index": round_index,
-            "mean_flip_probability": statistics.mean(row["flip_probability"] for row in selected),
-            "min_flip_probability": min(row["flip_probability"] for row in selected),
-            "max_flip_probability": max(row["flip_probability"] for row in selected),
+            "mean_abs_input_output_pearson": statistics.mean(abs(row["pearson"]) for row in selected),
+            "min_abs_input_output_pearson": min(abs(row["pearson"]) for row in selected),
             "max_abs_input_output_pearson": max(abs(row["pearson"]) for row in selected),
             "max_input_output_mutual_information_bits": max(row["mutual_information_bits"] for row in selected),
-            "lowest_10_influences": ordered[:10],
+            "lowest_10_pairwise_dependencies": ordered[:10],
         })
 
     return {
