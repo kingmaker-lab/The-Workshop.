@@ -1,0 +1,43 @@
+name: Ouroboros EXP-013
+
+concurrency:
+  group: ouroboros-exp013-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: [exp-013-related-key-dependency-analysis]
+    paths:
+      - 'research/cryptography/ouroboros-low-level/experiments/008-reduced-feistel/**'
+      - 'research/cryptography/ouroboros-low-level/experiments/013-related-key-dependency-analysis/**'
+      - '.github/workflows/ouroboros-exp013.yml'
+  pull_request:
+    paths:
+      - 'research/cryptography/ouroboros-low-level/experiments/008-reduced-feistel/**'
+      - 'research/cryptography/ouroboros-low-level/experiments/013-related-key-dependency-analysis/**'
+      - '.github/workflows/ouroboros-exp013.yml'
+  workflow_dispatch:
+
+jobs:
+  related-key-dependency-analysis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: research/cryptography/ouroboros-low-level/experiments/013-related-key-dependency-analysis
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile experiment sources
+        run: python -m py_compile dependency_analysis.py test_dependency_analysis.py
+      - name: Run structural and serialization tests
+        run: python -m unittest -v
+      - name: Run deterministic related-key campaign
+        run: python dependency_analysis.py --samples 8192 --dense-samples 1024 --seed 0x0132026 --output results
+      - name: Upload EXP-013 results
+        uses: actions/upload-artifact@v4
+        with:
+          name: ouroboros-exp013-related-key-analysis
+          path: research/cryptography/ouroboros-low-level/experiments/013-related-key-dependency-analysis/results/
