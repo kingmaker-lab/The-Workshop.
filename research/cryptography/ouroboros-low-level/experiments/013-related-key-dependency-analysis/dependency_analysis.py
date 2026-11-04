@@ -328,6 +328,8 @@ def analyze(main_samples: int = DEFAULT_MAIN_SAMPLES,
             "summary": dense_summary,
             "rows": dense_rows,
         },
+        "_pair_rows": pair_rows,
+        "_io_rows": io_rows,
         "interpretation_limits": [
             "No exhaustive enumeration of all 2^32 master keys was performed.",
             "Empirical Pearson correlation and mutual information do not prove independence or dependence outside the stated deterministic sample.",
@@ -355,7 +357,7 @@ def save_results(report: dict[str, Any], output: Path) -> None:
     with (output / "master_to_subkey_dependencies.csv").open("w", encoding="utf-8", newline="") as handle:
         fields = [
             "master_key_bit", "round_index", "round_key_bit", "output_stream_bit",
-            "pearson", "mutual_information_bits", "flip_probability", "n00", "n01", "n10", "n11",
+            "pearson", "mutual_information_bits", "n00", "n01", "n10", "n11",
         ]
         writer = csv.DictWriter(handle, fieldnames=fields)
         writer.writeheader()
