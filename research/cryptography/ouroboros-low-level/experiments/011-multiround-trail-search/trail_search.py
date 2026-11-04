@@ -74,7 +74,9 @@ def build_round_tables() -> tuple[list[list[int]], list[list[int]]]:
     return ddt, lat
 
 
-def differential_model(\n    start_delta: int, ddt: list[list[int]], *, retain_hulls: bool = False, retain_parents: bool = False\n) -> dict[str, Any]:
+def differential_model(
+    start_delta: int, ddt: list[list[int]], *, retain_hulls: bool = False, retain_parents: bool = False
+) -> dict[str, Any]:
     """Propagate exact DDT transition counts as a Markov differential hull model.
 
     State delta is (dL << 8) | dR.
@@ -114,7 +116,10 @@ def differential_model(\n    start_delta: int, ddt: list[list[int]], *, retain_h
         if sum(next_hull) != 256 * sum(hull):
             raise AssertionError("Differential Markov mass was not conserved")
         hull, best = next_hull, next_best
-        if retain_hulls:\n            hulls_by_round.append(hull.copy())\n        if retain_parents:\n            parents.append(parent)
+        if retain_hulls:
+            hulls_by_round.append(hull.copy())
+        if retain_parents:
+            parents.append(parent)
 
         denominator = 256 ** round_number
         ranked_hulls = sorted(
@@ -216,7 +221,9 @@ def _linear_transition_hull(
 
         hull, best_abs, best_signed = next_hull, next_best_abs, next_best_signed
         hulls_by_round.append(hull.copy())
-        if retain_parents:\n            parents.append(parent)\n        denominator = 256 ** round_number
+        if retain_parents:
+            parents.append(parent)
+        denominator = 256 ** round_number
         ranked = sorted(
             ((abs(value), state, value) for state, value in hull.items()),
             reverse=True,
