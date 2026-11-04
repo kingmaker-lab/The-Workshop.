@@ -6,7 +6,7 @@ concurrency:
 
 on:
   push:
-    branches: [crypto-lab-exp014-rollup]
+    branches: [main]
     paths:
       - 'sites/wolfpack-crypto/**'
   pull_request:
