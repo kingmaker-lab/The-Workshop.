@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 HERE = Path(__file__).resolve().parent
-REPO_ROOT = HERE.parents[5]
+REPO_ROOT = HERE.parents[4]
 EXP008 = REPO_ROOT / "research/cryptography/ouroboros-low-level/experiments/008-reduced-feistel"
 sys.path.insert(0, str(EXP008))
 
@@ -18,13 +18,14 @@ from reference_model import (
     reference_expand_key,
 )
 
-KEYS = (0x00000000, 0x00000001, 0x01234567, 0x89ABCDEF, 0xFFFFFFFF)
+_KAT_DATA = json.loads((HERE / "known_answers.json").read_text(encoding="utf-8"))
+KEYS = tuple(int(entry["key"], 16) for entry in _KAT_DATA["master_keys"])
 KNOWN_ANSWERS = {
-    0x00000000: {0x0000: 0xEBEF, 0x0001: 0xD1A6, 0x1234: 0x8F62, 0xBEEF: 0x39FE, 0xFFFF: 0x789B},
-    0x00000001: {0x0000: 0x03C0, 0x0001: 0xA0B2, 0x1234: 0x3235, 0xBEEF: 0xB48F, 0xFFFF: 0xDFCB},
-    0x01234567: {0x0000: 0xC4B5, 0x0001: 0xF1F1, 0x1234: 0x561F, 0xBEEF: 0x40ED, 0xFFFF: 0xEB01},
-    0x89ABCDEF: {0x0000: 0x3154, 0x0001: 0xF0F2, 0x1234: 0xA0B1, 0xBEEF: 0x176F, 0xFFFF: 0x4789},
-    0xFFFFFFFF: {0x0000: 0xD7C8, 0x0001: 0xCEE8, 0x1234: 0x8514, 0xBEEF: 0x2A94, 0xFFFF: 0x27CE},
+    int(entry["key"], 16): {
+        int(plaintext, 16): int(ciphertext, 16)
+        for plaintext, ciphertext in entry["vectors"]
+    }
+    for entry in _KAT_DATA["master_keys"]
 }
 
 
