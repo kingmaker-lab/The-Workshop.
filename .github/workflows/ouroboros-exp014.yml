@@ -1,0 +1,95 @@
+name: Ouroboros EXP-014
+
+concurrency:
+  group: ouroboros-exp014-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: [exp-014-research-consolidation]
+    paths:
+      - 'research/cryptography/ouroboros-low-level/experiments/008-reduced-feistel/**'
+      - 'research/cryptography/ouroboros-low-level/experiments/009-round-function-analysis/**'
+      - 'research/cryptography/ouroboros-low-level/experiments/010-feistel-trail-analysis/**'
+      - 'research/cryptography/ouroboros-low-level/experiments/011-multiround-trail-search/**'
+      - 'research/cryptography/ouroboros-low-level/experiments/012-key-schedule-analysis/**'
+      - 'research/cryptography/ouroboros-low-level/experiments/013-related-key-dependency-analysis/**'
+      - 'research/cryptography/ouroboros-low-level/experiments/014-research-consolidation/**'
+      - '.github/workflows/ouroboros-exp014.yml'
+  pull_request:
+    paths:
+      - 'research/cryptography/ouroboros-low-level/experiments/008-reduced-feistel/**'
+      - 'research/cryptography/ouroboros-low-level/experiments/009-round-function-analysis/**'
+      - 'research/cryptography/ouroboros-low-level/experiments/010-feistel-trail-analysis/**'
+      - 'research/cryptography/ouroboros-low-level/experiments/011-multiround-trail-search/**'
+      - 'research/cryptography/ouroboros-low-level/experiments/012-key-schedule-analysis/**'
+      - 'research/cryptography/ouroboros-low-level/experiments/013-related-key-dependency-analysis/**'
+      - 'research/cryptography/ouroboros-low-level/experiments/014-research-consolidation/**'
+      - '.github/workflows/ouroboros-exp014.yml'
+  workflow_dispatch:
+
+jobs:
+  independent-reference-conformance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: research/cryptography/ouroboros-low-level/experiments/014-research-consolidation
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile oracle and verifier
+        run: python -m py_compile reference_model.py conformance.py test_conformance.py
+      - name: Run oracle unit tests
+        run: python -m unittest -v
+      - name: Run exhaustive block-domain comparison
+        run: python conformance.py
+      - name: Upload conformance report
+        uses: actions/upload-artifact@v4
+        with:
+          name: ouroboros-exp014-independent-conformance
+          path: research/cryptography/ouroboros-low-level/experiments/014-research-consolidation/results/
+
+  historical-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile historical experiment sources
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import py_compile
+          roots = [
+              Path("research/cryptography/ouroboros-low-level/experiments") / name
+              for name in (
+                  "008-reduced-feistel", "009-round-function-analysis",
+                  "010-feistel-trail-analysis", "011-multiround-trail-search",
+                  "012-key-schedule-analysis", "013-related-key-dependency-analysis",
+              )
+          ]
+          files = [p for root in roots for p in root.glob("*.py")]
+          for path in files:
+              py_compile.compile(str(path), doraise=True)
+          print(f"Compiled {len(files)} Python files")
+          PY
+      - name: Run historical experiment test suites in isolated processes
+        shell: bash
+        run: |
+          set -euo pipefail
+          for d in \
+            008-reduced-feistel \
+            009-round-function-analysis \
+            010-feistel-trail-analysis \
+            011-multiround-trail-search \
+            012-key-schedule-analysis \
+            013-related-key-dependency-analysis
+          do
+            echo "===== EXP-$d ====="
+            (cd "research/cryptography/ouroboros-low-level/experiments/$d" && python -m unittest discover -s . -p 'test_*.py' -v)
+          done
