@@ -11,7 +11,7 @@ A decisão de projeto é encerrar a série de experimentos exploratórios no EXP
 |---|---|---|
 | EXP-011 | Trilhas diferenciais, estimativas Markov, observações de chave fixa, linear trails e hulls | Em execução nesta branch |
 | EXP-012 | Caracterização de KS1: difusão entre subchaves, chaves equivalentes/fracas e relações entre chaves | Em execução nesta branch |
-| EXP-013 | Busca ampliada com diferenças de entrada e máscaras lineares de maior peso; cobertura além das fatias unitárias | Planejado |
+| EXP-013 | Dependências entre subchaves de rodadas, difusão related-key e varredura densa de deltas de byte | Em execução nesta branch |
 | EXP-014 | Consolidação de resultados, reprodutibilidade, vetores de referência e confronto das implementações disponíveis | Planejado |
 | EXP-015 | Congelamento da fase exploratória e início das provas de funcionalidade | Marco de transição |
 
