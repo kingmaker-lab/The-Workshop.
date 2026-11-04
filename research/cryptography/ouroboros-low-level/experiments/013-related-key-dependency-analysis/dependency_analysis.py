@@ -390,7 +390,7 @@ def save_results(report: dict[str, Any], output: Path) -> None:
     with (output / "output_bit_dependencies.csv").open("w", encoding="utf-8", newline="") as handle:
         fields = [
             "first_round", "first_bit", "first_stream_bit", "second_round", "second_bit",
-            "second_stream_bit", "pearson", "mutual_information_bits", "n00", "n01", "n10", "n11",
+            "second_stream_bit", "pearson", "mutual_information_bits", "bias_a", "bias_b", "n00", "n01", "n10", "n11",
         ]
         writer = csv.DictWriter(handle, fieldnames=fields)
         writer.writeheader()
@@ -399,7 +399,7 @@ def save_results(report: dict[str, Any], output: Path) -> None:
     with (output / "master_to_subkey_dependencies.csv").open("w", encoding="utf-8", newline="") as handle:
         fields = [
             "master_key_bit", "round_index", "round_key_bit", "output_stream_bit",
-            "pearson", "mutual_information_bits", "n00", "n01", "n10", "n11",
+            "pearson", "mutual_information_bits", "bias_a", "bias_b", "n00", "n01", "n10", "n11",
         ]
         writer = csv.DictWriter(handle, fieldnames=fields)
         writer.writeheader()
@@ -441,6 +441,11 @@ def save_results(report: dict[str, Any], output: Path) -> None:
     compact = dict(report)
     compact.pop("_pair_rows", None)
     compact.pop("_io_rows", None)
+    compact["master_key_to_round_key_bit_dependencies"] = {
+        key: value for key, value in report["master_key_to_round_key_bit_dependencies"].items()
+        if key != "rows"
+    }
+    compact["dense_byte_delta_scan"] = {"summary": report["dense_byte_delta_scan"]["summary"]}
     (output / "summary_compact.json").write_text(json.dumps(compact, indent=2) + "\n", encoding="utf-8")
 
 
