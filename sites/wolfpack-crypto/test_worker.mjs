@@ -41,19 +41,26 @@ const archive = await (await get("/experimentos/")).text();
 for (const [path] of newRoutes) assert.ok(archive.includes(path));
 assert.ok(archive.includes("EXP / 009"));
 
-const gridMatch = archive.match(/<div class="experiment-grid">([\\s\\S]*?)<\\/div><section class="section" id="research-007">/);
-assert.ok(gridMatch, "experiment archive grid boundary missing");
-const cardTags = gridMatch[1].match(/<\\/?article\\b[^>]*>/g) || [];
+const gridStart = archive.indexOf('<div class="experiment-grid">');
+const gridEnd = archive.indexOf('</div><section class="section" id="research-007">', gridStart);
+assert.ok(gridStart >= 0 && gridEnd > gridStart, "experiment archive grid boundary missing");
+const gridHtml = archive.slice(gridStart, gridEnd);
+let cursor = 0;
 let articleDepth = 0;
 let articleCount = 0;
-for (const tag of cardTags) {
-  if (tag.startsWith("</")) {
-    articleDepth -= 1;
-    assert.equal(articleDepth, 0, "experiment cards must not be nested");
-  } else {
+while (cursor < gridHtml.length) {
+  const openAt = gridHtml.indexOf("<article", cursor);
+  const closeAt = gridHtml.indexOf("</article>", cursor);
+  if (openAt < 0 && closeAt < 0) break;
+  if (openAt >= 0 && (closeAt < 0 || openAt < closeAt)) {
     assert.equal(articleDepth, 0, "each experiment card must be a direct grid child");
     articleDepth += 1;
     articleCount += 1;
+    cursor = openAt + "<article".length;
+  } else {
+    articleDepth -= 1;
+    assert.equal(articleDepth, 0, "experiment cards must not be nested");
+    cursor = closeAt + "</article>".length;
   }
 }
 assert.equal(articleDepth, 0, "all experiment cards must be closed");
