@@ -1,0 +1,47 @@
+{
+  "experiment": "OUROBOROS-010",
+  "design": "EXP-008 W16-K32-Feistel8-S4-P8-KS1",
+  "status": "Exact exhaustive analysis completed; CI success",
+  "master_keys": [
+    "0x01234567",
+    "0x00000000",
+    "0xFFFFFFFF"
+  ],
+  "round_prefixes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "differential_scope": {
+    "input_differences": "all 16 one-bit input differences only",
+    "unordered_pairs_per_input_difference": 32768,
+    "comparisons_per_key_per_round": 524288,
+    "full_16_bit_DDT": false
+  },
+  "linear_scope": {
+    "mask_pairs": "all 16x16 weight-one input/output mask pairs",
+    "pairs_per_key_per_round": 256,
+    "full_16_bit_LAT": false
+  },
+  "notable_results": {
+    "one_round_differential_probability": 1,
+    "eight_round_max_differential_probability": {
+      "0x01234567": 0.00067138671875,
+      "0x00000000": 0.000701904296875,
+      "0xFFFFFFFF": 0.00048828125
+    },
+    "one_round_max_basis_mask_correlation": 1,
+    "eight_round_max_basis_mask_correlation": {
+      "0x01234567": 0.01123046875,
+      "0x00000000": 0.01165771484375,
+      "0xFFFFFFFF": 0.012939453125
+    }
+  },
+  "interpretation": "Measured maxima fall substantially in the restricted slices as rounds accumulate. These results do not establish full differential or linear security and do not cover multi-bit input differences or higher-weight masks.",
+  "scope": "Toy 16-bit Feistel only; not production cryptography."
+}
