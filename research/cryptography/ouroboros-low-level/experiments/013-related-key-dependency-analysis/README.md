@@ -63,7 +63,23 @@ The state shifts one byte per round. Let (d_0) be the least-significant byte of 
 
 This is an exact telescoping XOR identity, not a statistical observation. EXP-013 computes the internal (t_r) sequence independently from the canonical round-key output and verifies the identity for every master key in the main deterministic sample. It establishes a deterministic relation among the emitted bytes and the internal state trajectory; it does not by itself demonstrate exploitable key recovery or identify the original master key uniquely.
 
-## 4. What would count as evidence?
+
+
+## 5. Bounded master-key recovery from a complete emitted schedule
+
+The telescoping identity permits a deterministic preimage search when all eight emitted subkey bytes are known. The least-significant master-key byte (d_0) is the only initial byte not immediately known, so the analyzer enumerates its 256 possible values.
+
+For each guess:
+1. Recover (t_0,ldots,t_3) from the prefix XORs of (K_0,ldots,K_3) and the guessed (d_0).
+2. After four state shifts, the internal state is exactly (Q_4=(t_0,t_1,t_2,t_3)).
+3. Apply the exact inverse KS1 state transitions for round indices 3, 2, 1 and 0 to reconstruct a candidate (Q_0).
+4. Re-expand the candidate with the canonical EXP-008 implementation and accept it only if all eight subkey bytes match.
+
+The search therefore tests at most 256 initial-byte guesses per complete schedule, rather than searching all (2^{32}) master keys. The campaign applies this recovery to a validation subset of the main deterministic sample and records the number of valid candidate keys for each schedule. A unique candidate in the tested subset is evidence about that subset only; it is not a proof that every possible schedule has a unique preimage.
+
+**Threat-model boundary:** this is recovery from a fully known eight-byte round-key schedule. It is not a ciphertext-only attack and does not claim that round subkeys are normally observable. It demonstrates that the internal schedule mapping is readily invertible when its complete output is exposed.
+
+## 6. What would count as evidence?
 
 Potential warning signals:
 - a master-key input bit that has persistently low flip probability across many output bits/rounds;
@@ -75,7 +91,7 @@ A single extreme in one finite sample is only a lead. Follow-up should repeat th
 
 A low Hamming-distance response is not itself a practical key-recovery attack. To claim an exploitable related-key weakness, an attacker model and an actual distinguishing or key-recovery result would be required.
 
-## 5. Reproduction
+## 7. Reproduction
 
 Python 3.9+; standard library only:
 
@@ -90,7 +106,7 @@ For a second deterministic run:
 python3 dependency_analysis.py --samples 16384 --dense-samples 2048 --seed 0xC0FFEE --output results/replicate
 ~~~
 
-## 6. Outputs
+## 8. Outputs
 
 - `summary.json` — complete reproducibility metadata and compact headline metrics.
 - `summary_compact.json` — compact report without full 2,016- and 2,048-row internal matrices.
@@ -98,8 +114,9 @@ python3 dependency_analysis.py --samples 16384 --dense-samples 2048 --seed 0xC0F
 - `master_to_subkey_dependencies.csv` — all 2,048 master-bit/output-bit dependency records.
 - `related_key_unit_deltas.csv` — 32 one-bit related-key profiles.
 - `dense_byte_delta_scan.csv` — all 1,020 single-byte nonzero delta profiles.
+- `schedule_preimage_recovery` in the JSON summary — bounded 256-guess recovery validation on a subset of sampled complete schedules.
 
-## 7. Limits
+## 9. Limits
 
 - The 2^32 master-key domain is not exhaustively enumerated.
 - Pairwise Pearson correlation and mutual information do not capture all higher-order dependencies.
