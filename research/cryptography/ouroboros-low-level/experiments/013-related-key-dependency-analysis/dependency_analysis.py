@@ -21,7 +21,7 @@ from typing import Any
 HERE = Path(__file__).resolve().parent
 EXP008 = HERE.parent / "008-reduced-feistel"
 sys.path.insert(0, str(EXP008))
-from feistel16 import KEY_MASK, ROUNDS, expand_key
+from feistel16 import KEY_MASK, ROUNDS, expand_key, permute8, rotl8, substitute8
 
 DEFAULT_SEED = 0x013_2026
 DEFAULT_MAIN_SAMPLES = 8192
@@ -43,6 +43,41 @@ def sample_keys(count: int, seed: int) -> list[int]:
     result[0] = 0
     result[1] = KEY_MASK
     return result
+
+
+def internal_t_sequence(master_key: int) -> tuple[int, ...]:
+    """Return the eight nonlinear t_r bytes from the exact KS1 state recurrence."""
+    if isinstance(master_key, bool) or not isinstance(master_key, int) or not 0 <= master_key <= KEY_MASK:
+        raise ValueError("master_key must be an unsigned 32-bit integer")
+    state = master_key
+    values = []
+    for round_index in range(ROUNDS):
+        a = (state >> 24) & 0xFF
+        b = (state >> 16) & 0xFF
+        c = (state >> 8) & 0xFF
+        d = state & 0xFF
+        constant = (0x9D + 0x3D * round_index) & 0xFF
+        mixed = (rotl8(a, 3) + b + rotl8(c, 1) + d + constant) & 0xFF
+        t = permute8(substitute8(mixed))
+        values.append(t)
+        state = ((state << 8) & KEY_MASK) | t
+    return tuple(values)
+
+
+def verify_telescoping_xor_identity(master_key: int) -> bool:
+    """Verify XOR(K_0,...,K_r) = t_r XOR the original low master-key byte."""
+    subkeys = expand_key(master_key)
+    t_values = internal_t_sequence(master_key)
+    initial_low = master_key & 0xFF
+    prefix_xor = 0
+    for round_index, (subkey, t_value) in enumerate(zip(subkeys, t_values)):
+        previous_low = initial_low if round_index == 0 else t_values[round_index - 1]
+        if subkey != (t_value ^ previous_low):
+            return False
+        prefix_xor ^= subkey
+        if prefix_xor != (t_value ^ initial_low):
+            return False
+    return True
 
 
 def schedule_stream(master_key: int) -> int:
@@ -277,6 +312,9 @@ def analyze(main_samples: int = DEFAULT_MAIN_SAMPLES,
     validate_sample_count(dense_samples, "dense_samples")
     main_keys = sample_keys(main_samples, seed)
     main_streams = [schedule_stream(key) for key in main_keys]
+    telescoping_checks = all(verify_telescoping_xor_identity(key) for key in main_keys)
+    if not telescoping_checks:
+        raise AssertionError("KS1 telescoping XOR identity failed")
     pair_rows, pair_summary = bit_pair_analysis(main_streams)
     io_rows = input_output_bit_dependencies(main_keys, main_streams)
     unit_rows = related_key_unit_deltas(main_keys, main_streams)
@@ -317,6 +355,11 @@ def analyze(main_samples: int = DEFAULT_MAIN_SAMPLES,
             "mutual_information": "empirical pairwise MI for binary output bits; estimates pairwise dependence only and has finite-sample bias",
         },
         "cross_round_and_output_bit_dependencies": pair_summary,
+        "exact_subkey_telescoping_identity": {
+            "verified_for_all_sampled_master_keys": telescoping_checks,
+            "identity": "XOR(K_0,...,K_r) = t_r XOR (master_key AND 0xFF)",
+            "interpretation": "Subkeys are successive XOR differences of the evolving low state byte t_r, with the original least-significant master-key byte as the initial term.",
+        },
         "master_key_to_round_key_bit_dependencies": {
             "matrix_dimensions": [32, 64],
             "rows": io_rows,
