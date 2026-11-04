@@ -248,7 +248,7 @@ def _linear_transition_hull(
     endpoint = max(best_abs, key=best_abs.__getitem__)
     cursor = endpoint
     trail_reversed = []
-    for round_index in range(ROUNDS - 1, -1, -1) if retain_parents else ():
+    for round_index in range(len(round_keys) - 1, -1, -1) if retain_parents else ():
         previous, alpha, signed_walsh = parents[round_index][cursor]
         beta = previous >> 8
         trail_reversed.append({
