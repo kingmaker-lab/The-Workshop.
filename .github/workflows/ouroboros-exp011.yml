@@ -1,5 +1,9 @@
 name: Ouroboros EXP-011
 
+concurrency:
+  group: ouroboros-exp011-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches: [exp-011-multiround-trail-search]
