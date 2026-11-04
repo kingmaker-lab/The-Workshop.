@@ -21,7 +21,7 @@ from typing import Any
 HERE = Path(__file__).resolve().parent
 EXP008 = HERE.parent / "008-reduced-feistel"
 sys.path.insert(0, str(EXP008))
-from feistel16 import KEY_MASK, ROUNDS, expand_key, permute8, rotl8, substitute8
+from feistel16 import KEY_MASK, ROUNDS, SBOX4, expand_key, permute8, rotl8, substitute8
 
 DEFAULT_SEED = 0x013_2026
 DEFAULT_MAIN_SAMPLES = 8192
@@ -78,6 +78,72 @@ def verify_telescoping_xor_identity(master_key: int) -> bool:
         if prefix_xor != (t_value ^ initial_low):
             return False
     return True
+
+
+INVERSE_SBOX4 = tuple(SBOX4.index(value) for value in range(16))
+
+
+def inverse_permute8(value: int) -> int:
+    value &= 0xFF
+    result = 0
+    from feistel16 import P8
+    for output_bit, input_bit in enumerate(P8):
+        result |= ((value >> output_bit) & 1) << input_bit
+    return result
+
+
+def inverse_substitute8(value: int) -> int:
+    value &= 0xFF
+    return (INVERSE_SBOX4[value >> 4] << 4) | INVERSE_SBOX4[value & 0x0F]
+
+
+def invert_internal_state_transition(next_state: int, round_index: int) -> int:
+    """Invert one KS1 state transition Q_(r+1) -> Q_r."""
+    if isinstance(next_state, bool) or not isinstance(next_state, int) or not 0 <= next_state <= KEY_MASK:
+        raise ValueError("next_state must be an unsigned 32-bit integer")
+    if isinstance(round_index, bool) or not isinstance(round_index, int) or not 0 <= round_index < ROUNDS:
+        raise ValueError("round_index must be in 0..7")
+    a_next = (next_state >> 24) & 0xFF
+    b_next = (next_state >> 16) & 0xFF
+    c_next = (next_state >> 8) & 0xFF
+    t = next_state & 0xFF
+    constant = (0x9D + 0x3D * round_index) & 0xFF
+    mixed = inverse_substitute8(inverse_permute8(t))
+    rotated_a = (mixed - a_next - rotl8(b_next, 1) - c_next - constant) & 0xFF
+    a = rotl8(rotated_a, 5)
+    return (a << 24) | (a_next << 16) | (b_next << 8) | c_next
+
+
+def recover_master_keys_from_schedule(round_keys: tuple[int, ...]) -> tuple[int, ...]:
+    """Recover every master key consistent with an eight-byte KS1 schedule.
+
+    Enumerate the original low master-key byte d0 (256 candidates), recover t0..t3
+    by prefix XOR, form Q4=(t0,t1,t2,t3), invert rounds 3..0, then verify all
+    eight emitted subkeys against the canonical EXP-008 schedule.
+    """
+    if not isinstance(round_keys, (tuple, list)) or len(round_keys) != ROUNDS:
+        raise ValueError("round_keys must contain exactly eight bytes")
+    if any(isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= 0xFF for value in round_keys):
+        raise ValueError("round_keys must contain only unsigned bytes")
+
+    candidates = []
+    for initial_low in range(256):
+        prefix_xor = 0
+        t_values = []
+        for round_index in range(4):
+            prefix_xor ^= round_keys[round_index]
+            t_values.append(prefix_xor ^ initial_low)
+        state = (
+            (t_values[0] << 24)
+            | (t_values[1] << 16)
+            | (t_values[2] << 8)
+            | t_values[3]
+        )
+        for round_index in range(3, -1, -1):
+            state = invert_internal_state_transition(state, round_index)
+        if expand_key(state) == tuple(round_keys):
+            candidates.append(state)
+    return tuple(sorted(set(candidates)))
 
 
 def schedule_stream(master_key: int) -> int:
@@ -315,6 +381,16 @@ def analyze(main_samples: int = DEFAULT_MAIN_SAMPLES,
     telescoping_checks = all(verify_telescoping_xor_identity(key) for key in main_keys)
     if not telescoping_checks:
         raise AssertionError("KS1 telescoping XOR identity failed")
+    recovery_keys = main_keys[:min(64, len(main_keys))]
+    recovery_candidate_counts = []
+    recovery_successes = 0
+    for key in recovery_keys:
+        candidates = recover_master_keys_from_schedule(expand_key(key))
+        recovery_candidate_counts.append(len(candidates))
+        if key in candidates:
+            recovery_successes += 1
+    if recovery_successes != len(recovery_keys):
+        raise AssertionError("KS1 schedule preimage recovery failed for a sampled master key")
     pair_rows, pair_summary = bit_pair_analysis(main_streams)
     io_rows = input_output_bit_dependencies(main_keys, main_streams)
     unit_rows = related_key_unit_deltas(main_keys, main_streams)
@@ -359,6 +435,17 @@ def analyze(main_samples: int = DEFAULT_MAIN_SAMPLES,
             "verified_for_all_sampled_master_keys": telescoping_checks,
             "identity": "XOR(K_0,...,K_r) = t_r XOR (master_key AND 0xFF)",
             "interpretation": "Subkeys are successive XOR differences of the evolving low state byte t_r, with the original least-significant master-key byte as the initial term.",
+        },
+        "schedule_preimage_recovery": {
+            "method": "Enumerate d0 (256 values), derive t0..t3 by prefix XOR, form Q4, invert KS1 transitions r=3..0, then verify all eight subkeys.",
+            "maximum_initial_byte_guesses": 256,
+            "validation_sample_count": len(recovery_keys),
+            "true_master_key_recovered_count": recovery_successes,
+            "all_validation_keys_recovered": recovery_successes == len(recovery_keys),
+            "mean_valid_candidates_per_schedule": statistics.mean(recovery_candidate_counts),
+            "maximum_valid_candidates_per_schedule": max(recovery_candidate_counts),
+            "minimum_valid_candidates_per_schedule": min(recovery_candidate_counts),
+            "interpretation": "This tests recovery from a fully known eight-byte round-key schedule. It is not a ciphertext-only attack and does not claim the round keys are normally exposed.",
         },
         "master_key_to_round_key_bit_dependencies": {
             "matrix_dimensions": [32, 64],
