@@ -8,7 +8,7 @@ from pathlib import Path
 from dependency_analysis import (
     analyze, bit_pair_analysis, dense_byte_delta_scan, joint_metrics,
     output_bitplanes, sample_keys, save_results, schedule_stream, verify_telescoping_xor_identity,
-    invert_internal_state_transition, recover_master_keys_from_schedule,
+    invert_internal_state_transition, recover_master_keys_from_schedule, internal_t_sequence, expand_key,
 )
 
 
