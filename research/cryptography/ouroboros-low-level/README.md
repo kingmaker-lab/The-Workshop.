@@ -182,3 +182,10 @@ O [EXP-010](./experiments/010-feistel-trail-analysis/README.md) mede por enumera
 ## Roadmap de encerramento: EXP-011 a EXP-015
 
 A série de experimentos exploratórios será encerrada no EXP-014. O EXP-015 marca o congelamento da pesquisa e a transição para provas de funcionalidade, regressão, conformidade entre implementações e validação de build. Os planos dos EXP-012 a EXP-014 estão descritos no [roadmap](./ROADMAP_EXP011_015.md); eles ainda não representam resultados executados.
+
+
+## Experimento 012 — análise do key schedule KS1
+
+O [EXP-012](./experiments/012-key-schedule-analysis/README.md) analisa a expansão de chave do EXP-008 sem modificar seu desenho: influência de diferenças relacionadas, estatísticas por subchave, equilíbrio/correlação entre bits do fluxo de 64 bits e colisões observadas na amostra determinística. O estudo também verifica a propriedade estrutural de bijeção da transição de estado interno quando três bytes são fixados.
+
+**Limite:** o espaço de chaves de 32 bits não é enumerado integralmente. Ausência de colisão na amostra não prova injetividade do fluxo emitido nem ausência de chaves equivalentes.
