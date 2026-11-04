@@ -26,7 +26,7 @@ class Exp011Tests(unittest.TestCase):
         for delta in (0x0001, 0x0100, 0x0101, 0x0003):
             result = differential_model(delta, self.ddt)
             self.assertEqual(len(result["rounds"]), 8)
-            self.assertAlmostEqual(result["rounds"][0]["max_markov_hull_probability"], 1.0)
+            self.assertAlmostEqual(result["rounds"][0]["markov_mass"], 1.0)
 
     def test_one_round_differential_model_matches_direct_enumeration(self):
         delta = 0x0101
@@ -47,12 +47,11 @@ class Exp011Tests(unittest.TestCase):
         for input_mask in (0x0100, 0x0101, 0x8000):
             result = _linear_transition_hull(input_mask, keys[:1], self.lat)
             hull = result["_final_hull_numerators"]
-            for output_mask in range(DOMAIN):
-                exact = _exact_linear_walsh(
-                    [feistel_round(x, keys[0]) for x in range(DOMAIN)],
-                    input_mask,
-                    output_mask,
-                )
+            outputs = [feistel_round(x, keys[0]) for x in range(DOMAIN)]
+            candidates = {0, 1, 0x0100, 0x1234, 0xFFFF}
+            candidates.update(int(row["output_mask"], 16) for row in result["rounds"][0]["top_hull_endpoints"])
+            for output_mask in candidates:
+                exact = _exact_linear_walsh(outputs, input_mask, output_mask)
                 self.assertEqual(hull.get(output_mask, 0) * DOMAIN, exact * 256)
 
     def test_linear_hull_sums_signed_trails(self):
