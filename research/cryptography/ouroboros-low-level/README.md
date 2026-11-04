@@ -189,3 +189,10 @@ A série de experimentos exploratórios será encerrada no EXP-014. O EXP-015 ma
 O [EXP-012](./experiments/012-key-schedule-analysis/README.md) analisa a expansão de chave do EXP-008 sem modificar seu desenho: influência de diferenças relacionadas, estatísticas por subchave, equilíbrio/correlação entre bits do fluxo de 64 bits e colisões observadas na amostra determinística. O estudo também verifica a propriedade estrutural de bijeção da transição de estado interno quando três bytes são fixados.
 
 **Limite:** o espaço de chaves de 32 bits não é enumerado integralmente. Ausência de colisão na amostra não prova injetividade do fluxo emitido nem ausência de chaves equivalentes.
+
+
+## Experimento 013 — dependências related-key e entre rodadas
+
+O [EXP-013](./experiments/013-related-key-dependency-analysis/README.md) investiga a hipótese levantada no EXP-012: dependências entre bits de subchaves emitidas em rodadas diferentes e padrões sistemáticos de baixa difusão sob chaves relacionadas. A campanha mede os 2.016 pares de bits do fluxo de subchaves, a matriz de influência master-key-bit → subkey-bit e todos os 1.020 deltas não nulos que alteram um byte da chave mestra por vez, usando amostras determinísticas separadas e declaradas.
+
+**Limite:** não enumera o espaço completo de (2^{32}) chaves mestras. Correlação e informação mútua empíricas são diagnósticos por pares, não prova de dependência estrutural nem teste de segurança.
