@@ -369,7 +369,9 @@ def run_campaign(
                 key_report["observed_differentials"].append(row)
 
         for input_mask in linear_starts:
-            result = _linear_transition_hull(\n                input_mask, round_keys, lat, retain_parents=(input_mask == LINEAR_START_MASKS[0])\n            )
+            result = _linear_transition_hull(
+                input_mask, round_keys, lat, retain_parents=(input_mask == LINEAR_START_MASKS[0])
+            )
             hull = result["_final_hull_numerators"]
             key_report["linear_hulls"].append({
                 "input_mask": result["input_mask"],
