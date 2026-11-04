@@ -12,7 +12,7 @@ A decisão de projeto é encerrar a série de experimentos exploratórios no EXP
 | EXP-011 | Trilhas diferenciais, estimativas Markov, observações de chave fixa, linear trails e hulls | Implementado; CI final aprovado |
 | EXP-012 | Caracterização de KS1: difusão entre subchaves, chaves equivalentes/fracas e relações entre chaves | Implementado; CI aprovado |
 | EXP-013 | Dependências entre subchaves de rodadas, difusão related-key e varredura densa de deltas de byte | Implementado; testes e campanha do job CI aprovados |
-| EXP-014 | Consolidação de resultados, reprodutibilidade, vetores de referência e confronto das implementações disponíveis | Em execução nesta branch |
+| EXP-014 | Consolidação de resultados, reprodutibilidade, vetores de referência e confronto das implementações disponíveis | Concluído; CI verde, 327.680 blocos comparados e regressão 008–013 aprovada |
 | EXP-015 | Congelamento da fase exploratória e início das provas de funcionalidade | Marco de transição |
 
 ## EXP-012 — Key schedule sob análise
