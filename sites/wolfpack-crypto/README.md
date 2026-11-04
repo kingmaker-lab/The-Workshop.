@@ -76,3 +76,13 @@ As cinco entradas também aparecem na página inicial e no arquivo de experiment
 - A página continua em Cloudflare Pages Advanced Mode; o upload de preview/produção usa o campo `_worker.js` do projeto `wolfpack-crypto`.
 - Deployment de produção anterior, preservado como rollback: `647b3b38-a68e-4a66-a693-098edaa40972`.
 - Não confundir o estado Assembly de 64 bits com a cifra Feistel de 16 bits EXP-008.
+
+
+### Deployment de produção — EXP-010 a EXP-014 (2026-11-04)
+
+- **Produção ativa:** `c90c331a-c4c4-4fee-a435-89cd03c6bed8` — `https://c90c331a.wolfpack-crypto.pages.dev` — estado final `deploy: success`.
+- **Commit de origem:** `1bceca5301b50c75de44fe9ed90ab6e4a75ec3cd` (merge PR #32).
+- **Rollback preservado:** `647b3b38-a68e-4a66-a693-098edaa40972` — deployment anterior de produção.
+- **CI no main:** [Crypto Lab smoke tests](https://github.com/kingmaker-lab/The-Workshop./actions/runs/41872649729) e [gate de artefatos Pages](https://github.com/kingmaker-lab/The-Workshop./actions/runs/41872648680), ambos concluídos com sucesso.
+
+A versão pública inclui as rotas EXP-010 a EXP-014, os cartões na página inicial e no arquivo, e preserva as páginas existentes, o Low Level, o playground, os assets compartilhados e os cabeçalhos de segurança.
