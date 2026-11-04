@@ -41,6 +41,28 @@ const archive = await (await get("/experimentos/")).text();
 for (const [path] of newRoutes) assert.ok(archive.includes(path));
 assert.ok(archive.includes("EXP / 009"));
 
+const gridMatch = archive.match(/<div class="experiment-grid">([\\s\\S]*?)<\\/div><section class="section" id="research-007">/);
+assert.ok(gridMatch, "experiment archive grid boundary missing");
+const cardTags = gridMatch[1].match(/<\\/?article\\b[^>]*>/g) || [];
+let articleDepth = 0;
+let articleCount = 0;
+for (const tag of cardTags) {
+  if (tag.startsWith("</")) {
+    articleDepth -= 1;
+    assert.equal(articleDepth, 0, "experiment cards must not be nested");
+  } else {
+    assert.equal(articleDepth, 0, "each experiment card must be a direct grid child");
+    articleDepth += 1;
+    articleCount += 1;
+  }
+}
+assert.equal(articleDepth, 0, "all experiment cards must be closed");
+assert.equal(articleCount, 14, "archive must render fourteen sibling cards");
+
+const stylesheet = await (await get("/assets/style.css")).text();
+assert.ok(stylesheet.includes(".experiment-grid{grid-template-columns:repeat(2"), "desktop/tablet experiment grid layout missing");
+assert.ok(stylesheet.includes("@media(max-width:620px){.experiment-grid{grid-template-columns:1fr}"), "mobile single-column experiment layout missing");
+
 const extensionless = await get("/experimentos/014");
 assert.equal(extensionless.status, 200);
 const css = await get("/assets/style.css");
