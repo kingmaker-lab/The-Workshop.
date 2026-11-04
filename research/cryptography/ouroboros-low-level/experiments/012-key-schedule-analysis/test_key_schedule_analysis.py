@@ -9,8 +9,8 @@ sys.path.insert(0, str(EXP008))
 
 from feistel16 import KEY_MASK, ROUNDS, expand_key
 from key_schedule_analysis import (
-    analyze, deterministic_keys, expand_key_reference, ks1_transition,
-    round_constant, save_results,
+    analyze, deterministic_keys, expand_key_reference, invert_ks1_transition,
+    ks1_transition, round_constant, save_results,
 )
 
 
@@ -40,6 +40,13 @@ class Exp012Tests(unittest.TestCase):
                     key_bytes.add(round_key)
                 self.assertEqual(len(outputs), 256)
                 self.assertEqual(len(key_bytes), 256)
+
+    def test_internal_state_transition_has_exact_inverse(self):
+        contexts = (0, 0x12345678, 0x89ABCDEF, KEY_MASK)
+        for state in contexts:
+            for round_index in range(ROUNDS):
+                next_state, _ = ks1_transition(state, round_index)
+                self.assertEqual(invert_ks1_transition(next_state, round_index), state)
 
     def test_transition_matches_next_state_bytes(self):
         state = 0x12345678
