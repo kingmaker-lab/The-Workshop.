@@ -1,0 +1,38 @@
+name: Ouroboros EXP-010
+
+on:
+  push:
+    branches: [exp-010-feistel-trail-analysis]
+    paths:
+      - 'research/cryptography/ouroboros-low-level/experiments/008-reduced-feistel/**'
+      - 'research/cryptography/ouroboros-low-level/experiments/010-feistel-trail-analysis/**'
+      - '.github/workflows/ouroboros-exp010.yml'
+  pull_request:
+    paths:
+      - 'research/cryptography/ouroboros-low-level/experiments/008-reduced-feistel/**'
+      - 'research/cryptography/ouroboros-low-level/experiments/010-feistel-trail-analysis/**'
+      - '.github/workflows/ouroboros-exp010.yml'
+  workflow_dispatch:
+
+jobs:
+  exhaustive-feistel-prefix-analysis:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: research/cryptography/ouroboros-low-level/experiments/010-feistel-trail-analysis
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile experiment sources
+        run: python -m py_compile feistel_trails.py test_feistel_trails.py
+      - name: Run tests
+        run: python -m unittest -v
+      - name: Generate exhaustive prefix metrics
+        run: python feistel_trails.py --output results
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: ouroboros-exp010-prefix-analysis
+          path: research/cryptography/ouroboros-low-level/experiments/010-feistel-trail-analysis/results/
