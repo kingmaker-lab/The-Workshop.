@@ -310,7 +310,9 @@ def run_campaign(
 ) -> dict[str, Any]:
     ddt, lat = build_round_tables()
     differential_models = {
-        delta: differential_model(delta, ddt)
+        delta: differential_model(
+            delta, ddt, retain_hulls=(delta in observed_starts), retain_parents=(delta == 0x0001)
+        )
         for delta in differential_starts
     }
 
