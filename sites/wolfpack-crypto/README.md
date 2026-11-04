@@ -86,3 +86,15 @@ As cinco entradas também aparecem na página inicial e no arquivo de experiment
 - **CI no main:** [Crypto Lab smoke tests](https://github.com/kingmaker-lab/The-Workshop./actions/runs/41872649729) e [gate de artefatos Pages](https://github.com/kingmaker-lab/The-Workshop./actions/runs/41872648680), ambos concluídos com sucesso.
 
 A versão pública inclui as rotas EXP-010 a EXP-014, os cartões na página inicial e no arquivo, e preserva as páginas existentes, o Low Level, o playground, os assets compartilhados e os cabeçalhos de segurança.
+
+
+### Hotfix visual — grade dos experimentos (2026-11-04)
+
+- **Correção:** EXP-010 a EXP-014 agora são cards irmãos do EXP-001 a EXP-009 dentro da mesma `.experiment-grid`. O link e o `article` do EXP-009 são fechados antes da inserção; a grade é fechada somente depois do EXP-014.
+- **CSS:** regras responsivas originais preservadas; nenhuma alteração no estilo geral, no Low Level ou nos playgrounds.
+- **PR:** [#33 — Fix Crypto Lab experiment archive grid layout](https://github.com/kingmaker-lab/The-Workshop./pull/33).
+- **Commit de integração:** `826a0e13e7bdb24dfc59c40a973e7d726666b4e4`.
+- **Produção corrigida:** `5321703c-43f2-4b4a-bf33-84f528876237` — `deploy: success`.
+- **Deployment anterior imediato (rollback):** `c90c331a-c4c4-4fee-a435-89cd03c6bed8`.
+
+O smoke test foi ampliado para conferir 14 cards independentes e as regras do grid responsivo. O runner do GitHub Actions estava aguardando alocação durante o hotfix; não marcar execução pendente como aprovada.
