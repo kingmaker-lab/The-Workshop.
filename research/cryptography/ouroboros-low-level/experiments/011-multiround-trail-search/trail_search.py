@@ -90,6 +90,7 @@ def differential_model(start_delta: int, ddt: list[list[int]]) -> dict[str, Any]
     hull[start_delta] = best[start_delta] = 1
     parents: list[dict[int, tuple[int, int]]] = []
     rounds = []
+    hulls_by_round: list[list[int]] = []
 
     for round_number in range(1, ROUNDS + 1):
         next_hull = [0] * DOMAIN
@@ -113,6 +114,7 @@ def differential_model(start_delta: int, ddt: list[list[int]]) -> dict[str, Any]
         if sum(next_hull) != 256 * sum(hull):
             raise AssertionError("Differential Markov mass was not conserved")
         hull, best = next_hull, next_best
+        hulls_by_round.append(hull.copy())
         parents.append(parent)
 
         denominator = 256 ** round_number
@@ -124,6 +126,7 @@ def differential_model(start_delta: int, ddt: list[list[int]]) -> dict[str, Any]
         rounds.append({
             "rounds": round_number,
             "reachable_output_differences": sum(value != 0 for value in hull),
+            "markov_mass": sum(hull) / denominator,
             "max_markov_hull_probability": max(hull) / denominator,
             "max_single_trail_probability": max(best) / denominator,
             "top_markov_hull_endpoints": [
@@ -152,6 +155,7 @@ def differential_model(start_delta: int, ddt: list[list[int]]) -> dict[str, Any]
     return {
         "input_delta": f"0x{start_delta:04X}",
         "rounds": rounds,
+        "_hulls_by_round": hulls_by_round,
         "best_eight_round_trail": {
             "output_delta": f"0x{endpoint:04X}",
             "probability": best[endpoint] / (256 ** ROUNDS),
@@ -181,6 +185,7 @@ def _linear_transition_hull(
     best_signed: dict[int, int] = {start_mask: 1}
     parents: list[dict[int, tuple[int, int, int]]] = []
     per_round = []
+    hulls_by_round: list[dict[int, int]] = []
 
     nonzero_alpha_by_beta = [
         [alpha for alpha in range(256) if lat[alpha][beta]]
@@ -209,6 +214,7 @@ def _linear_transition_hull(
                     parent[destination] = (state, alpha, signed_walsh)
 
         hull, best_abs, best_signed = next_hull, next_best_abs, next_best_signed
+        hulls_by_round.append(hull.copy())
         parents.append(parent)
         denominator = 256 ** round_number
         ranked = sorted(
@@ -251,6 +257,7 @@ def _linear_transition_hull(
     return {
         "input_mask": f"0x{start_mask:04X}",
         "rounds": per_round,
+        "_hulls_by_round": hulls_by_round,
         "best_eight_round_trail": {
             "output_mask": f"0x{endpoint:04X}",
             "signed_correlation": best_signed[endpoint] / (256 ** ROUNDS),
@@ -333,11 +340,7 @@ def run_campaign(
             for round_index, outputs in enumerate(output_snapshots, start=1):
                 histogram = _observed_differential_histogram(outputs, delta)
                 denominator = 256 ** round_index
-                predicted = model["_hulls_by_round"][round_index - 1] if "_hulls_by_round" in model else None
-                if predicted is None:
-                    # The public differential_model output retains only the final hull;
-                    # recompute the per-prefix Markov distributions for the selected starts.
-                    raise AssertionError("Internal per-round hull distributions were not retained")
+                predicted = model["_hulls_by_round"][round_index - 1]
                 tv = 0.0
                 for output_delta in range(DOMAIN):
                     actual_probability = histogram.get(output_delta, 0) / DOMAIN
@@ -375,15 +378,15 @@ def run_campaign(
             # Independently verify the strongest predicted hull endpoints at every prefix.
             input_planes = _pack_bitplanes(list(range(DOMAIN)))
             input_plane = _mask_plane(input_mask, input_planes)
+            output_planes_by_round = [_pack_bitplanes(outputs) for outputs in output_snapshots]
             for round_index, outputs in enumerate(output_snapshots, start=1):
-                output_planes = _pack_bitplanes(outputs)
+                output_planes = output_planes_by_round[round_index - 1]
                 # Verify all highest-magnitude hull endpoints from this prefix.
                 endpoints = result["rounds"][round_index - 1]["top_hull_endpoints"]
                 numerator_hull = None
                 # Re-run the sparse hull for each prefix so the exact numerator is available.
                 # The prefix hull recurrence is intentionally small for this 16-bit design.
-                prefix = _linear_transition_hull(input_mask, round_keys[:round_index], lat)
-                prefix_hull = prefix["_final_hull_numerators"]
+                prefix_hull = result["_hulls_by_round"][round_index - 1]
                 for endpoint_data in endpoints:
                     output_mask = int(endpoint_data["output_mask"], 16)
                     output_plane = _mask_plane(output_mask, output_planes)
