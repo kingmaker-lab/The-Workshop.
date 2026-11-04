@@ -1,0 +1,39 @@
+name: Ouroboros EXP-011
+
+on:
+  push:
+    branches: [exp-011-multiround-trail-search]
+    paths:
+      - 'research/cryptography/ouroboros-low-level/experiments/008-reduced-feistel/**'
+      - 'research/cryptography/ouroboros-low-level/experiments/011-multiround-trail-search/**'
+      - '.github/workflows/ouroboros-exp011.yml'
+  pull_request:
+    paths:
+      - 'research/cryptography/ouroboros-low-level/experiments/008-reduced-feistel/**'
+      - 'research/cryptography/ouroboros-low-level/experiments/011-multiround-trail-search/**'
+      - '.github/workflows/ouroboros-exp011.yml'
+  workflow_dispatch:
+
+jobs:
+  trail-search-and-hull-verification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: research/cryptography/ouroboros-low-level/experiments/011-multiround-trail-search
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile experiment sources
+        run: python -m py_compile trail_search.py test_trail_search.py
+      - name: Run mathematical and regression tests
+        run: python -m unittest -v
+      - name: Execute differential trail and linear hull campaign
+        run: python trail_search.py --output results
+      - name: Upload full analysis results
+        uses: actions/upload-artifact@v4
+        with:
+          name: ouroboros-exp011-trails-hulls
+          path: research/cryptography/ouroboros-low-level/experiments/011-multiround-trail-search/results/
