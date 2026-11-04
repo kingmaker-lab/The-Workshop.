@@ -89,7 +89,7 @@ Potential warning signals:
 
 A single extreme in one finite sample is only a lead. Follow-up should repeat the measurements using independent seeds/sample sizes and compare with an appropriate finite-sample baseline before calling it a systematic dependency.
 
-A low Hamming-distance response is not itself a practical key-recovery attack. To claim an exploitable related-key weakness, an attacker model and an actual distinguishing or key-recovery result would be required.
+A low Hamming-distance response is not itself a practical key-recovery attack. The bounded schedule-preimage procedure assumes the complete internal eight-byte round-key stream is already exposed; it is not a ciphertext-only attack. Any exploitability claim still requires an explicit attacker model.
 
 ## 7. Reproduction
 
@@ -122,7 +122,7 @@ python3 dependency_analysis.py --samples 16384 --dense-samples 2048 --seed 0xC0F
 - Pairwise Pearson correlation and mutual information do not capture all higher-order dependencies.
 - Empirical mutual information has finite-sample bias.
 - The dense delta scan is exhaustive only over one-byte delta values and positions, evaluated on a deterministic key sample.
-- No master-key recovery, practical related-key distinguisher, or full-domain equivalent-key classification is claimed.
+- No ciphertext-only master-key recovery, practical related-key distinguisher, or full-domain equivalent-key classification is claimed. A separate bounded recovery from a fully known eight-byte round-key schedule is implemented and validated on a finite sample.
 - Results apply only to EXP-008 KS1 and the toy Feistel cipher. They do not apply to the separate 64-bit Assembly state transition or SHA-256.
 
 **Decision:** EXP-013 is designed to either support or weaken the specific dependency/low-diffusion hypothesis raised by EXP-012. Any warning must reproduce before it is classified as structural.
