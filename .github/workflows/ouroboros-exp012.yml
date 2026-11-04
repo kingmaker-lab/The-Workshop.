@@ -1,0 +1,43 @@
+name: Ouroboros EXP-012
+
+concurrency:
+  group: ouroboros-exp012-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: [exp-012-key-schedule-analysis]
+    paths:
+      - 'research/cryptography/ouroboros-low-level/experiments/008-reduced-feistel/**'
+      - 'research/cryptography/ouroboros-low-level/experiments/012-key-schedule-analysis/**'
+      - '.github/workflows/ouroboros-exp012.yml'
+  pull_request:
+    paths:
+      - 'research/cryptography/ouroboros-low-level/experiments/008-reduced-feistel/**'
+      - 'research/cryptography/ouroboros-low-level/experiments/012-key-schedule-analysis/**'
+      - '.github/workflows/ouroboros-exp012.yml'
+  workflow_dispatch:
+
+jobs:
+  ks1-analysis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: research/cryptography/ouroboros-low-level/experiments/012-key-schedule-analysis
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile sources
+        run: python -m py_compile key_schedule_analysis.py test_key_schedule_analysis.py
+      - name: Run structural and regression tests
+        run: python -m unittest -v
+      - name: Run deterministic KS1 campaign
+        run: python key_schedule_analysis.py --samples 8192 --seed 0x0123456 --output results
+      - name: Upload KS1 results
+        uses: actions/upload-artifact@v4
+        with:
+          name: ouroboros-exp012-ks1-analysis
+          path: research/cryptography/ouroboros-low-level/experiments/012-key-schedule-analysis/results/
