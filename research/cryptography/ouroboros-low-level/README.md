@@ -177,3 +177,8 @@ O [EXP-010](./experiments/010-feistel-trail-analysis/README.md) mede por enumera
 - Inclui testes de reversibilidade, permutação do domínio completo e métricas-âncora.
 
 **Limite:** não é DDT/LAT completa de 16 bits, não cobre diferenças/máscaras de peso maior e não constitui prova de segurança.
+
+
+## Roadmap de encerramento: EXP-011 a EXP-015
+
+A série de experimentos exploratórios será encerrada no EXP-014. O EXP-015 marca o congelamento da pesquisa e a transição para provas de funcionalidade, regressão, conformidade entre implementações e validação de build. Os planos dos EXP-012 a EXP-014 estão descritos no [roadmap](./ROADMAP_EXP011_015.md); eles ainda não representam resultados executados.
