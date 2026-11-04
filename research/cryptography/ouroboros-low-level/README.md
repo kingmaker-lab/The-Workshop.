@@ -163,3 +163,17 @@ O [EXP-009](./experiments/009-round-function-analysis/README.md) executa a DDT c
 - O harness exporta DDT/LAT completas em CSV e verifica as invariâncias de subchave.
 
 **Conclusão:** a camada de rodada possui relações diferenciais e lineares fortes. A investigação seguinte deve modelar trilhas e hulls através da composição Feistel.
+
+
+---
+
+## Experimento 010 — propagação diferencial e linear na rede Feistel
+
+O [EXP-010](./experiments/010-feistel-trail-analysis/README.md) mede por enumeração exata como diferenças de entrada de um bit e aproximações lineares de máscaras unitárias se propagam nos prefixos de 1 a 8 rodadas da cifra reduzida EXP-008.
+
+- Três chaves mestras de referência: 0x01234567, 0x00000000 e 0xFFFFFFFF.
+- 524.288 pares diferenciais por chave e prefixo de rodada.
+- Fatia LAT exata de 16 × 16 máscaras de peso 1 por chave e prefixo.
+- Inclui testes de reversibilidade, permutação do domínio completo e métricas-âncora.
+
+**Limite:** não é DDT/LAT completa de 16 bits, não cobre diferenças/máscaras de peso maior e não constitui prova de segurança.
