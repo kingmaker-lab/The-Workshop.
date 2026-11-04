@@ -336,6 +336,9 @@ def run_campaign(
             states = [feistel_round(state, round_key) for state in states]
             output_snapshots.append(states.copy())
 
+        input_basis_planes = _pack_bitplanes(list(range(DOMAIN)))
+        output_planes_by_round = [_pack_bitplanes(outputs) for outputs in output_snapshots]
+
         key_report = {
             "master_key": f"0x{master_key:08X}",
             "round_keys": [f"0x{value:02X}" for value in round_keys],
@@ -377,7 +380,7 @@ def run_campaign(
 
         for input_mask in linear_starts:
             result = _linear_transition_hull(
-                input_mask, round_keys, lat, retain_parents=(input_mask == LINEAR_START_MASKS[0])
+                input_mask, round_keys, lat, retain_parents=True
             )
             hull = result["_final_hull_numerators"]
             key_report["linear_hulls"].append({
@@ -387,9 +390,7 @@ def run_campaign(
             })
 
             # Independently verify the strongest predicted hull endpoints at every prefix.
-            input_planes = _pack_bitplanes(list(range(DOMAIN)))
-            input_plane = _mask_plane(input_mask, input_planes)
-            output_planes_by_round = [_pack_bitplanes(outputs) for outputs in output_snapshots]
+            input_plane = _mask_plane(input_mask, input_basis_planes)
             for round_index, outputs in enumerate(output_snapshots, start=1):
                 output_planes = output_planes_by_round[round_index - 1]
                 # Verify all highest-magnitude hull endpoints from this prefix.
