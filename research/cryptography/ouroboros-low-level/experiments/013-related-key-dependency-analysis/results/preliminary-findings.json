@@ -1,0 +1,85 @@
+{
+  "experiment": "OUROBOROS-013",
+  "target": "EXP-008 KS1 master-key to eight-byte round-key schedule",
+  "interpretation": "The exact telescoping relation and bounded recovery from a fully known subkey stream are confirmed. The two sampled campaigns do not show strong pairwise output-bit dependencies or a severe low-Hamming related-key delta in the tested byte-delta family.",
+  "official_github_actions_run": {
+    "run_id": 41866216801,
+    "head_sha": "0fe0716830254c3f0f2033f06d6f2a88ba1b5165",
+    "job_conclusion": "success",
+    "artifact_id": 13341978401,
+    "main_sample_count": 8192,
+    "dense_delta_sample_count": 1024,
+    "seed": "0x0132026",
+    "exact_telescoping_identity_verified_for_all_sampled_keys": true,
+    "complete_schedule_preimage_recovery": {
+      "samples": 64,
+      "true_keys_recovered": 64,
+      "unique_candidate_count_min": 1,
+      "unique_candidate_count_max": 1,
+      "maximum_initial_byte_guesses": 256
+    },
+    "cross_round_output_bit_dependencies": {
+      "pairs": 1792,
+      "mean_absolute_pearson": 0.008999851615758487,
+      "max_absolute_pearson": 0.04224695068855004,
+      "mean_mutual_information_bits": 0.000091439684,
+      "max_mutual_information_bits": 0.0012878485721377047
+    },
+    "master_key_bit_to_output_bit": {
+      "cells": 2048,
+      "max_absolute_pearson": 0.039811998736312096,
+      "max_mutual_information_bits": 0.0011436356481931143
+    },
+    "related_key_unit_delta_mean_hamming": 30.775718688964844,
+    "dense_byte_delta_scan": {
+      "deltas": 1020,
+      "overall_mean_of_delta_mean_hamming": 31.979013480392158,
+      "minimum_delta_mean_hamming": 29.3662109375,
+      "minimum_delta": "0x00004800",
+      "maximum_delta_mean_hamming": 33.7109375,
+      "maximum_delta": "0x00880000"
+    }
+  },
+  "independent_second_seed_replication": {
+    "main_sample_count": 8192,
+    "dense_delta_sample_count": 1024,
+    "seed": "0xC0FFEE",
+    "exact_telescoping_identity_verified_for_all_sampled_keys": true,
+    "complete_schedule_preimage_recovery": {
+      "samples": 64,
+      "true_keys_recovered": 64,
+      "unique_candidate_count_min": 1,
+      "unique_candidate_count_max": 1,
+      "maximum_initial_byte_guesses": 256
+    },
+    "cross_round_output_bit_dependencies": {
+      "pairs": 1792,
+      "mean_absolute_pearson": 0.008536237499070674,
+      "max_absolute_pearson": 0.042750130061802304,
+      "mean_mutual_information_bits": 0.000083381834,
+      "max_mutual_information_bits": 0.0013187194684452334
+    },
+    "master_key_bit_to_output_bit": {
+      "cells": 2048,
+      "max_absolute_pearson": 0.03932853755039571,
+      "max_mutual_information_bits": 0.0011160217241374323
+    },
+    "related_key_unit_delta_mean_hamming": 30.79421615600586,
+    "dense_byte_delta_scan": {
+      "deltas": 1020,
+      "overall_mean_of_delta_mean_hamming": 31.982998238357844,
+      "minimum_delta_mean_hamming": 29.2421875,
+      "minimum_delta": "0x00004800",
+      "maximum_delta_mean_hamming": 33.732421875,
+      "maximum_delta": "0x00004100"
+    },
+    "execution_note": "Independent reference implementation of the documented KS1 recurrence; not a second GitHub Actions artifact."
+  },
+  "limits": [
+    "No exhaustive enumeration of all 2^32 master keys.",
+    "Pairwise Pearson correlation and mutual information do not test higher-order independence.",
+    "Mutual information is an empirical finite-sample estimate with positive bias.",
+    "Dense delta coverage is exhaustive only for one-byte nonzero deltas at each of four byte positions, over sampled base keys.",
+    "The 256-guess recovery assumes the complete eight-byte internal round-key schedule is known. It is not a ciphertext-only attack."
+  ]
+}
