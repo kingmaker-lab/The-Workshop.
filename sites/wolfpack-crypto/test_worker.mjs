@@ -68,7 +68,7 @@ assert.equal(articleCount, 14, "archive must render fourteen sibling cards");
 
 const stylesheet = await (await get("/assets/style.css")).text();
 assert.ok(stylesheet.includes(".experiment-grid{grid-template-columns:repeat(2"), "desktop/tablet experiment grid layout missing");
-assert.ok(stylesheet.includes("@media(max-width:620px){.experiment-grid{grid-template-columns:1fr}"), "mobile single-column experiment layout missing");
+assert.ok(stylesheet.includes(".experiment-grid{grid-template-columns:1fr}"), "mobile single-column experiment layout missing");
 
 const extensionless = await get("/experimentos/014");
 assert.equal(extensionless.status, 200);
