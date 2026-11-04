@@ -43,7 +43,7 @@ Thus, for fixed (b,c,d), both (a\mapsto t_r) and (a\mapsto K_r) are permutations
 
 This proof concerns the internal 32-bit state transition. It does **not** prove that the emitted 64-bit round-key stream uniquely identifies the original 32-bit master key, nor does it establish cryptographic security.
 
-The tests verify the fixed-context property computationally for representative contexts and every round constant.
+The tests verify the fixed-context property computationally for representative contexts and every round constant. The analyzer also implements the exact inverse transition: undo P8, invert the parallel S-box, subtract the fixed modular addends, and apply ROTL8 by five (the inverse of ROTL8 by three). Round-trip tests check representative 32-bit states across all eight round constants.
 
 ## 3. Measurement campaign
 
