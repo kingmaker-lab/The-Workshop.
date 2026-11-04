@@ -144,7 +144,7 @@ def differential_model(
     endpoint = max(range(DOMAIN), key=best.__getitem__)
     cursor = endpoint
     trail_reversed = []
-    for round_index in range(len(round_keys) - 1, -1, -1) if retain_parents else ():
+    for round_index in range(ROUNDS - 1, -1, -1) if retain_parents else ():
         previous, gamma = parents[round_index][cursor]
         trail_reversed.append({
             "round": round_index + 1,
