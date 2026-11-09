@@ -15,8 +15,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Sua jornada começa aqui.'), findsOneWidget);
-    expect(find.text('Lógica de programação'), findsOneWidget);
     expect(find.text('Nível 1 • Explorador'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Lógica de programação'), 250,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Lógica de programação'), findsOneWidget);
     expect(find.text('Conquistas'), findsOneWidget);
     await tester.scrollUntilVisible(
       find.text('Caça aos bugs'), 250,
