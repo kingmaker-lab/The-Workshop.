@@ -16,6 +16,12 @@ void main() {
 
     expect(find.text('Sua jornada começa aqui.'), findsOneWidget);
     expect(find.text('Lógica de programação'), findsOneWidget);
+    expect(find.text('Nível 1 • Explorador'), findsOneWidget);
+    expect(find.text('Conquistas'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Caça aos bugs'), 250,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Caça aos bugs'), findsOneWidget);
     expect(find.text('0 XP'), findsOneWidget);
   });
@@ -24,6 +30,10 @@ void main() {
     await tester.pumpWidget(const WolfpackAcademyApp());
     await tester.pumpAndSettle();
 
+    await tester.scrollUntilVisible(
+      find.text('Lógica de programação'), 250,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('Lógica de programação'));
     await tester.pumpAndSettle();
 
@@ -41,6 +51,10 @@ void main() {
     await tester.pumpWidget(const WolfpackAcademyApp());
     await tester.pumpAndSettle();
 
+    await tester.scrollUntilVisible(
+      find.text('Lógica de programação'), 250,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('Lógica de programação'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Booleanos'));
