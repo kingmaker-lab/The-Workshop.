@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'progression.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -387,7 +388,10 @@ class _AcademyHomeState extends State<AcademyHome> {
       final prefs = await SharedPreferences.getInstance();
       if (!mounted) return;
       setState(() {
-        _completed = (prefs.getStringList(progressKey) ?? <String>[]).toSet();
+        _completed = AcademyProgress(
+          prefs.getStringList(progressKey) ?? <String>[],
+          missions.map((mission) => mission.id),
+        ).completed;
         _loading = false;
       });
     } catch (_) {
@@ -410,7 +414,8 @@ class _AcademyHomeState extends State<AcademyHome> {
 
   @override
   Widget build(BuildContext context) {
-    final completedCount = _completed.length;
+    final progress = AcademyProgress(_completed, missions.map((m) => m.id));
+    final completedCount = progress.completedCount;
     final missionCount = missions.length;
     final fraction = missionCount == 0 ? 0.0 : completedCount / missionCount;
 
@@ -471,7 +476,7 @@ class _AcademyHomeState extends State<AcademyHome> {
                             const Icon(Icons.bolt, size: 20,
                               color: WolfpackAcademyApp.accent),
                             const SizedBox(width: 6),
-                            Text('${completedCount * 100} XP',
+                            Text('${progress.xp} XP',
                               style: const TextStyle(fontSize: 19,
                                 fontWeight: FontWeight.bold)),
                             const Spacer(),
@@ -489,6 +494,8 @@ class _AcademyHomeState extends State<AcademyHome> {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 20),
+                  _ProgressPanel(progress: progress),
                   const SizedBox(height: 30),
                   const Text('Escolha sua trilha',
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
@@ -522,6 +529,84 @@ class _AcademyHomeState extends State<AcademyHome> {
                 ],
               ),
             ),
+    );
+  }
+}
+
+class _ProgressPanel extends StatelessWidget {
+  const _ProgressPanel({required this.progress});
+  final AcademyProgress progress;
+
+  @override
+  Widget build(BuildContext context) {
+    final remaining = progress.nextLevelAt == null
+        ? null
+        : progress.nextLevelAt! - progress.completedCount;
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: const BorderSide(color: Color(0xFF32415C)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.military_tech_outlined,
+                    color: WolfpackAcademyApp.accent),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text('Nível ${progress.level} • ${progress.title}',
+                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(remaining == null
+                ? 'Você alcançou o nível máximo da Beta 0.2!'
+                : 'Faltam $remaining missões para o próximo nível.',
+              style: const TextStyle(color: Color(0xFFB1BDD0))),
+            const SizedBox(height: 12),
+            LinearProgressIndicator(
+              value: progress.levelFraction,
+              minHeight: 7,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            const SizedBox(height: 18),
+            const Text('Conquistas',
+                style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final badge in progress.achievements.entries)
+                  Chip(
+                    avatar: Icon(
+                      badge.value ? Icons.verified : Icons.lock_outline,
+                      color: badge.value
+                          ? const Color(0xFF6DE7B4)
+                          : const Color(0xFF98A8C0),
+                      size: 18,
+                    ),
+                    label: Text(badge.key),
+                    backgroundColor: badge.value
+                        ? const Color(0xFF173F3B)
+                        : const Color(0xFF26324A),
+                    side: BorderSide.none,
+                    labelStyle: TextStyle(
+                      color: badge.value
+                          ? const Color(0xFFE5FFF7)
+                          : const Color(0xFFB4C2D5),
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
