@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark"><meta name="description" content="The Arsenal NEXUS-06: pesquisa com redes Elman e GRU, resultados sintéticos e experimentos reproduzíveis.">
+<link rel="canonical" href="https://workshop-labs.pages.dev/nexus/">
+<link rel="stylesheet" href="/assets/labs.css">
+<title>NEXUS-06 · Neural Research | Workshop Labs</title></head>
+<body>
+<a class="skip" href="#experimentos">Pular para os experimentos</a>
+<header><div class="wrap"><a class="brand" href="/">🐺 WOLFPACK <b>/</b> THE WORKSHOP<small>WORKSHOP LABS / NEXUS</small></a><nav aria-label="Navegação"><a href="/">TODOS OS LABS</a><a href="#arquitetura">ARQUITETURA</a><a href="#experimentos">EXPERIMENTOS</a><a href="https://nexus-05-neural-control-center.vercel.app/research.html" rel="noopener noreferrer">NEURAL CENTER ↗</a></nav></div></header>
+<main>
+<section class="hero"><div class="wrap"><div class="kicker">THE ARSENAL / NEURAL RESEARCH / NEXUS-06</div><h1>MEMÓRIA. <span>SOB TESTE.</span></h1><p class="intro">Duas arquiteturas recorrentes em NumPy: a RNN Elman e a GRU. Pesquisamos previsões temporais, diferenças de custo e a importância da sequência das observações, exclusivamente em CPU e dados sintéticos.</p><div class="status-panel"><div><strong>⚠️ Pesquisa sintética, sem telemetria real</strong><p>Resultados de experimentos executados localmente e informados pelo pesquisador. Esta página não treina modelos, não recebe dados privados e não detecta ameaças em tempo real.</p></div><span class="pill">RESEARCH ONLY</span></div></div></section>
+<section id="arquitetura" class="section"><div class="wrap"><div class="section-top"><div><div class="kicker">01 / ARQUITETURA</div><h2>Mais parâmetros não garantem melhores conclusões.</h2></div><p>O modelo GRU utiliza portas de atualização, reset e estado candidato. A Elman oferece uma referência mais simples.</p></div>
+<div class="cards">
+<article class="card"><div class="label">RECURSOS / ELMAN</div><div class="kind">RNN SIMPLES</div><h3>536 parâmetros</h3><p>8 entradas, 16 unidades ocultas. Treino médio de 0,44 s no EXP-006, medido na máquina de desenvolvimento.</p></article>
+<article class="card"><div class="label">RECURSOS / GRU</div><div class="kind">GATED RECURRENT UNIT</div><h3>1.336 parâmetros</h3><p>Portas recorrentes controlam o histórico. Treino médio de 1,28 s no EXP-006, aproximadamente 2,9 vezes o tempo da Elman.</p></article>
+</div></div></section>
+<section id="experimentos" class="section"><div class="wrap"><div class="section-top"><div><div class="kicker">02 / EXP-006</div><h2>Dez execuções pareadas.</h2></div><p>Ruídos e embaralhamentos variados. Os dados de cada par de modelos foram idênticos.</p></div>
+<div class="cards">
+<article class="card feature"><div class="label">GRU / MULTISEED</div><div class="kind">F1 MÉDIO / ± DESVIO PADRÃO</div><h3>0,9158 ± 0,0139</h3><p>Recall médio: 97,50%; precisão: 86,39%; falsos positivos: 2,30%. Venceu 6 das 10 execuções.</p></article>
+<article class="card"><div class="label">ELMAN / MULTISEED</div><div class="kind">F1 MÉDIO / ± DESVIO PADRÃO</div><h3>0,9122 ± 0,0215</h3><p>Recall médio: 97,50%; precisão: 85,90%; falsos positivos: 2,45%. Venceu 3 das 10 execuções; houve 1 empate.</p></article>
+<article class="card"><div class="label">BASELINE / SEM MEMÓRIA</div><div class="kind">ESTÁTICO</div><h3>F1 = 0,0228</h3><p>O detector que ignora a sequência praticamente não reconheceu os blocos embaralhados. Não é uma comparação de segurança real.</p></article>
+<article class="card"><div class="label">BASELINE / LAG 1</div><div class="kind">PERSISTÊNCIA</div><h3>F1 = 0,8312</h3><p>Uma regra temporal simples conseguiu recall médio de 79,17%, demonstrando por que baselines baratos são indispensáveis.</p></article>
+</div>
+<div class="status-panel"><div><strong>Δ F1 médio GRU − Elman: +0,00366</strong><p>Diferença pequena e insuficiente para afirmar superioridade da GRU. As execuções usam o mesmo gerador sintético; não são dez ambientes reais independentes.</p></div><span class="pill">6 / 3 / 1</span></div>
+</div></section>
+<section class="section"><div class="wrap"><div class="section-top"><div><div class="kicker">03 / HISTÓRICO</div><h2>O que a bancada revelou.</h2></div><p>Resultados experimentais observados, sem promessas de produção.</p></div>
+<div class="cards">
+<article class="card"><div class="label">EXP-001 / TRAIN</div><h3>GRU treinada</h3><p>900 amostras sintéticas; 23 épocas; train loss 0,9618 e validation loss 1,0749; threshold 4,0677.</p></article>
+<article class="card"><div class="label">EXP-002 / EXTREME</div><h3>Diferenças evidentes</h3><p>1/234 alertas na série normal e 234/234 na série anômala. Separação extrema não comprova generalização.</p></article>
+<article class="card"><div class="label">EXP-003 / MODERATE</div><h3>Tráfego discreto</h3><p>GRU F1 0,7967. Detectou apenas 4/25 observações de tráfego moderado, mas 45/45 do episódio de latência e autenticação.</p></article>
+<article class="card"><div class="label">EXP-004 / COMPARISON</div><h3>Elman vence no misto</h3><p>Elman F1 0,8033; GRU F1 0,7967. Nenhuma arquitetura se destacou no cenário misto.</p></article>
+<article class="card"><div class="label">EXP-005 / TEMPORAL</div><h3>O efeito da ordem</h3><p>Blocos embaralhados: Elman F1 0,9290, GRU F1 0,9351 e baseline estático F1 0,0000.</p></article>
+<article class="card"><div class="label">EXP-006 / MULTISEED</div><h3>Vantagem mínima da GRU</h3><p>F1 médio 0,9158 contra 0,9122. O custo adicional exige evidência mais sólida.</p></article>
+<article class="card feature"><div class="label">EXP-007 / PREPARADO</div><h3>Estresse temporal</h3><p>Ciclos de 8, 12 e 24 observações, ruído aumentado e baseline sazonal. Código disponível; resultados locais ainda pendentes.</p></article>
+</div></div></section>
+<section class="section"><div class="wrap"><div class="section-top"><div><div class="kicker">04 / REPRODUZA</div><h2>Abra o código. Questione os resultados.</h2></div><p>O código permanece local-first, com modelos privados fora do navegador.</p></div>
+<div class="status-panel"><div><strong>THE ARSENAL / NEXUS-06</strong><p>Implementação NumPy, BPTT, gradientes verificados, modelagem de séries e benchmark sintético. Não há telemetria real, ações automatizadas ou serviço de inferência exposto.</p></div><a href="https://github.com/kingmaker-lab/The-Arsenal-/pull/12" rel="noopener noreferrer">CÓDIGO / PR #12 ↗</a></div>
+<div class="status-panel"><div><strong>NEXUS-05 / NEURAL CONTROL CENTER</strong><p>Explore os relatórios estáticos do observatório e a nova área de pesquisa NEXUS-06 no Vercel.</p></div><a href="https://nexus-05-neural-control-center.vercel.app/research.html" rel="noopener noreferrer">ABRIR PAINEL ↗</a></div>
+</div></section>
+</main><footer><div class="wrap">© 2026 THE WORKSHOP × THE ARSENAL · NEXUS-06 · SYNTHETIC RESEARCH · NO MODEL SERVING</div></footer>
+</body></html>
