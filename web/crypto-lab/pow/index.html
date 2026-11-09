@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; worker-src 'self'; style-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="description" content="EXP-002: laboratório educacional de Proof-of-Work com SHA-256, nonce e dificuldade.">
+<title>EXP-002: Proof-of-Work | The Workshop</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="./style.css">
+<script src="./app.js" defer></script>
+</head>
+<body>
+<main>
+<nav aria-label="Navegação do Crypto Lab"><a href="/">← Workshop Labs</a><a href="/crypto-lab/">EXP-001: Hashes</a><span>CRYPTO LAB / EXP-002</span></nav>
+<header><p class="eyebrow">⛏️ EXP-002 · PROOF-OF-WORK</p><h1>Mine uma hipótese.<br>Não uma moeda.</h1><p>Descubra um <strong>nonce</strong> que faça o SHA-256 de um bloco começar com uma quantidade de zeros. Experimento de mineração local, sem criptomoedas reais, sem rede e sem cadastro.</p></header>
+<section aria-labelledby="work-title">
+<h2 id="work-title">1. Configure o bloco</h2>
+<div class="fields">
+<div><label for="payload">Mensagem / dados</label><input id="payload" maxlength="140" value="The Workshop: Build. Break. Understand. Rebuild." autocomplete="off"></div>
+<div><label for="difficulty">Dificuldade (zeros hexadecimais)</label><select id="difficulty"><option value="1">1 zero · cerca de 16 tentativas</option><option value="2">2 zeros · cerca de 256 tentativas</option><option value="3" selected>3 zeros · cerca de 4.096 tentativas</option><option value="4">4 zeros · cerca de 65.536 tentativas</option></select></div>
+</div>
+<p class="hint">Cada zero hexadecimal representa 4 bits. As tentativas esperadas são médias estatísticas, não garantias. Limite local: 500.000 tentativas por bloco, até 5 blocos minerados.</p>
+<div class="actions">
+<button id="mine" type="button">⛏️ Minerar próximo bloco</button>
+<button id="cancel" class="secondary" type="button" disabled>Cancelar mineração</button>
+<button id="verify" class="secondary" type="button">Verificar cadeia</button>
+<button id="tamper" class="secondary" type="button">Adulterar primeiro bloco minerado</button>
+<button id="reset" class="secondary" type="button">Reiniciar cadeia</button>
+</div>
+<p id="status" role="status" aria-live="polite">Preparando bloco gênese…</p>
+<div class="metrics" aria-label="Telemetria de mineração">
+<div><span>TENTATIVAS</span><strong id="attempts">0</strong></div>
+<div><span>TEMPO</span><strong id="elapsed">0,0 s</strong></div>
+<div><span>TAXA OBSERVADA</span><strong id="rate">0 H/s</strong></div>
+</div>
+</section>
+<section aria-labelledby="chain-title"><h2 id="chain-title">2. Inspecione os blocos</h2><p>Uma validação independente recalcula todos os hashes, confere a dificuldade declarada e verifica o encadeamento dos blocos.</p><div id="chain" class="chain"></div></section>
+<section aria-labelledby="explain-title"><h2 id="explain-title">3. O que aprendemos?</h2><p><strong>Proof-of-Work</strong> exige trabalho computacional para encontrar um hash abaixo de determinado alvo. Aqui usamos um alvo simplificado de zeros iniciais em hexadecimal. A verificação é muito mais barata do que a busca.</p><p>O experimento não simula consenso distribuído, ajuste automático de dificuldade, recompensas, custos energéticos reais ou segurança de uma criptomoeda. SHA-256 e um nonce não bastam para criar uma blockchain segura.</p><p>Próxima etapa: <strong>EXP-003</strong>, assinaturas digitais, wallets educativas e validação de transações.</p></section>
+<footer>THE WORKSHOP · BUILD. BREAK. UNDERSTAND. REBUILD. · Laboratório 100% local.</footer>
+</main>
+</body></html>
