@@ -7,7 +7,7 @@ subset is accepted. Never execute or interpret arbitrary expressions.
 from __future__ import annotations
 
 import fnmatch
-import os
+import math
 import re
 import stat
 from dataclasses import dataclass
@@ -157,6 +157,14 @@ def _parse_condition(expression: str, names: tuple[str, ...]) -> tuple:
         return result
 
     result = disjunction()
+    def has_positive(tree: tuple, negated: bool = False) -> bool:
+        if tree[0] == "selector":
+            return not negated
+        if tree[0] == "not":
+            return has_positive(tree[1], not negated)
+        return has_positive(tree[1], negated) or has_positive(tree[2], negated)
+    if not has_positive(result):
+        raise SigmaSubsetError("condition needs a positive selector")
     if cursor != len(tokens):
         raise SigmaSubsetError("unsupported trailing condition")
     return result
@@ -277,6 +285,8 @@ def parse_sigma_subset(raw: bytes) -> SigmaSubsetRule:
                     if isinstance(item, str) and (not item or len(item) > 512 or
                                                  "*" in item or "?" in item or "\\" in item):
                         raise SigmaSubsetError("wildcards and escaping are not supported")
+                    if isinstance(item, float) and not math.isfinite(item):
+                        raise SigmaSubsetError("non-finite numeric selector is unsupported")
                     if modifier != "exact" and not isinstance(item, str):
                         raise SigmaSubsetError("string modifier needs string values")
                 tests.append(_FieldTest(FIELD_MAP[segments[0]], modifier, tuple(choices)))
@@ -297,7 +307,10 @@ class SigmaSubsetEngine:
         directory = Path(location)
         if directory.is_symlink() or not directory.is_dir():
             raise SigmaSubsetError("Sigma rules directory must be a real directory")
-        files = sorted(p for p in directory.iterdir() if p.suffix.lower() in (".yml", ".yaml"))
+        entries = tuple(directory.iterdir())
+        files = sorted(p for p in entries if p.suffix.lower() in (".yml", ".yaml"))
+        if any(p.is_dir() or p.is_symlink() for p in entries):
+            raise SigmaSubsetError("nested directories and symlinks are unsupported")
         if not files or len(files) > MAX_RULES:
             raise SigmaSubsetError("Sigma rule count outside supported range")
         rules = []
