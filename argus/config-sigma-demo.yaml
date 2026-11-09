@@ -1,0 +1,16 @@
+# ARGUS v0.4: local opt-in Sigma subset demo.
+# Use only with synthetic or explicitly authorized local events.
+database: argus-sigma-demo.db
+rules: rules/default.yaml
+api:
+  host: 127.0.0.1
+  port: 8765
+correlation:
+  window_seconds: 30
+  failure_threshold: 15
+  risk_window_seconds: 300
+anomaly:
+  enabled: false
+sigma:
+  enabled: true
+  rules_dir: sigma/rules
