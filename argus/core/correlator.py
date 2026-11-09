@@ -4,6 +4,7 @@ from argus.core.scoring import RiskScorer
 from argus.detection.anomaly_engine import AnomalyEngine
 from argus.detection.behavioral import BehavioralEngine
 from argus.detection.rules import RuleEngine
+from argus.detection.sigma_subset import SigmaSubsetEngine
 from argus.models.alert import Alert
 from argus.models.event import Event
 
@@ -15,17 +16,21 @@ class CorrelationEngine:
         behavior: BehavioralEngine,
         scorer: RiskScorer,
         anomaly: AnomalyEngine | None = None,
+        sigma: SigmaSubsetEngine | None = None,
     ) -> None:
         self.rules = rules
         self.behavior = behavior
         self.scorer = scorer
         self.anomaly = anomaly
+        self.sigma = sigma
 
     def process(self, event: Event) -> Alert | None:
         detections = self.rules.evaluate(event)
         detections.extend(self.behavior.process(event))
         if self.anomaly is not None:
             detections.extend(self.anomaly.process(event))
+        if self.sigma is not None:
+            detections.extend(self.sigma.evaluate(event))
         if not detections:
             return None
         risk_score = self.scorer.score(event.src_ip, event.timestamp, detections)
