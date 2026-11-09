@@ -37,3 +37,9 @@ jobs:
           python -m argus.main watch argus/samples/ssh_bruteforce.jsonl --db /tmp/argus-stream-ci.db --batch-size 100 --once
           python -m argus.main watch argus/samples/ssh_bruteforce.jsonl --db /tmp/argus-stream-ci.db --batch-size 100 --once
           python -m argus.main timeline --db /tmp/argus-stream-ci.db --limit 5
+      - name: Sigma v0.4 validator and opt-in local analysis smoke
+        run: |
+          python -m argus.main sigma-validate --rules-dir argus/sigma/rules
+          python -m argus.main --config argus/config-sigma-demo.yaml analyze argus/samples/ssh_bruteforce.jsonl --db /tmp/argus-v04-sigma.db > /tmp/argus-v04-output.jsonl
+          grep -q '"sigma:argus-v04-privileged-ssh"' /tmp/argus-v04-output.jsonl
+          grep -q '"processed": 17' /tmp/argus-v04-output.jsonl
