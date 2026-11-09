@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wolfpack_academy/main.dart';
@@ -49,12 +50,20 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Vamos entender o erro.'), findsOneWidget);
 
+    await tester.scrollUntilVisible(
+      find.text('Tentar novamente'), 230,
+      scrollable: find.byType(Scrollable).last,
+    );
     await tester.tap(find.text('Tentar novamente'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('True'));
     await tester.pumpAndSettle();
     expect(find.text('✓ Resposta correta!'), findsOneWidget);
 
+    await tester.scrollUntilVisible(
+      find.text('Voltar às missões'), 230,
+      scrollable: find.byType(Scrollable).last,
+    );
     await tester.tap(find.text('Voltar às missões'));
     await tester.pumpAndSettle();
     await tester.pageBack();
