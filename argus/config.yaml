@@ -16,3 +16,9 @@ anomaly:
   metrics: [orig_bytes, resp_bytes]
   minimum_samples: 20
   z_threshold: 4.0
+
+# Experimental Sigma-shaped rules (strict, ARGUS-normalized subset).
+# Off by default; unsupported expressions and fields fail closed.
+sigma:
+  enabled: false
+  rules_dir: sigma/rules
