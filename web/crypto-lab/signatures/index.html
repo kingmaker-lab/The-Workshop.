@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="description" content="EXP-003: carteiras fictícias, ECDSA P-256, assinaturas digitais e proteção contra replay.">
+<title>EXP-003 | Assinaturas Digitais · The Workshop</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="./style.css">
+<script src="./protocol.js" defer></script><script src="./app.js" defer></script>
+</head>
+<body><main>
+<nav aria-label="Navegação do laboratório"><a href="/">← Workshop Labs</a><a href="/crypto-lab/">EXP-001</a><a href="/crypto-lab/pow/">EXP-002</a><span>CRYPTO LAB / EXP-003</span></nav>
+<header><p class="eyebrow">🔐 EXP-003 · CRIPTOGRAFIA ASSIMÉTRICA</p><h1>Assine, transfira,<br>verifique.</h1>
+<p>Crie duas carteiras temporárias, assine uma transferência de unidades <strong>100% fictícias</strong> com ECDSA P-256 e veja o verificador rejeitar adulterações e transações repetidas.</p></header>
+<section aria-labelledby="wallet-title">
+<div class="section-head"><div><h2 id="wallet-title">1. Duas carteiras, zero dinheiro real</h2><p>Chaves geradas com Web Crypto no próprio navegador. A chave privada é não exportável e nunca é enviada ao servidor.</p></div><button id="regen" class="secondary" type="button">Gerar novas carteiras</button></div>
+<div id="wallets" class="wallet-grid"><p>Gerando carteiras temporárias…</p></div>
+</section>
+<section aria-labelledby="transfer-title">
+<h2 id="transfer-title">2. Assine uma transferência</h2>
+<div class="fields">
+<div><label for="sender">Carteira remetente</label><select id="sender"><option value="0">Carteira A</option><option value="1">Carteira B</option></select></div>
+<div><label for="receiver">Carteira destinatária</label><select id="receiver"><option value="1">Carteira B</option><option value="0">Carteira A</option></select></div>
+<div><label for="amount">Unidades educativas</label><input id="amount" type="number" min="1" max="100" step="1" value="15" inputmode="numeric"></div>
+</div>
+<div class="actions">
+<button id="send" type="button">✍️ Assinar e transferir</button>
+<button id="verify" class="secondary" type="button">Auditar histórico</button>
+<button id="tamper" class="secondary" type="button">Adulterar valor</button>
+<button id="replay" class="secondary" type="button">Repetir transação</button>
+<button id="clear" class="secondary" type="button">Limpar histórico</button>
+</div>
+<p id="status" role="status" aria-live="polite">Preparando sessão segura…</p>
+<p class="hint">As 100 unidades iniciais de cada carteira existem apenas nesta simulação. Não há tokens, mineração, pagamentos, API ou armazenamento persistente.</p>
+</section>
+<section aria-labelledby="ledger-title"><h2 id="ledger-title">3. Auditoria do ledger</h2>
+<p>Cada registro inclui remetente, destinatário, quantidade inteira, nonce sequencial, chave pública e assinatura. O verificador recalcula o identificador da carteira, confere a assinatura e rejeita replay e saldo insuficiente.</p>
+<div id="ledger" class="ledger"><p>Nenhuma transação assinada.</p></div></section>
+<section aria-labelledby="learning-title"><h2 id="learning-title">4. O que isto prova?</h2>
+<p>Uma assinatura digital comprova que a mensagem foi assinada pela chave privada correspondente à chave pública apresentada, se os algoritmos e as chaves forem confiáveis. <strong>Não comprova, sozinha, saldo, consenso ou identidade civil.</strong></p>
+<p>O nonce sequencial impede reutilizar a mesma operação neste ledger didático. Ainda não temos blockchain distribuída, contratos, rede P2P ou ativos reais. Próximo passo: <strong>EXP-004, ledger UTXO.</strong></p></section>
+<footer>THE WORKSHOP · BUILD. BREAK. UNDERSTAND. REBUILD. · Dados e chaves descartados ao recarregar.</footer>
+</main></body></html>
