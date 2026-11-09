@@ -75,3 +75,29 @@ Public deploy ID and post-deploy checks: to be appended after deployment.
 - Browser Rendering of preview: HTTP 200, Sigma subsection and opt-in
   instructions present, ARGUS v0.3 and HeartAI navigation preserved.
 - No tests involve sending real user telemetry to Cloudflare.
+
+## Production release and post-deploy verification
+
+- PR #34 merged to `main`: `10c1e4d0d0686b1d63d7c88029ba4d691c961546`.
+- Cloudflare Pages production deployment:
+  `14d23284-50b2-42a6-a48e-85237dfb5df6`,
+  `https://14d23284.workshop-labs.pages.dev`:
+  **production / deploy / success**.
+- Live Browser Rendering of
+  `https://workshop-labs.pages.dev/argus/`: **SUCCESS**;
+  v0.4 Sigma, local validator, disabled-by-default disclosure, v0.3
+  history and HeartAI link all present.
+- Live Browser Rendering of `https://workshop-labs.pages.dev/heartai/`:
+  **SUCCESS**; both BPE tokenizer and embeddings demos executed.
+- Live Browser Rendering of `https://workshop-labs.pages.dev/`:
+  **SUCCESS**; ARGUS, HeartAI, CERBERUS and Crypto Lab links retained.
+- Post-merge GitHub Actions, all **SUCCESS**:
+  - ARGUS regressions:
+    https://github.com/kingmaker-lab/The-Workshop./actions/runs/42625949345
+  - Workshop Labs:
+    https://github.com/kingmaker-lab/The-Workshop./actions/runs/42625949326
+  - immutable artifact gate:
+    https://github.com/kingmaker-lab/The-Workshop./actions/runs/42625949313
+
+Publication covers only static documentation. The Python Sigma engine
+remains LAB ONLY, local and disabled unless explicitly opted in.
