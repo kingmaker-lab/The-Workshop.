@@ -1,13 +1,17 @@
-# Wolfpack Academy • Android MVP v0.1
+# Wolfpack Academy • Android Beta v0.2
 
 Primeira aplicação mobile real da The Workshop (Flutter + Material 3), **não é WebView**.
 
 ## Recursos incluídos
 
 - Home nativa, trilhas de Lógica e Caça aos Bugs.
-- 5 missões educacionais offline em Python e JavaScript.
+- 25 missões educacionais offline em Python, JavaScript, HTML e CSS, em 3 trilhas.
 - Feedback contextual de acertos e erros, com explicação.
-- XP e progresso persistidos localmente com `shared_preferences`.
+- XP, 5 níveis e 5 conquistas calculados a partir de missões únicas concluídas; progresso persistido localmente com `shared_preferences`.
+- Compatível com a chave de armazenamento da v0.1 (`completed_missions_v1`), sem zerar histórico ao atualizar o app.
+- Módulo independente `lib/progression.dart` e testes de regressão de marcos e migração.
+
+**Importante:** para atualizar a instalação v0.1, instale com mesmo applicationId e assinatura de debug, sem desinstalar. Uma nova instalação ou mudança de assinatura/package pode perder o progresso local.
 - Sem login, anúncios, dados pessoais enviados ou chamadas de rede.
 
 O conteúdo é demonstrativo, deve passar por revisão pedagógica e acessibilidade antes de publicação.
