@@ -1,0 +1,15 @@
+title: ARGUS demo privileged SSH authentication
+id: argus-v04-privileged-ssh
+status: experimental
+description: Demonstration rule against normalized local authentication events.
+logsource:
+  product: argus
+  category: authentication
+detection:
+  selection:
+    User: root
+    Result: success
+  filter_loopback:
+    SourceIp: '127.0.0.1'
+  condition: selection and not filter_loopback
+level: high

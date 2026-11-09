@@ -52,11 +52,34 @@ test('ARGUS v0.3 educational page documents local-only streaming controls',async
     'estado de correlação e as baselines continuam em memória'
   ]) assert.ok(html.includes(phrase),'Missing '+phrase);
   assert.ok(html.includes('ENTREGUE / v0.3'));
-  assert.ok(html.includes('Regras Sigma'));
+  assert.ok(html.includes('Sigma Subset')); // v0.4 delivered the previously planned stage
   assert.doesNotMatch(html,/<script\b/i);
   const response=await fetchPage('/argus/');
   assert.ok(response.headers.get('content-security-policy').includes("script-src 'none'"));
   assert.ok(response.headers.get('content-security-policy').includes("connect-src 'none'"));
+});
+
+test('ARGUS v0.4 Sigma page stays static, opt-in and scoped', async () => {
+  const response = await fetchPage('/argus/');
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  for (const phrase of [
+    'id="sigma"', 'href="#sigma"', 'ARGUS v0.4 / SIGMA SUBSET',
+    'v0.4 / LAB', 'Regras abertas. Interpretação controlada.',
+    'python -m argus.main sigma-validate', 'config-sigma-demo.yaml',
+    'sigma.enabled: false', 'product: argus',
+    'category: authentication', 'Até 32 regras locais',
+    'Não é um conversor completo', 'ESPECIFICAÇÃO SIGMA',
+    'HEARTAI LAB',
+  ]) {
+    assert.ok(html.includes(phrase), phrase);
+  }
+  assert.doesNotMatch(html, /<script\b/i);
+  const csp = response.headers.get('content-security-policy');
+  assert.ok(csp.includes("script-src 'none'"));
+  assert.ok(csp.includes("connect-src 'none'"));
+  assert.equal((await fetchPage('/heartai/')).status, 200);
+  assert.equal((await fetchPage('/argus/', 'POST')).status, 405);
 });
 
 test('ARGUS remains static with defensive CSP; sibling labs are untouched',async()=>{

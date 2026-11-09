@@ -19,6 +19,7 @@ from argus.core.scoring import RiskScorer
 from argus.detection.anomaly_engine import AnomalyEngine
 from argus.detection.behavioral import BehavioralEngine
 from argus.detection.rules import RuleEngine
+from argus.detection.sigma_subset import SigmaSubsetEngine, SigmaSubsetError
 from argus.storage.database import Database
 from argus.stream.follower import FileFollower, exclusive_stream_lock
 
@@ -59,9 +60,10 @@ def analyze(
     rules_path: str | Path,
     correlation_config: dict[str, Any],
     anomaly_config: dict[str, Any] | None = None,
+    sigma_config: dict[str, Any] | None = None,
 ) -> tuple[int, int]:
     database = Database(database_path)
-    engine = build_engine(rules_path, correlation_config, anomaly_config)
+    engine = build_engine(rules_path, correlation_config, anomaly_config, sigma_config)
     collector = _collector(Path(input_path), input_format)
     processed = 0
     alert_count = 0
@@ -85,6 +87,7 @@ def build_engine(
     rules_path: str | Path,
     correlation_config: dict[str, Any],
     anomaly_config: dict[str, Any] | None = None,
+    sigma_config: dict[str, Any] | None = None,
 ) -> CorrelationEngine:
     rules = RuleEngine.from_yaml(rules_path)
     window_seconds = int(correlation_config.get("window_seconds", 30))
@@ -98,11 +101,23 @@ def build_engine(
             minimum_samples=int(anomaly_config.get("minimum_samples", 20)),
             z_threshold=float(anomaly_config.get("z_threshold", 4.0)),
         )
+    sigma = None
+    if sigma_config is not None and type(sigma_config.get("enabled", False)) is not bool:
+        raise SigmaSubsetError("sigma.enabled must be true or false")
+    if sigma_config is not None and sigma_config.get("enabled", False) is True:
+        base = Path(sigma_config.get("_base_dir", PROJECT_DIR))
+        requested = sigma_config.get("rules_dir", "sigma/rules")
+        if not isinstance(requested, str) or not requested:
+            raise SigmaSubsetError("sigma.rules_dir must be a nonempty path")
+        directory = Path(requested)
+        directory = directory if directory.is_absolute() else base / directory
+        sigma = SigmaSubsetEngine.from_directory(directory)
     return CorrelationEngine(
         rules,
         BehavioralEngine(threshold, window_seconds),
         RiskScorer(risk_window_seconds),
         anomaly=anomaly,
+        sigma=sigma,
     )
 
 def watch(
@@ -119,13 +134,14 @@ def watch(
     max_line_bytes: int,
     max_lines: int,
     from_end: bool,
+    sigma_config: dict[str, Any] | None = None,
 ) -> None:
     """Follow trusted local log files without opening a network port."""
     if not math.isfinite(poll_interval) or not 0.1 <= poll_interval <= 60:
         raise ValueError("poll_interval must be finite in [0.1, 60] seconds")
     if type(max_lines) is not int or not 1 <= max_lines <= 100000:
         raise ValueError("max_lines must be in [1, 100000]")
-    engine = build_engine(rules_path, correlation_config, anomaly_config)
+    engine = build_engine(rules_path, correlation_config, anomaly_config, sigma_config)
     follower = FileFollower(
         input_path,
         database,
@@ -174,6 +190,9 @@ def build_parser() -> argparse.ArgumentParser:
     watch_parser.add_argument("--once", action="store_true",
                               help="process one bounded poll, then exit")
 
+    sigma_parser = subparsers.add_parser("sigma-validate", help="validate the local, limited Sigma ruleset")
+    sigma_parser.add_argument("--rules-dir", type=Path, default=PROJECT_DIR / "sigma/rules")
+
     serve_parser = subparsers.add_parser("serve", help="start the read-only local API")
     serve_parser.add_argument("--db", type=Path)
     serve_parser.add_argument("--host")
@@ -191,6 +210,11 @@ def main() -> int:
     arguments = parser.parse_args()
     try:
         configuration = load_config(arguments.config)
+        if arguments.command == "sigma-validate":
+            ruleset = SigmaSubsetEngine.from_directory(arguments.rules_dir)
+            print(json.dumps({"rules": len(ruleset.rules), "validation": "ok",
+                              "engine": "sigma_subset_v04"}, sort_keys=True))
+            return 0
         database_path = arguments.db or _configured_path(configuration, "database", "argus.db")
         database = Database(database_path)
 
@@ -203,6 +227,7 @@ def main() -> int:
                 rules_path,
                 configuration.get("correlation", {}),
                 configuration.get("anomaly", {}),
+                {**configuration.get("sigma", {}), "_base_dir": configuration["_base_dir"]},
             )
             print(json.dumps({"processed": processed, "alerts": alert_count}, sort_keys=True))
         elif arguments.command == "watch":
@@ -220,6 +245,7 @@ def main() -> int:
                 max_line_bytes=arguments.max_line_bytes,
                 max_lines=arguments.max_lines,
                 from_end=arguments.from_end,
+                sigma_config={**configuration.get("sigma", {}), "_base_dir": configuration["_base_dir"]},
             )
         elif arguments.command == "serve":
             api_config = configuration.get("api", {})
