@@ -264,7 +264,7 @@ class _AcademyHomeState extends State<AcademyHome> {
                             const Icon(Icons.bolt, size: 20,
                               color: WolfpackAcademyApp.accent),
                             const SizedBox(width: 6),
-                            Text((completedCount * 100).toString() + ' XP',
+                            Text('${completedCount * 100} XP',
                               style: const TextStyle(fontSize: 19,
                                 fontWeight: FontWeight.bold)),
                             const Spacer(),
@@ -468,7 +468,7 @@ class _MissionScreenState extends State<MissionScreen> {
     final submitted = _selected != null;
     final correct = _selected == mission.correctIndex;
     return Scaffold(
-      appBar: AppBar(title: Text(mission.language + ' • Missão')),
+      appBar: AppBar(title: Text('${mission.language} • Missão')),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(20),
@@ -529,7 +529,7 @@ class _MissionScreenState extends State<MissionScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(correct ? '✓ Resposta correta! +100 XP'
+                    Text(correct ? '✓ Resposta correta!'
                         : 'Vamos entender o erro.',
                       style: const TextStyle(fontSize: 18,
                         fontWeight: FontWeight.bold)),
@@ -540,6 +540,14 @@ class _MissionScreenState extends State<MissionScreen> {
                 ),
               ),
               const SizedBox(height: 20),
+              if (!correct) ...[
+                OutlinedButton.icon(
+                  onPressed: () => setState(() => _selected = null),
+                  icon: const Icon(Icons.replay),
+                  label: const Text('Tentar novamente'),
+                ),
+                const SizedBox(height: 10),
+              ],
               FilledButton(
                 onPressed: () => Navigator.of(context).pop(),
                 child: const Text('Voltar às missões'),
