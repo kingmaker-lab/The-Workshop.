@@ -158,7 +158,12 @@ const missions = <Mission>[
     pathId: 'debug',
     title: 'Fora dos limites',
     language: 'Python',
-    question: 'O que ocorre em nums = [10, 20  Mission(
+    question: 'O que ocorre em nums = [10, 20]; nums[2]?',
+    choices: ['Retorna 20', 'Retorna None', 'Lança IndexError'],
+    correctIndex: 2,
+    explanation: 'A lista tem posições 0 e 1. A posição 2 não existe e gera IndexError.',
+  ),
+  Mission(
     id: "logic-004",
     pathId: "logic",
     title: "Variáveis",
@@ -358,11 +363,7 @@ const missions = <Mission>[
     correctIndex: 1,
     explanation: "console.log envia mensagens ao console de desenvolvimento do JavaScript.",
   ),
-]; nums[2]?',
-    choices: ['Retorna 20', 'Retorna None', 'Lança IndexError'],
-    correctIndex: 2,
-    explanation: 'A lista tem posições 0 e 1. A posição 2 não existe e gera IndexError.',
-  ),
+
 ];
 
 class AcademyHome extends StatefulWidget {
