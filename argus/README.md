@@ -158,3 +158,84 @@ cursor previamente confirmado.
 A página pública `/argus/` apresenta o recurso e exemplos, mas **não**
 executa o watcher em Cloudflare. Próxima pesquisa proposta: subconjunto de
 regras Sigma com mapeamento de campos e validação rigorosa.
+
+
+## v0.4 — Sigma subset / Detection Engineering (opt-in)
+
+O ARGUS passa a executar **um subconjunto rigorosamente limitado do formato
+Sigma**, sobre eventos já normalizados pelo motor. **Não** é o pySigma nem
+um conversor geral de regras Sigma; regras de outras plataformas não podem
+ser importadas sem revisão e mapeamento explícito. A especificação original:
+https://github.com/SigmaHQ/sigma-specification/blob/main/specification/sigma-rules-specification.md
+
+A integração é **desativada por padrão** em `argus/config.yaml`. O motor
+anterior de regras YAML, correlação, Welford, `watch`, alertas e a API local
+continuam funcionando. Quando ativada, uma detecção Sigma é adicionada
+às demais detecções do evento e contribui para o score de risco.
+
+### Experimento reproduzível
+
+```sh
+# Validação estática do conjunto de regras, sem criar banco:
+python -m argus.main sigma-validate --rules-dir argus/sigma/rules
+
+# Ative SOMENTE via arquivo de configuração de demonstração:
+python -m argus.main --config argus/config-sigma-demo.yaml analyze \
+  argus/samples/ssh_bruteforce.jsonl --db /tmp/argus-sigma-demo.db
+
+# O fluxo contínuo aceita a mesma configuração:
+python -m argus.main --config argus/config-sigma-demo.yaml watch \
+  argus/samples/ssh_bruteforce.jsonl --db /tmp/argus-sigma-watch.db --once
+```
+
+### Subconjunto suportado
+
+- Um YAML de regra por arquivo `.yml` ou `.yaml`, até **32 arquivos**,
+  até **32 KiB por arquivo**, apenas diretório local sem subpastas.
+  A leitura rejeita symlinks de regra, aliases/anchors YAML, chaves
+  duplicadas, arquivos excessivos e identificadores duplicados.
+- `title`, `id` opcional, `level` (`low/medium/high/critical`),
+  `logsource` e `detection`. O `logsource` aceito deve ter **exatamente**
+  `product: argus` e `category: authentication` ou
+  `category: network_connection`. É um mapeamento **específico** da
+  taxonomia normalizada ARGUS; não equivale a qualquer fonte Linux/Zeek
+  arbitrária.
+- Seletores como mappings (campos ligados por AND), listas de mappings
+  (OR), valores escalares e listas de alternativas (OR).
+  Os campos reconhecidos são `User`, `Result`, `SourceIp`,
+  `Source`, `Message`, `Service`, `Protocol`,
+  `DestinationIp`, `DestinationPort`, `OrigBytes`,
+  `RespBytes` e `Duration`; qualquer campo não mapeado gera erro.
+- Condições booleanas `and`, `or`, `not` e parênteses; referências
+  a seletores existentes e `1 of them`, `all of them`,
+  `1 of selection_*` ou `all of selection_*`. Um seletor
+  positivo é obrigatório para evitar filtros isolados muito amplos.
+- Comparação exata com strings case-insensitive; modificadores
+  `|contains`, `|startswith`, `|endswith` em strings.
+  Tipos numéricos são comparados sem coerção. Limites de valores,
+  seletores e tamanho de expressão protegem o avaliador.
+
+**Não suportado, com rejeição explícita:** curingas em valores (`*`, `?`),
+regex, transformações base64, `|all`, `|exists`, `|cidr`,
+thresholds/count/aggregation, correlações Sigma, timeframes, condições
+referenciando nomes ausentes e outros modificadores. Também não há
+ingestão pública de regras. A carga e a execução são locais.
+
+A regra de exemplo em
+`argus/sigma/rules/lnx_argus_privileged_auth.yml` observa uma
+autenticação privilegiada de demonstração e exclui o loopback. É uma
+regra educacional e **não** prova exploração ou comprometimento.
+
+### Limites conhecidos
+
+- A classificação de origem usa a categoria normalizada do evento.
+  O subset não confirma que o evento corresponde a uma fonte Linux/Zeek
+  real, nem que uma regra comunitária Sigma traduz corretamente.
+- A validação ocorre na inicialização. Modificar arquivos enquanto o
+  programa está rodando **não** atualiza as regras automaticamente.
+- A pontuação se soma às regras existentes, podendo produzir mais
+  alertas e falsos positivos. Requer revisão humana das regras e testes
+  com amostras benignas e suspeitas, antes de qualquer uso operacional.
+- Dependências continuam limitadas à biblioteca Python e PyYAML já
+  utilizada pelo ARGUS; não há download de regras durante a execução.
+- Nenhuma mudança autoriza tornar a API não autenticada pública.
