@@ -43,3 +43,8 @@ jobs:
           python -m argus.main --config argus/config-sigma-demo.yaml analyze argus/samples/ssh_bruteforce.jsonl --db /tmp/argus-v04-sigma.db > /tmp/argus-v04-output.jsonl
           grep -q '"sigma:argus-v04-privileged-ssh"' /tmp/argus-v04-output.jsonl
           grep -q '"processed": 17' /tmp/argus-v04-output.jsonl
+          python -m argus.main --config argus/config-sigma-demo.yaml watch argus/samples/ssh_bruteforce.jsonl --db /tmp/argus-v04-sigma-watch.db --batch-size 100 --once > /tmp/argus-v04-watch.jsonl
+          grep -q '"sigma:argus-v04-privileged-ssh"' /tmp/argus-v04-watch.jsonl
+          grep -q '"processed": 17' /tmp/argus-v04-watch.jsonl
+          python -m argus.main --config argus/config-sigma-demo.yaml watch argus/samples/ssh_bruteforce.jsonl --db /tmp/argus-v04-sigma-watch.db --once > /tmp/argus-v04-resume.jsonl
+          grep -q '"processed": 0' /tmp/argus-v04-resume.jsonl
