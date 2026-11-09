@@ -33,7 +33,7 @@
 <header><div class="wrap">
   <a class="brand" href="/" aria-label="Workshop Labs, voltar ao catálogo"><span class="brandmark" aria-hidden="true">◉</span><span>ARGUS <small>THE WORKSHOP / DEFENSIVE RESEARCH</small></span></a>
   <nav class="nav" aria-label="Navegação do ARGUS">
-    <a href="#visao">VISÃO</a><a href="#arquitetura">ARQUITETURA</a><a href="#deteccoes">DETECÇÕES</a><a href="#evidencia">EVIDÊNCIA</a><a href="#telemetria">TELEMETRIA</a><a href="#executar">EXECUTAR</a><a href="#continuo">v0.3 / WATCH</a><a href="#seguranca">SEGURANÇA</a><a href="#roadmap">ROADMAP</a>
+    <a href="#visao">VISÃO</a><a href="#arquitetura">ARQUITETURA</a><a href="#deteccoes">DETECÇÕES</a><a href="#evidencia">EVIDÊNCIA</a><a href="#telemetria">TELEMETRIA</a><a href="#executar">EXECUTAR</a><a href="#continuo">v0.3 / WATCH</a><a href="#sigma">v0.4 / SIGMA</a><a href="#seguranca">SEGURANÇA</a><a href="#roadmap">ROADMAP</a>
   </nav>
 </div></header>
 <main id="conteudo">
@@ -42,7 +42,7 @@
       <div class="eyebrow">THE WORKSHOP / PROTOCOLO ARGUS / DETECTION ENGINEERING</div>
       <h1>ARGUS<span>.</span></h1>
       <p class="lead">Um observador de eventos, não um oráculo. O ARGUS transforma logs em sinais investigáveis por meio de <strong>regras transparentes, correlação temporal e análise estatística experimental</strong>.</p>
-      <div class="pills"><span class="tag">PYTHON / LOCAL-FIRST</span><span class="tag">THREAT HUNTING</span><span class="tag">v0.3 / LAB</span><span class="tag">OPEN SOURCE</span></div>
+      <div class="pills"><span class="tag">PYTHON / LOCAL-FIRST</span><span class="tag">THREAT HUNTING</span><span class="tag">v0.4 / LAB</span><span class="tag">OPEN SOURCE</span></div>
       <div class="cta-row"><a class="button primary" href="#executar">COMEÇAR PELO LABORATÓRIO ↓</a><a class="button" href="https://github.com/kingmaker-lab/The-Workshop./tree/main/argus" rel="noopener noreferrer">CÓDIGO NO GITHUB ↗</a></div>
       <p class="smallprint">Vitrine estática: esta é uma página educativa. Nenhum log real ou evento do seu computador é coletado aqui; o motor Python funciona separadamente na sua máquina.</p>
     </div>
@@ -160,11 +160,44 @@ python -m argus.main serve</code></pre><p>Use a timeline para estudar a sequênc
     </div>
     <div class="notice warn"><strong>Importante:</strong> o cursor é durável, mas o estado de correlação e as baselines continuam em memória. Reiniciar o processo limpa as janelas de detecção. Não há garantia de exatamente uma vez para os efeitos da correlação, nem monitoramento de rede ou dashboard público. Use apenas arquivos e diretórios confiáveis, preferencialmente sem privilégios de root.</div>
   </div></section>
+  <section class="block" id="sigma"><div class="wrap">
+    <div class="section-head"><div><div class="eyebrow">08 / ARGUS v0.4 / SIGMA SUBSET</div><h2>Regras abertas. Interpretação controlada.</h2></div><p>Um primeiro adaptador experimental para regras no formato Sigma, aplicado aos eventos normalizados do ARGUS. Não é um conversor completo nem o pySigma.</p></div>
+    <div class="grid">
+      <article class="card"><span class="index">01 / DETECTION ENGINEERING</span><h3>Seletores declarativos</h3><p>Condições de campos com AND/OR/NOT, parênteses, seleções alternativas e grupos <code>1 of</code> ou <code>all of</code> com padrão de prefixo.</p><span class="hint">REGRAS LOCAIS / YAML</span></article>
+      <article class="card"><span class="index">02 / FIELD MAPPING</span><h3>Taxonomia explícita</h3><p><code>logsource</code> exige <code>product: argus</code> e categoria <code>authentication</code> ou <code>network_connection</code>. Somente campos conhecidos podem ser consultados.</p><span class="hint">SEM TRADUÇÃO AUTOMÁTICA</span></article>
+      <article class="card"><span class="index">03 / SAFE DEFAULTS</span><h3>Falha fechada</h3><p>Regex, curingas de valores, modificadores não implementados e regras inválidas são rejeitados. Até 32 regras locais e 32 KiB por arquivo. Motor desligado por padrão.</p><span class="hint amber">OPT-IN / EXPERIMENTAL</span></article>
+    </div>
+    <div class="twocol" style="margin-top:17px">
+      <div class="pane"><div class="code-caption">SIGMA / EXEMPLO SINTÉTICO</div>
+<pre><code>title: ARGUS demo privileged SSH authentication
+logsource:
+  product: argus
+  category: authentication
+detection:
+  selection:
+    User: root
+    Result: success
+  condition: selection
+level: high</code></pre>
+      <p>É um exemplo reduzido de regra sobre eventos do ARGUS, não uma regra Sigma universal nem um indicador suficiente de invasão. As regras existentes permanecem ativas.</p></div>
+      <div class="pane"><div class="code-caption">VALIDAÇÃO / EXECUÇÃO LOCAL</div>
+<pre><code>python -m argus.main sigma-validate \
+  --rules-dir argus/sigma/rules
+
+python -m argus.main \
+  --config argus/config-sigma-demo.yaml \
+  analyze argus/samples/ssh_bruteforce.jsonl \
+  --db /tmp/argus-sigma-demo.db</code></pre>
+      <p>A configuração padrão mantém <code>sigma.enabled: false</code>. A execução demonstrativa habilita apenas o conjunto de regras locais previamente validado. O modo <code>watch</code> também suporta o motor Sigma opcional.</p></div>
+    </div>
+    <div class="notice warn"><strong>Compatibilidade intencionalmente limitada:</strong> expressões de agregação, correlação temporal Sigma, regex, <code>|exists</code>, <code>|cidr</code>, filtros por plataformas externas e curingas em valores não são suportados. A integração não baixa regras da Internet, não coleta seus logs pela página e não altera o caráter local da API.</div>
+    <div class="cta-row"><a class="button" href="https://github.com/kingmaker-lab/The-Workshop./tree/main/argus/sigma/rules" rel="noopener noreferrer">CONSULTAR EXEMPLOS ↗</a><a class="button" href="https://github.com/SigmaHQ/sigma-specification/blob/main/specification/sigma-rules-specification.md" rel="noopener noreferrer">ESPECIFICAÇÃO SIGMA ↗</a></div>
+  </div></section>
   <section class="block" id="roadmap"><div class="wrap">
-    <div class="section-head"><div><div class="eyebrow">08 / PRÓXIMOS EXPERIMENTOS</div><h2>O que vem depois da v0.3?</h2></div><p>Possibilidades de pesquisa, não funcionalidades publicadas nem compromissos de lançamento.</p></div>
+    <div class="section-head"><div><div class="eyebrow">09 / PRÓXIMOS EXPERIMENTOS</div><h2>O que vem depois da v0.4?</h2></div><p>Possibilidades de pesquisa, não funcionalidades publicadas nem compromissos de lançamento.</p></div>
     <div class="roadmap">
       <div class="future"><span class="index">ENTREGUE / v0.3</span><h3>Ingestão contínua local</h3><p>Watcher de arquivos em lote limitado, checkpoint transacional e retomada experimental.</p></div>
-      <div class="future"><span class="index">PESQUISA / 02</span><h3>Regras Sigma</h3><p>Estudo de um subconjunto compatível, com validação e testes.</p></div>
+      <div class="future"><span class="index">ENTREGUE / v0.4</span><h3>Sigma Subset</h3><p>Seletores, operadores e regras locais com validação estrita; ativação opcional e limitada.</p></div>
       <div class="future"><span class="index">PESQUISA / 03</span><h3>Correlação multi-host</h3><p>Contexto entre máquinas, identidade de fontes e deduplicação.</p></div>
       <div class="future"><span class="index">PESQUISA / 04</span><h3>Dashboard protegido</h3><p>Visão de investigação conectada a um backend autenticado, se aprovada pelo gate.</p></div>
     </div>
