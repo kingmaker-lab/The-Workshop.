@@ -15,7 +15,7 @@ test('NEXUS page source mirror and read-only route safety',async()=>{
  assert.equal(response.status,200);
  const html=await response.text();
  assert.equal(html,readFileSync(new URL('../nexus/index.html',import.meta.url),'utf8'));
- for(const val of ['NEXUS-06','0,9158','0,9122','EXP-007','resultados locais ainda pendentes']) assert.ok(html.includes(val),val);
+ for(const val of ['NEXUS-06','0,9158','0,9122','EXP-007','Elman venceu 7 vezes']) assert.ok(html.includes(val),val);
  assert.ok(!/<script\b/i.test(html));
  assert.ok(!/<style\b/i.test(html));
  assert.ok(response.headers.get('content-security-policy').includes("script-src 'none'"));
