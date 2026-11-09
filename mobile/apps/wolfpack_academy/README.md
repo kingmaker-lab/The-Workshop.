@@ -11,7 +11,7 @@ Primeira aplicação mobile real da The Workshop (Flutter + Material 3), **não 
 - Compatível com a chave de armazenamento da v0.1 (`completed_missions_v1`), sem zerar histórico ao atualizar o app.
 - Módulo independente `lib/progression.dart` e testes de regressão de marcos e migração.
 
-**Importante:** para atualizar a instalação v0.1, instale com mesmo applicationId e assinatura de debug, sem desinstalar. Uma nova instalação ou mudança de assinatura/package pode perder o progresso local.
+**Importante:** a compatibilidade do armazenamento NÃO garante atualização direta do APK antigo: builds debug gerados em runners diferentes do GitHub Actions normalmente usam chaves de assinatura diferentes. Se a assinatura não coincidir, o Android rejeitará a instalação por cima do app. Não desinstale a v0.1 sem fazer backup apropriado: desinstalar normalmente apaga o progresso local. Para betas futuras, configure uma assinatura estável em ambiente seguro (nunca versionar chaves), ou use distribuição por teste interno da Play Store.
 - Sem login, anúncios, dados pessoais enviados ou chamadas de rede.
 
 O conteúdo é demonstrativo, deve passar por revisão pedagógica e acessibilidade antes de publicação.
