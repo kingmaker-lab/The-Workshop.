@@ -52,7 +52,7 @@ test('ARGUS v0.3 educational page documents local-only streaming controls',async
     'estado de correlação e as baselines continuam em memória'
   ]) assert.ok(html.includes(phrase),'Missing '+phrase);
   assert.ok(html.includes('ENTREGUE / v0.3'));
-  assert.ok(html.includes('Regras Sigma'));
+  assert.ok(html.includes('Sigma Subset')); // v0.4 delivered the previously planned stage
   assert.doesNotMatch(html,/<script\b/i);
   const response=await fetchPage('/argus/');
   assert.ok(response.headers.get('content-security-policy').includes("script-src 'none'"));
