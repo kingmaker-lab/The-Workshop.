@@ -240,12 +240,14 @@ def parse_sigma_subset(raw: bytes) -> SigmaSubsetRule:
     if not isinstance(identifier, str) or not 1 <= len(identifier) <= 120:
         raise SigmaSubsetError("invalid Sigma id")
     level = document.get("level", "medium")
-    if level not in LEVELS:
+    if not isinstance(level, str) or level not in LEVELS:
         raise SigmaSubsetError("unsupported Sigma level")
     logsource = document["logsource"]
     if not isinstance(logsource, dict) or set(logsource) != {"product", "category"}:
         raise SigmaSubsetError("logsource must specify only product: argus and category")
-    if logsource.get("product") != "argus" or logsource.get("category") not in ALLOWED_LOGSOURCES:
+    if (logsource.get("product") != "argus" or
+            not isinstance(logsource.get("category"), str) or
+            logsource["category"] not in ALLOWED_LOGSOURCES):
         raise SigmaSubsetError("unsupported logsource for normalized ARGUS events")
     detection = document["detection"]
     if not isinstance(detection, dict) or len(detection) > MAX_SELECTORS + 1:
