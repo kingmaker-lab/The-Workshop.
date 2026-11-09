@@ -19,7 +19,7 @@ from argus.core.scoring import RiskScorer
 from argus.detection.anomaly_engine import AnomalyEngine
 from argus.detection.behavioral import BehavioralEngine
 from argus.detection.rules import RuleEngine
-from argus.detection.sigma_subset import SigmaSubsetEngine
+from argus.detection.sigma_subset import SigmaSubsetEngine, SigmaSubsetError
 from argus.storage.database import Database
 from argus.stream.follower import FileFollower, exclusive_stream_lock
 
@@ -102,9 +102,14 @@ def build_engine(
             z_threshold=float(anomaly_config.get("z_threshold", 4.0)),
         )
     sigma = None
+    if sigma_config is not None and type(sigma_config.get("enabled", False)) is not bool:
+        raise SigmaSubsetError("sigma.enabled must be true or false")
     if sigma_config is not None and sigma_config.get("enabled", False) is True:
         base = Path(sigma_config.get("_base_dir", PROJECT_DIR))
-        directory = Path(sigma_config.get("rules_dir", "sigma"))
+        requested = sigma_config.get("rules_dir", "sigma/rules")
+        if not isinstance(requested, str) or not requested:
+            raise SigmaSubsetError("sigma.rules_dir must be a nonempty path")
+        directory = Path(requested)
         directory = directory if directory.is_absolute() else base / directory
         sigma = SigmaSubsetEngine.from_directory(directory)
     return CorrelationEngine(
@@ -185,6 +190,9 @@ def build_parser() -> argparse.ArgumentParser:
     watch_parser.add_argument("--once", action="store_true",
                               help="process one bounded poll, then exit")
 
+    sigma_parser = subparsers.add_parser("sigma-validate", help="validate the local, limited Sigma ruleset")
+    sigma_parser.add_argument("--rules-dir", type=Path, default=PROJECT_DIR / "sigma/rules")
+
     serve_parser = subparsers.add_parser("serve", help="start the read-only local API")
     serve_parser.add_argument("--db", type=Path)
     serve_parser.add_argument("--host")
@@ -202,6 +210,11 @@ def main() -> int:
     arguments = parser.parse_args()
     try:
         configuration = load_config(arguments.config)
+        if arguments.command == "sigma-validate":
+            ruleset = SigmaSubsetEngine.from_directory(arguments.rules_dir)
+            print(json.dumps({"rules": len(ruleset.rules), "validation": "ok",
+                              "engine": "sigma_subset_v04"}, sort_keys=True))
+            return 0
         database_path = arguments.db or _configured_path(configuration, "database", "argus.db")
         database = Database(database_path)
 
