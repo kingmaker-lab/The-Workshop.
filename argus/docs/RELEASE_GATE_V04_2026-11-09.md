@@ -62,3 +62,16 @@ detections. File count and size limits: 32 rules and 32 KiB each.
 **documentation only**, after Cloudflare preview and production HTTP checks.
 No remote rules, network collection, telemetry ingestion or public API.
 Public deploy ID and post-deploy checks: to be appended after deployment.
+
+## Preview verification
+
+- Branch CI following CLI watch integration: **PASS**, 39/39 tests,
+  opt-in Sigma analysis and `watch --once`, followed by resume at 0
+  events: https://github.com/kingmaker-lab/The-Workshop./actions/runs/42625580346
+- Workshop Labs CI: **PASS**, 15/15 tests:
+  https://github.com/kingmaker-lab/The-Workshop./actions/runs/42625355309
+- Cloudflare Pages preview `0e1e62a3-291c-4ec8-8e89-b90a8afd85de`
+  (https://0e1e62a3.workshop-labs.pages.dev/argus/): **SUCCESS**.
+- Browser Rendering of preview: HTTP 200, Sigma subsection and opt-in
+  instructions present, ARGUS v0.3 and HeartAI navigation preserved.
+- No tests involve sending real user telemetry to Cloudflare.
