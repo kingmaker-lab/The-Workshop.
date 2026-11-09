@@ -424,7 +424,7 @@ class _PathScreenState extends State<PathScreen> {
                   ),
                   title: Text(available[i].title,
                     style: const TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text(available[i].language + ' • Desafio interativo'),
+                  subtitle: Text('${available[i].language} • Desafio interativo'),
                   trailing: const Icon(Icons.play_arrow_rounded),
                   onTap: () async {
                     await Navigator.of(context).push(
