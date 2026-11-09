@@ -16,18 +16,18 @@ void main() {
 
     expect(find.text('Sua jornada começa aqui.'), findsOneWidget);
     expect(find.text('Nível 1 • Explorador'), findsOneWidget);
+    expect(find.text('Conquistas'), findsOneWidget);
+    expect(find.text('0 XP'), findsOneWidget);
     await tester.scrollUntilVisible(
       find.text('Lógica de programação'), 250,
       scrollable: find.byType(Scrollable).first,
     );
     expect(find.text('Lógica de programação'), findsOneWidget);
-    expect(find.text('Conquistas'), findsOneWidget);
     await tester.scrollUntilVisible(
       find.text('Caça aos bugs'), 250,
       scrollable: find.byType(Scrollable).first,
     );
     expect(find.text('Caça aos bugs'), findsOneWidget);
-    expect(find.text('0 XP'), findsOneWidget);
   });
 
   testWidgets('Abre missão e explica a resposta correta', (tester) async {
@@ -86,6 +86,10 @@ void main() {
     await tester.pumpAndSettle();
     await tester.pageBack();
     await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('100 XP'), -250,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('100 XP'), findsOneWidget);
   });
 
