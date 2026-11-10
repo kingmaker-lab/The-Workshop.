@@ -7,12 +7,15 @@ on:
       - '.github/workflows/wolfpack-academy-android.yml'
   push:
     branches:
-      - feat/wolfpack-academy-android-starter
-      - feat/wolfpack-academy-beta-02
+      - main
     paths:
       - 'mobile/apps/wolfpack_academy/**'
       - '.github/workflows/wolfpack-academy-android.yml'
   workflow_dispatch:
+
+concurrency:
+  group: wolfpack-academy-android-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
