@@ -1,0 +1,77 @@
+name: Wolfpack Academy release build smoke
+on:
+  push:
+    branches:
+      - feat/wolfpack-academy-beta-02
+    paths:
+      - 'mobile/apps/wolfpack_academy/**'
+      - 'scripts/mobile/**'
+      - '.github/workflows/wolfpack-academy-release*.yml'
+  pull_request:
+    paths:
+      - 'mobile/apps/wolfpack_academy/**'
+      - 'scripts/mobile/**'
+      - '.github/workflows/wolfpack-academy-release*.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: mobile/apps/wolfpack_academy
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.9'
+          channel: stable
+          cache: true
+      - name: Generate Android platform
+        run: flutter create --platforms=android --org dev.wolfpackworkshop --project-name wolfpack_academy .
+      - name: Install deps and test
+        run: |
+          flutter pub get
+          flutter analyze
+          flutter test
+      - name: Generate throwaway CI-only key and inject signing
+        shell: bash
+        env:
+          ACADEMY_STORE_PASSWORD: CI_TEST_ONLY_DO_NOT_REUSE_2026_Signing
+          ACADEMY_KEY_PASSWORD: CI_TEST_ONLY_DO_NOT_REUSE_2026_Signing
+          ACADEMY_KEY_ALIAS: academy
+        run: |
+          set -euo pipefail
+          export ACADEMY_KEYSTORE_PATH="$RUNNER_TEMP/throwaway-release.p12"
+          keytool -genkeypair -noprompt -keystore "$ACADEMY_KEYSTORE_PATH" \
+            -storetype PKCS12 -alias "$ACADEMY_KEY_ALIAS" -keyalg RSA -keysize 3072 \
+            -dname "CN=CI Smoke, OU=Testing, O=The Workshop, C=BR" -validity 2 \
+            -storepass:env ACADEMY_STORE_PASSWORD -keypass:env ACADEMY_KEY_PASSWORD
+          python3 ../../../scripts/mobile/configure_release_signing.py
+      - name: Build APK and AAB with throwaway key
+        shell: bash
+        env:
+          ACADEMY_KEYSTORE_PATH: ${{ runner.temp }}/throwaway-release.p12
+          ACADEMY_STORE_PASSWORD: CI_TEST_ONLY_DO_NOT_REUSE_2026_Signing
+          ACADEMY_KEY_PASSWORD: CI_TEST_ONLY_DO_NOT_REUSE_2026_Signing
+          ACADEMY_KEY_ALIAS: academy
+        run: |
+          set -euo pipefail
+          flutter build apk --release
+          flutter build appbundle --release
+          APK_SIGNER=$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -1)
+          test -x "$APK_SIGNER"
+          "$APK_SIGNER" verify --verbose build/app/outputs/flutter-apk/app-release.apk
+          jarsigner -verify build/app/outputs/bundle/release/app-release.aab
+      - name: Destroy throwaway test key
+        if: always()
+        shell: bash
+        run: rm -f "$RUNNER_TEMP/throwaway-release.p12"
