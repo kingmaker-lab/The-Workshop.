@@ -150,7 +150,7 @@ async function releaseResponse() {
     const list = await r.json();
     if (!Array.isArray(list)) throw new Error("release format");
     const release = list.find(item => !item.draft && !item.prerelease &&
-      /^wolfpack-academy-vd+.d+.d+$/.test(item.tag_name || ""));
+      /^wolfpack-academy-v[0-9]+[.][0-9]+[.][0-9]+$/.test(item.tag_name || ""));
     if (!release) return {available:false};
     const name = release.tag_name + ".apk";
     const asset = (release.assets || []).find(item => item.name === name);
