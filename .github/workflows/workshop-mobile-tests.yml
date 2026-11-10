@@ -7,11 +7,15 @@ on:
       - '.github/workflows/workshop-mobile-tests.yml'
   push:
     branches:
-      - feat/workshop-mobile-distribution-20261110
+      - main
     paths:
       - 'web/workshop-mobile/**'
       - 'scripts/mobile/**'
       - '.github/workflows/workshop-mobile-tests.yml'
+
+concurrency:
+  group: workshop-mobile-tests-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
