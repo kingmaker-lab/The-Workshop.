@@ -30,6 +30,11 @@ jobs:
           node --check web/workshop-store/config.js
           node --check web/workshop-store/catalog.mjs
           node --check web/workshop-store/whatsapp.mjs
+          node --check web/workshop-store/build.mjs
+      - name: Compilar Worker independente
+        run: |
+          node web/workshop-store/build.mjs
+          node --check web/workshop-store/dist/worker.mjs
       - name: Testar catalogo e orcamento via WhatsApp
         run: node --test web/workshop-store/tests/*.test.mjs
       - name: Conferir recursos essenciais
