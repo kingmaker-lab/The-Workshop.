@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - feat/wolfpack-academy-android-starter
+      - feat/wolfpack-academy-beta-02
     paths:
       - 'mobile/apps/wolfpack_academy/**'
       - '.github/workflows/wolfpack-academy-android.yml'
