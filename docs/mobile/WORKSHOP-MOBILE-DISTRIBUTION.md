@@ -12,6 +12,20 @@ Data: 2026-11-10 · Status: **portal publicado**, **assinatura/release pendentes
 
 **Não há APK release publicado enquanto as chaves não estiverem configuradas e o workflow manual não for executado na branch main.** A página segura o botão de download até detectar, na API pública do GitHub, o APK exato com digest SHA-256. Não oferece APK debug.
 
+## Opção simplificada: um único script no seu Linux
+
+Após instalar GitHub CLI (`gh`) e JDK (`keytool`), e fazer `gh auth login`, execute a partir do repositório atualizado:
+
+```bash
+git switch main
+git pull --ff-only
+bash scripts/mobile/setup_signing_local.sh
+```
+
+O script solicita uma senha no terminal **sem exibi-la**, gera a chave somente no seu computador, preserva uma chave existente e envia os quatro segredos diretamente ao GitHub Actions via entrada padrão. Não copia senhas para issues, chat, logs ou argumentos de linha de comando. É possível executá-lo novamente para sincronizar os segredos, desde que você saiba a senha existente.
+
+Mantenha a senha num gerenciador e faça **duas cópias criptografadas do arquivo `.p12`** antes do primeiro lançamento. Nunca o adicione a Git ou compartilhe.
+
 ## 1. Gerar e guardar uma chave de produção estável
 
 **Esta etapa deve ser feita pelo responsável pelo aplicativo no próprio computador. Nunca enviar a chave ou as senhas por chat, commitar no GitHub ou disponibilizar em artifact.**
