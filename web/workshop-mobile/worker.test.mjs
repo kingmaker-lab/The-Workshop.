@@ -65,3 +65,15 @@ test("release sem digest, com url falsa ou draft não é oferecido",async()=>{
   globalThis.fetch=async()=>new Response(JSON.stringify([item]),{status:200});
   try{assert.equal((await requestRelease()).available,false);}finally{globalThis.fetch=orig;}
 });
+
+test("politica de privacidade responde sem script e descreve progresso local", async () => {
+  const res = await portal.fetch(make("/privacy"));
+  assert.equal(res.status, 200);
+  assert.match(res.headers.get("content-security-policy"), /default-src 'none'/);
+  const body = await res.text();
+  assert.match(body, /Política de privacidade/);
+  assert.match(body, /preferências locais/);
+  const head = await portal.fetch(new Request("https://example.org/privacy", {method:"HEAD"}));
+  assert.equal(head.status, 200);
+  assert.equal(await head.text(), "");
+});
