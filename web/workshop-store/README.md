@@ -31,18 +31,29 @@ Edite catalog.mjs. O atributo price informa referência em reais e period: "mês
     node --check web/workshop-store/config.js
     node --test web/workshop-store/tests/*.test.mjs
 
-## Publicação isolada no Cloudflare Pages
+## Publicação independente com Cloudflare Workers
 
-Módulo estático independente, seguindo o padrão de Direct Upload dos portais atuais. Faça deploy **após configurar o contato e revisar o catálogo**:
+A Store usa o módulo estático de `web/workshop-store/` e um Worker separado dos demais portais, com build reproduzível.
 
-    npx wrangler pages project create workshop-store --production-branch main
-    npx wrangler pages deploy web/workshop-store --project-name workshop-store --branch main
+```sh
+node web/workshop-store/build.mjs
+node --check web/workshop-store/dist/worker.mjs
+npx wrangler deploy --config web/workshop-store/wrangler.toml
+```
 
-Se o projeto já existir, pule o comando de criação. Confirme que os arquivos foram servidos, teste no celular e verifique o envio da mensagem. Adicionar um link a partir dos hubs existentes deve ser uma alteração posterior e separada, preservando Labs, CTF e Kids.
+Preview disponibilizado via Cloudflare Workers no endereço:
+https://workshop-store-preview.wolfpackworkshop.workers.dev/
+
+O preview usa um Worker independente chamado `workshop-store-preview`; a configuração e o código estão no mesmo branch deste PR. Nenhum site existente foi substituído.
+
+O contato WhatsApp comercial está configurado em `config.js`. **O preview não significa aprovação comercial dos preços nem lançamento definitivo.** Revise serviços e preços iniciais antes de publicar `workshop-store` em produção e adicionar o link aos hubs existentes.
+
+Os valores são estimativas “a partir de” e o cliente negocia o escopo do serviço no WhatsApp.
 
 ## Limites
+
 - Não recebe pagamentos, não faz agendamentos e não mantém pedidos.
 - Sem painel administrativo: catálogo e contato são versionados.
-- Preços são sugestões iniciais, não promessa de preço final.
+- Preços sugeridos precisam de validação antes do lançamento.
 - Visitas presenciais dependem de localização, orçamento e disponibilidade.
 - Avaliações de segurança apenas em ambientes com autorização formal.
