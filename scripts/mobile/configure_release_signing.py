@@ -22,12 +22,14 @@ for marker in (
     "    buildTypes {",
     "targetSdk = flutter.targetSdkVersion",
     "compileSdk = flutter.compileSdkVersion",
+    "ndkVersion = flutter.ndkVersion",
 ):
     if text.count(marker) != 1:
         raise SystemExit("Unexpected generated Android Gradle template; aborting")
 
 text = text.replace("targetSdk = flutter.targetSdkVersion", "targetSdk = 36")
 text = text.replace("compileSdk = flutter.compileSdkVersion", "compileSdk = 36")
+text = text.replace("ndkVersion = flutter.ndkVersion", 'ndkVersion = "29.0.14206865"')
 text = text.replace(
     "    buildTypes {",
     """
@@ -49,4 +51,4 @@ text = text.replace(
     1,
 )
 gradle_path.write_text(text, encoding="utf-8")
-print("Release signing configured; targetSdk=36; compileSdk=36")
+print("Release signing configured; targetSdk=36; compileSdk=36; NDK=29")
