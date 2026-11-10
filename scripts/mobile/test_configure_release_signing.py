@@ -9,6 +9,7 @@ SCRIPT = Path(__file__).with_name("configure_release_signing.py").resolve()
 TEMPLATE = '''plugins {}
 android {
     compileSdk = flutter.compileSdkVersion
+    ndkVersion = flutter.ndkVersion
     defaultConfig {
         targetSdk = flutter.targetSdkVersion
     }
@@ -36,6 +37,7 @@ class ReleaseSigningTest(unittest.TestCase):
             out = gradle.read_text()
             self.assertIn('targetSdk = 36', out)
             self.assertIn('compileSdk = 36', out)
+            self.assertIn('ndkVersion = "29.0.14206865"', out)
             self.assertIn('signingConfigs.getByName("release")', out)
             for secret in ["not-a-real-store-secret","not-a-real-key-secret"]:
                 self.assertNotIn(secret, out)
