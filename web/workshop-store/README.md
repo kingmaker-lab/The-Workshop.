@@ -10,17 +10,11 @@ Vitrine comercial independente para **assistência técnica, automação, sites/
 - HTML, CSS e JS estáticos, sem backend, rastreamento, banco de dados, checkout ou cobrança.
 - Layout responsivo, navegação por teclado e cabeçalhos de segurança.
 
-## Obrigatório antes do lançamento: número comercial
+## WhatsApp comercial
 
-Configure um **WhatsApp autorizado para uso público** no arquivo config.js:
+O contato autorizado foi configurado em `config.js` e todos os botões usam a rota fixa `https://wa.me/` com telefone brasileiro validado. O número é **informação pública** de atendimento e não deve ser considerado segredo. Se houver troca de telefone, faça revisão e teste de regressão; mantenha o contato em arquivo de configuração, nunca em diversos componentes.
 
-    window.WORKSHOP_STORE = Object.freeze({
-      whatsapp: "55DDDNUMERO"
-    });
-
-Troque pelo número real, iniciando com 55 + DDD + telefone, somente dígitos. O valor ilustrativo acima não é válido. Com o valor vazio, todos os botões de WhatsApp ficam desativados e há uma mensagem explicativa. **Não publique antes de configurar o contato verdadeiro.** O telefone ficará público no código da página, pois o link WhatsApp é público.
-
-Ao clicar, o visitante abre o próprio WhatsApp com mensagem pré-preenchida. A loja não mantém os dados da conversa nem envia informações a um servidor Workshop.
+A mensagem é apenas pré-preenchida: **o visitante precisa confirmar o envio no WhatsApp**. A Store não armazena a conversa.
 
 ## Preços e ofertas
 Edite catalog.mjs. O atributo price informa referência em reais e period: "mês" identifica opção mensal, sem cobrança automática. Defina limites claros para suporte e manutenção antes de aceitar contratos. Serviços de segurança exigem autorização expressa e escopo escrito.
@@ -50,7 +44,7 @@ O contato WhatsApp comercial está configurado em `config.js`. **O preview não 
 
 Os valores são estimativas “a partir de” e o cliente negocia o escopo do serviço no WhatsApp.
 
-## Limites
+## Gate de segurança\n\nA revisão e os bloqueadores de produção estão documentados em [SECURITY_RELEASE_REVIEW_2026-11-10.md](SECURITY_RELEASE_REVIEW_2026-11-10.md). Antes de publicar, seguir também o documento raiz [SECURITY_RELEASE_GATE.md](../../docs/SECURITY_RELEASE_GATE.md).\n\n## Limites
 
 - Não recebe pagamentos, não faz agendamentos e não mantém pedidos.
 - Sem painel administrativo: catálogo e contato são versionados.
