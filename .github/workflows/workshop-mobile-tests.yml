@@ -28,3 +28,4 @@ jobs:
       - run: node --test web/workshop-mobile/worker.test.mjs
       - run: python3 -m py_compile scripts/mobile/configure_release_signing.py
       - run: python3 -m unittest discover -s scripts/mobile -p 'test_*.py'
+      - run: bash -n scripts/mobile/setup_signing_local.sh
