@@ -2,7 +2,7 @@ name: Wolfpack Academy release build smoke
 on:
   push:
     branches:
-      - feat/wolfpack-academy-beta-02
+      - main
     paths:
       - 'mobile/apps/wolfpack_academy/**'
       - 'scripts/mobile/**'
@@ -13,6 +13,10 @@ on:
       - 'scripts/mobile/**'
       - '.github/workflows/wolfpack-academy-release*.yml'
   workflow_dispatch:
+
+concurrency:
+  group: wolfpack-academy-release-smoke-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
