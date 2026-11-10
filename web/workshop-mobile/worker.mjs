@@ -56,7 +56,7 @@ const PAGE = String.raw`<!doctype html>
 <body>
   <header><nav class="wrap" aria-label="Navegação principal">
     <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">🐺</span><span>THE WORKSHOP / MOBILE</span></a>
-    <div class="navlinks"><a href="#academy">Academy</a><a href="#instalar">Instalação</a><a href="https://github.com/kingmaker-lab/The-Workshop." rel="noopener noreferrer">GitHub</a></div>
+    <div class="navlinks"><a href="#academy">Academy</a><a href="#instalar">Instalação</a><a href="/privacy">Privacidade</a><a href="https://github.com/kingmaker-lab/The-Workshop." rel="noopener noreferrer">GitHub</a></div>
   </nav></header>
   <main>
     <section class="hero wrap" aria-labelledby="titulo">
@@ -109,6 +109,31 @@ const PAGE = String.raw`<!doctype html>
   <footer class="footer"><div class="wrap">© The Workshop · Mobile Division · <a href="https://github.com/kingmaker-lab/The-Workshop." rel="noopener noreferrer">Código e projetos</a></div></footer>
 </body>
 </html>`;
+const PRIVACY = String.raw`<!doctype html><html lang="pt-BR"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#071220">
+<title>Privacidade | Wolfpack Academy e The Workshop Mobile</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,Arial,sans-serif}*{box-sizing:border-box}body{margin:0;background:#071220;color:#e8f6fc;line-height:1.75}
+main{width:min(790px,calc(100% - 36px));margin:40px auto 75px}h1{font-size:clamp(2rem,4vw,3rem)}h2{margin-top:36px;color:#79dbe8}
+a{color:#7fe3f2}a:focus-visible{outline:3px solid #8ae3ef;outline-offset:4px}.muted{color:#afc5d4}
+section{border-top:1px solid #2a475a;padding-top:15px;margin-top:20px}code{color:#8be5c2}
+</style></head>
+<body><main>
+<p><a href="/">← Voltar ao The Workshop Mobile</a></p>
+<h1>Política de privacidade</h1>
+<p class="muted">Wolfpack Academy Android Beta 0.2 e portal The Workshop Mobile. Atualizada em 10 de novembro de 2026.</p>
+<section><h2>1. O aplicativo Android</h2>
+<p>A versão Beta 0.2 foi projetada para funcionar offline. Não exige cadastro, nome, e-mail ou acesso a contatos. Não inclui anúncios ou SDK de analytics. Ela registra somente identificadores de missões concluídas em preferências locais do dispositivo, para calcular XP, níveis e conquistas.</p>
+<p>Na versão descrita, esses dados não são sincronizados com nossos servidores. Não há solicitação de localização, câmera ou microfone. Não processamos dados de crianças por meio de uma conta, já que o aplicativo não possui contas.</p></section>
+<section><h2>2. Retenção e controle</h2>
+<p>As missões concluídas ficam armazenadas localmente até o usuário limpar os dados do aplicativo ou desinstalá-lo. Desinstalar pode apagar o progresso. Caso versões futuras tenham serviços online, a política será revisada antes da ativação.</p></section>
+<section><h2>3. Portal de downloads</h2>
+<p>O site está hospedado no Cloudflare e consulta informações públicas de versões no GitHub. Ao acessar o site ou baixar APKs pelo GitHub, essas plataformas poderão processar informações técnicas de acesso (por exemplo, endereço IP, horário e informações do navegador) para entrega, segurança e operação de seus serviços, conforme as respectivas políticas.</p>
+<p>O portal não exige login próprio, não envia progresso do app e não utiliza formulários para coletar dados de visitantes.</p></section>
+<section><h2>4. Contato e alterações</h2>
+<p>Para sugestões, questões de privacidade ou problemas técnicos, use os <a href="https://github.com/kingmaker-lab/The-Workshop./issues" rel="noopener noreferrer">issues do repositório The Workshop</a>, evitando compartilhar dados sensíveis publicamente. Esta política será atualizada se o funcionamento ou as práticas de tratamento de dados mudarem.</p></section>
+</main></body></html>`;
+
 const CLIENT = String.raw`(() => {
   const status = document.getElementById("release-status");
   const btn = document.getElementById("download");
@@ -173,6 +198,12 @@ export default {
     if (u.pathname === "/" || u.pathname === "/mobile" || u.pathname === "/mobile/") {
       return respond(request.method === "HEAD" ? null : PAGE, 200, "text/html; charset=utf-8", {
         "Content-Security-Policy": "default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests",
+        "Cache-Control": "public, max-age=300"
+      });
+    }
+    if (u.pathname === "/privacy" || u.pathname === "/privacy/") {
+      return respond(request.method === "HEAD" ? null : PRIVACY, 200, "text/html; charset=utf-8", {
+        "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; img-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
         "Cache-Control": "public, max-age=300"
       });
     }
