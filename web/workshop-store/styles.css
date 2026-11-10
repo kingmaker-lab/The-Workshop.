@@ -5,3 +5,6 @@
 .direct:hover{color:#e3ffb2}
 .direct[aria-disabled=true]{color:#859888;text-decoration:none}
 .summary-total strong{font-size:clamp(16px,1.8vw,22px);text-align:right}
+
+/* Privacidade: sem estilos inline sob CSP */
+.privacy-main{max-width:850px;padding-top:65px;padding-bottom:85px}.privacy-main h1{font-size:clamp(34px,4.5vw,55px);letter-spacing:-.045em;line-height:1.18}.privacy-main h2{font-size:22px;margin:32px 0 9px}.privacy-main p{color:#b8c5cc;line-height:1.8}.privacy-main .eyebrow{color:var(--accent)}.privacy-main .privacy-back{margin-top:38px}
