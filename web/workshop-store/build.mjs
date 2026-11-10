@@ -9,7 +9,9 @@ const files = {
   "/app.js": ["app.js", "text/javascript; charset=utf-8"],
   "/catalog.mjs": ["catalog.mjs", "text/javascript; charset=utf-8"],
   "/whatsapp.mjs": ["whatsapp.mjs", "text/javascript; charset=utf-8"],
-  "/config.js": ["config.js", "text/javascript; charset=utf-8"]
+  "/config.js": ["config.js", "text/javascript; charset=utf-8"],
+  "/privacidade": ["privacidade.html", "text/html; charset=utf-8"],
+  "/privacidade.html": ["privacidade.html", "text/html; charset=utf-8"]
 };
 const contents = Object.fromEntries(Object.entries(files).map(([url, [filename, mime]]) => [url, { body: readFileSync(join(root, filename), "utf8"), mime }]));
 const tmpl = readFileSync(join(root, "worker.template.mjs"), "utf8");
