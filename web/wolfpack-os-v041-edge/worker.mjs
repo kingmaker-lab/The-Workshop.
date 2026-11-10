@@ -23,6 +23,8 @@ export default {
     if(method!=="GET"&&method!=="HEAD")
       return new Response("Method Not Allowed",{status:405,headers:{...standard,"allow":"GET, HEAD","cache-control":"no-store","content-type":"text/plain; charset=utf-8"}});
     const path=new URL(request.url).pathname;
+    if(path==="/mobile"||path==="/mobile/")
+      return Response.redirect("https://workshop-mobile.wolfpackworkshop.workers.dev/",302);
     const key=path==="/"?"/index.html":path;
     const asset=ASSETS[key];
     if(!asset)return new Response(method==="HEAD"?null:"Not Found",{status:404,headers:{...standard,"cache-control":"no-store","content-type":"text/plain; charset=utf-8"}});

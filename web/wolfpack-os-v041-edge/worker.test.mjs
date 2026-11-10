@@ -61,3 +61,13 @@ test('HEAD, ETag and route/method denial stay deterministic',async()=>{
   assert.equal((await worker.fetch(new Request(root+'/.env'))).status,404);
   assert.equal((await worker.fetch(new Request(root+'/',{method:'POST'}))).status,405);
 });
+
+test('mobile division redirect preserves all other asset routes', async () => {
+  for (const path of ['/mobile','/mobile/']) {
+    const r=await worker.fetch(new Request(root+path));
+    assert.equal(r.status,302);
+    assert.equal(r.headers.get('location'),'https://workshop-mobile.wolfpackworkshop.workers.dev/');
+  }
+  const rootResponse=await worker.fetch(new Request(root+'/'));
+  assert.equal(rootResponse.status,200);
+});

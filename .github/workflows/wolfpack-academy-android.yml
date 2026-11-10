@@ -7,11 +7,15 @@ on:
       - '.github/workflows/wolfpack-academy-android.yml'
   push:
     branches:
-      - feat/wolfpack-academy-android-starter
+      - main
     paths:
       - 'mobile/apps/wolfpack_academy/**'
       - '.github/workflows/wolfpack-academy-android.yml'
   workflow_dispatch:
+
+concurrency:
+  group: wolfpack-academy-android-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -37,6 +41,12 @@ jobs:
           cache: true
       - name: Generate Android platform
         run: flutter create --platforms=android --org dev.wolfpackworkshop --project-name wolfpack_academy .
+      - name: Pin preinstalled Android NDK 29
+        run: |
+          set -euo pipefail
+          test -d "$ANDROID_HOME/ndk/29.0.14206865"
+          grep -q 'ndkVersion = flutter.ndkVersion' android/app/build.gradle.kts
+          sed -i 's/ndkVersion = flutter.ndkVersion/ndkVersion = "29.0.14206865"/' android/app/build.gradle.kts
       - name: Install dependencies
         run: flutter pub get
       - name: Flutter analyze

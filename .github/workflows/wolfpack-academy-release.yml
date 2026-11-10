@@ -1,0 +1,119 @@
+name: Wolfpack Academy - Signed Release
+# Manual and main-only. No signing secrets on pull requests or in artifacts.
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Digite RELEASE_V0_2_0 para publicar v0.2.0'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: wolfpack-academy-release
+  cancel-in-progress: false
+
+jobs:
+  signed-release:
+    if: github.ref == 'refs/heads/main' && inputs.confirm == 'RELEASE_V0_2_0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    environment: android-release
+    defaults:
+      run:
+        working-directory: mobile/apps/wolfpack_academy
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure expected version and no existing release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -qx 'version: 0.2.0+2' pubspec.yaml
+          ! gh release view wolfpack-academy-v0.2.0 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.9'
+          channel: stable
+          cache: true
+      - name: Fix Flutter Gradle plugin repository resolution
+        run: python3 ../../../scripts/mobile/prepare_flutter_gradle_repos.py
+      - name: Generate native Android project
+        run: flutter create --platforms=android --org dev.wolfpackworkshop --project-name wolfpack_academy .
+      - name: Prepare dependencies
+        run: flutter pub get
+      - name: Analyze
+        run: flutter analyze
+      - name: Test
+        run: flutter test
+      - name: Install keystore in temporary workspace
+        shell: bash
+        env:
+          ACADEMY_KEYSTORE_B64: ${{ secrets.ACADEMY_KEYSTORE_B64 }}
+          ACADEMY_STORE_PASSWORD: ${{ secrets.ACADEMY_STORE_PASSWORD }}
+          ACADEMY_KEY_PASSWORD: ${{ secrets.ACADEMY_KEY_PASSWORD }}
+          ACADEMY_KEY_ALIAS: ${{ secrets.ACADEMY_KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          umask 077
+          test -n "$ACADEMY_KEYSTORE_B64"
+          test -n "$ACADEMY_STORE_PASSWORD"
+          test -n "$ACADEMY_KEY_PASSWORD"
+          test -n "$ACADEMY_KEY_ALIAS"
+          printf '%s' "$ACADEMY_KEYSTORE_B64" | base64 --decode > "$RUNNER_TEMP/academy-release.p12"
+          keytool -list -keystore "$RUNNER_TEMP/academy-release.p12" -storepass:env ACADEMY_STORE_PASSWORD -alias "$ACADEMY_KEY_ALIAS" >/dev/null
+      - name: Configure release signing
+        env:
+          ACADEMY_KEYSTORE_PATH: ${{ runner.temp }}/academy-release.p12
+          ACADEMY_STORE_PASSWORD: ${{ secrets.ACADEMY_STORE_PASSWORD }}
+          ACADEMY_KEY_PASSWORD: ${{ secrets.ACADEMY_KEY_PASSWORD }}
+          ACADEMY_KEY_ALIAS: ${{ secrets.ACADEMY_KEY_ALIAS }}
+        run: python3 ../../../scripts/mobile/configure_release_signing.py
+      - name: Build signed APK and AAB
+        env:
+          ACADEMY_KEYSTORE_PATH: ${{ runner.temp }}/academy-release.p12
+          ACADEMY_STORE_PASSWORD: ${{ secrets.ACADEMY_STORE_PASSWORD }}
+          ACADEMY_KEY_PASSWORD: ${{ secrets.ACADEMY_KEY_PASSWORD }}
+          ACADEMY_KEY_ALIAS: ${{ secrets.ACADEMY_KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          flutter build apk --release
+          flutter build appbundle --release
+      - name: Verify signatures and checksum
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          cp build/app/outputs/flutter-apk/app-release.apk dist/wolfpack-academy-v0.2.0.apk
+          cp build/app/outputs/bundle/release/app-release.aab dist/wolfpack-academy-v0.2.0.aab
+          APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner -type f | sort -V | tail -1)
+          test -x "$APKSIGNER"
+          "$APKSIGNER" verify --verbose --print-certs dist/wolfpack-academy-v0.2.0.apk
+          jarsigner -verify dist/wolfpack-academy-v0.2.0.aab
+          (cd dist && sha256sum wolfpack-academy-v0.2.0.apk wolfpack-academy-v0.2.0.aab > SHA256SUMS)
+          (cd dist && sha256sum -c SHA256SUMS)
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release create wolfpack-academy-v0.2.0 \
+            dist/wolfpack-academy-v0.2.0.apk \
+            dist/wolfpack-academy-v0.2.0.aab \
+            dist/SHA256SUMS \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "Wolfpack Academy 0.2.0" \
+            --notes-file ../../../docs/mobile/WOLFPACK-ACADEMY-RELEASE-NOTES.md \
+            --latest=false
+      - name: Remove signing material
+        if: always()
+        run: rm -f "$RUNNER_TEMP/academy-release.p12"

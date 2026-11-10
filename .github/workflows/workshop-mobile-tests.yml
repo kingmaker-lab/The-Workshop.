@@ -1,0 +1,35 @@
+name: Workshop Mobile distribution checks
+on:
+  pull_request:
+    paths:
+      - 'web/workshop-mobile/**'
+      - 'scripts/mobile/**'
+      - '.github/workflows/workshop-mobile-tests.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'web/workshop-mobile/**'
+      - 'scripts/mobile/**'
+      - '.github/workflows/workshop-mobile-tests.yml'
+
+concurrency:
+  group: workshop-mobile-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check web/workshop-mobile/worker.mjs
+      - run: node --test web/workshop-mobile/worker.test.mjs
+      - run: python3 -m py_compile scripts/mobile/configure_release_signing.py
+      - run: python3 -m unittest discover -s scripts/mobile -p 'test_*.py'
+      - run: bash -n scripts/mobile/setup_signing_local.sh
