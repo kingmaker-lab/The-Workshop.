@@ -66,7 +66,7 @@ jobs:
           test -n "$ACADEMY_KEY_PASSWORD"
           test -n "$ACADEMY_KEY_ALIAS"
           printf '%s' "$ACADEMY_KEYSTORE_B64" | base64 --decode > "$RUNNER_TEMP/academy-release.p12"
-          keytool -list -keystore "$RUNNER_TEMP/academy-release.p12" -storepass "$ACADEMY_STORE_PASSWORD" -alias "$ACADEMY_KEY_ALIAS" >/dev/null
+          keytool -list -keystore "$RUNNER_TEMP/academy-release.p12" -storepass:env ACADEMY_STORE_PASSWORD -alias "$ACADEMY_KEY_ALIAS" >/dev/null
       - name: Configure release signing
         env:
           ACADEMY_KEYSTORE_PATH: ${{ runner.temp }}/academy-release.p12
