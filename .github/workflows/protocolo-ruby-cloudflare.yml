@@ -1,0 +1,38 @@
+name: Protocolo Ruby · Cloudflare Worker security gate
+
+on:
+  push:
+    branches: [feature/protocolo-ruby-v0.1]
+    paths:
+      - "protocolo-ruby/cloudflare/**"
+      - ".github/workflows/protocolo-ruby-cloudflare.yml"
+  pull_request:
+    paths:
+      - "protocolo-ruby/cloudflare/**"
+      - ".github/workflows/protocolo-ruby-cloudflare.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  worker-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Syntax
+        run: node --check protocolo-ruby/cloudflare/worker.js
+      - name: Security tests
+        run: node --test protocolo-ruby/cloudflare/worker.test.mjs
+      - name: Guard unsafe CSP and dynamic execution
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -q "unsafe-inline" protocolo-ruby/cloudflare/worker.js
+          ! grep -Eq '\beval[[:space:]]*\(|new[[:space:]]+Function[[:space:]]*\(' protocolo-ruby/cloudflare/worker.js
+          grep -q "strict-transport-security" protocolo-ruby/cloudflare/worker.js
+          grep -q "sha256-" protocolo-ruby/cloudflare/worker.js
