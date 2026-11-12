@@ -1,0 +1,43 @@
+name: Security Baseline | Edge Applications
+
+on:
+  push:
+    paths:
+      - "security/**"
+      - "web/workshop-labs/**"
+      - "web/ares-site/**"
+      - "web/wolfpack-os-v041-edge/**"
+      - "sites/wolfpack-crypto/**"
+      - "Cerberus/**"
+      - ".github/workflows/edge-security-baseline.yml"
+  pull_request:
+    paths:
+      - "security/**"
+      - "web/workshop-labs/**"
+      - "web/ares-site/**"
+      - "web/wolfpack-os-v041-edge/**"
+      - "sites/wolfpack-crypto/**"
+      - "Cerberus/**"
+      - ".github/workflows/edge-security-baseline.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  edge-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Environment
+        run: node --version
+      - name: Shared HTTP security regression tests
+        run: node --test security/site-security.test.mjs
+      - name: Individual application security tests
+        run: |
+          node --test web/workshop-labs/tests/smoke.test.mjs
+          node --test web/ares-site/tests/security.test.mjs
+          node --test Cerberus/worker.test.mjs
+          node --test web/wolfpack-os-v041-edge/worker.csp.test.mjs
+          node --test web/wolfpack-os-v041-edge/worker.test.mjs
