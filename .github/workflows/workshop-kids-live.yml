@@ -61,17 +61,22 @@ jobs:
           grep -q 'Heart.s Robot Factory' /tmp/kids-catalog.html
           grep -q 'Blade: Cyber Guardian' /tmp/kids-catalog.html
           grep -q 'Mini Circuit Lab' /tmp/kids-catalog.html
+          grep -q 'data-filter-age="4-6"' /tmp/kids-catalog.html
+          grep -q 'data-filter-topic="safety"' /tmp/kids-catalog.html
+          grep -q 'Detetive de Padrões' /tmp/kids-catalog.html
           curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/jogos/robot-factory/" -o /tmp/robot-factory.html
           grep -q 'id="robot-board"' /tmp/robot-factory.html
           curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/jogos/cyber-guardian/" -o /tmp/cyber-guardian.html
           grep -q 'id="guardian-choices"' /tmp/cyber-guardian.html
           curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/jogos/mini-circuit/" -o /tmp/mini-circuit.html
           grep -q 'id="circuit-battery"' /tmp/mini-circuit.html
-          for asset in games.css robot.js guardian.js circuit.js; do
+          for asset in games.css access.js discovery.js robot.js guardian.js circuit.js; do
             curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/jogos/$asset" -o "/tmp/kids-$asset"
             test -s "/tmp/kids-$asset"
           done
           grep -q 'robotSim' /tmp/kids-robot.js
           grep -q 'guardianJudge' /tmp/kids-guardian.js
           grep -q 'circuitSim' /tmp/kids-circuit.js
+          grep -q 'kidsCatalogMatches' /tmp/kids-discovery.js
+          grep -q 'reading-mode' /tmp/kids-access.js
           echo "Game Lab + three interactive games live: OK"

@@ -110,3 +110,12 @@ Deploy manual: `npx wrangler deploy web/workshop-kids/worker.js --name workshop-
 - URL versionada: `/assets/heart.webp?v=00ff52e6`; a versão anterior deixa de ser referenciada nas telas.
 - Substituição aplicada na home, retratos, chat, jogo de algoritmos e avatar do tabuleiro, Game Lab e Heart's Robot Factory.
 - Os testes automatizados e o smoke test de produção verificam a nova versão.
+
+## Game Lab 0.5: descoberta acessível (12/11/2026)
+- Catálogo `/jogos/` com filtros por **faixa etária indicativa (4–6, 7–9, 10–12)** e **assunto (lógica, segurança, ciência)**. Nenhuma faixa equivale a verificação de idade.
+- Cinco aventuras listadas: Robot Factory, Cyber Guardian, Mini Circuit Lab, Missão dos Algoritmos e Detetive de Padrões (jogo original na home).
+- Filtros executados no navegador, sem cookies, cadastro, `localStorage`, perfil ou envio das escolhas. Na ausência de JavaScript, todos os jogos continuam visíveis.
+- Alternância **Leitura confortável** no catálogo e nos três jogos do Game Lab: melhora legibilidade com letras maiores, espaçamento e menos movimento, sem armazenar preferências.
+- Orientações para responsáveis com acesso a `/#responsaveis` e `https://workshop-news.pages.dev/#workshop`.
+- Novas rotas estáticas `/jogos/discovery.js` e `/jogos/access.js` com CSP de primeira parte. Arquivo editorial `games/catalog.js` sincronizado com o Worker.
+- Preservados o jogo clássico, as conversas da Heart e do Blade, as imagens oficiais, os limites distribuídos e a observabilidade da Cloudflare.
