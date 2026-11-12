@@ -1,0 +1,51 @@
+# Separate Blueprint: does not manage any existing Workshop service.
+services:
+  - type: worker
+    name: workshop-alcateia
+    runtime: python
+    repo: https://github.com/kingmaker-lab/The-Workshop.
+    branch: feat/alcateia-own-infra
+    rootDir: services/alcateia
+    region: oregon
+    plan: 0.5c-512mb
+    numInstances: 1
+    autoDeployTrigger: 'off'
+    buildCommand: pip install --require-hashes -r requirements.txt
+    startCommand: python -m alcateia
+    disk:
+      name: alcateia-state
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.14
+      - key: BOT_MODE
+        value: standby
+      - key: DATABASE_PATH
+        value: /var/data/alcateia.sqlite
+      - key: CREATOR_ID
+        value: '1171408893780434987'
+      - key: ALLOWED_GUILD_IDS
+        sync: false
+      - key: ALLOWED_CHANNEL_IDS
+        sync: false
+      - key: ENABLE_SPONTANEOUS
+        value: 'false'
+      - key: SYNC_COMMANDS
+        value: 'false'
+      - key: DAILY_LLM_CALL_LIMIT
+        value: '100'
+      - key: DISCORD_TOKEN_HEART
+        sync: false
+      - key: DISCORD_TOKEN_FAKE
+        sync: false
+      - key: DISCORD_TOKEN_ARGUS
+        sync: false
+      - key: DISCORD_TOKEN_BLADE
+        sync: false
+      - key: LLM_BASE_URL
+        sync: false
+      - key: LLM_API_KEY
+        sync: false
+      - key: LLM_MODEL
+        sync: false

@@ -1,0 +1,25 @@
+name: Alcateia own infrastructure
+on:
+  push:
+    branches: [main, feat/alcateia-own-infra]
+    paths: ['services/alcateia/**', '.github/workflows/alcateia.yml']
+  pull_request:
+    paths: ['services/alcateia/**', '.github/workflows/alcateia.yml']
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: services/alcateia
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --require-hashes -r requirements-dev.txt
+      - run: ruff check alcateia tests
+      - run: pytest -q
+      - run: python -m alcateia --check

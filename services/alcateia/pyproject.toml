@@ -1,0 +1,17 @@
+[project]
+name = "workshop-alcateia"
+version = "0.1.0"
+description = "Independent Discord runtime for The Workshop's four characters"
+requires-python = ">=3.12,<3.14"
+dependencies = ["discord.py>=2.6,<3", "httpx[socks]>=0.28,<0.29"]
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "ruff>=0.14,<1"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
