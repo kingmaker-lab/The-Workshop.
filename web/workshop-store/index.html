@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0a0e14">
+  <meta name="description" content="The Workshop Store: assistência técnica, automação, sites e segurança digital. Escolha serviços e solicite orçamento diretamente pelo WhatsApp.">
+  <title>The Workshop Store | Tecnologia que resolve</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./config.js" defer></script>
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a href="#conteudo" class="skip">Pular para o conteúdo</a>
+  <div class="glow glow-a" aria-hidden="true"></div><div class="glow glow-b" aria-hidden="true"></div>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="#inicio" class="logo" aria-label="The Workshop Store, início">
+        <span class="logo-mark" aria-hidden="true">W<span>.</span></span>
+        <span class="logo-text">THE WORKSHOP <small>STORE / SERVICES</small></span>
+      </a>
+      <nav class="nav" aria-label="Menu principal">
+        <a href="#servicos">Serviços</a>
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#duvidas">Dúvidas</a>
+        <a href="https://workshop-labs.pages.dev/" target="_blank" rel="noopener noreferrer">Labs <span aria-hidden="true">↗</span></a>
+      </nav>
+      <button class="cart-button" type="button" id="cart-toggle" aria-controls="resumo">
+        <span aria-hidden="true">◫</span> Meu pedido <span id="cart-count" class="count">0</span>
+      </button>
+    </div>
+  </header>
+  <main id="conteudo">
+    <section class="hero container" id="inicio" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div class="kicker"><span class="pulse" aria-hidden="true"></span> SOLUÇÕES REAIS, SEM COMPLICAÇÃO</div>
+        <h1 id="hero-title">Tecnologia que <em>resolve.</em><br>Serviços que <span>cabem no bolso.</span></h1>
+        <p class="hero-lead">Seu computador precisa de cuidado? Sua empresa quer automatizar tarefas? Precisa de um site novo ou mais segurança? Na The Workshop, cada problema ganha um plano sob medida.</p>
+        <div class="hero-cta">
+          <a class="button button-primary" href="#servicos">Explorar serviços <span aria-hidden="true">↗</span></a>
+          <a class="button button-outline contact-link" id="whatsapp-hero" href="#contato">Falar no WhatsApp <span aria-hidden="true">↗</span></a>
+        </div>
+        <p class="hero-footnote">Atendimento mediante orçamento · Sem pagamento automático · Você escolhe o que precisa</p>
+      </div>
+      <div class="hero-board" aria-label="Áreas de atendimento">
+        <div class="board-top"><span>WORKSHOP <strong>/ SERVICE DESK</strong></span><span class="board-indicator">● CATÁLOGO 01</span></div>
+        <div class="board-visual" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="core">W.</div><span class="orbit-label north">SUPORTE</span><span class="orbit-label west">AUTOMAÇÃO</span><span class="orbit-label east">WEB</span><span class="orbit-label south">SEGURANÇA</span></div>
+        <div class="board-bottom"><span>DO DIAGNÓSTICO À SOLUÇÃO.</span><span>BUILD. FIX. SECURE.</span></div>
+      </div>
+    </section>
+
+    <section class="trust-strip" aria-label="Informações sobre atendimento">
+      <div class="container trust-grid">
+        <div><span class="trust-icon">01</span><p><strong>Escolha sem compromisso</strong><small>Selecione um ou mais serviços.</small></p></div>
+        <div><span class="trust-icon">02</span><p><strong>Converse diretamente</strong><small>Receba orientação antes de contratar.</small></p></div>
+        <div><span class="trust-icon">03</span><p><strong>Orçamento transparente</strong><small>Escopo e preço final combinados antes.</small></p></div>
+      </div>
+    </section>
+
+    <section class="services container" id="servicos" aria-labelledby="services-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">01 / CATÁLOGO DE SERVIÇOS</p><h2 id="services-title">O que podemos <em>resolver?</em></h2><p>Pequenos reparos, grandes ideias e tudo que existe no meio.</p></div>
+        <span class="catalog-note">PREÇOS INICIAIS EM BRL · SUJEITOS A ORÇAMENTO</span>
+      </div>
+      <div class="toolbar">
+        <div id="filtros" class="filters" role="group" aria-label="Filtrar por categoria"></div>
+        <label class="search"><span aria-hidden="true">⌕</span><span class="sr-only">Buscar serviço</span><input id="busca" type="search" placeholder="Buscar serviço..." autocomplete="off" maxlength="80"></label>
+      </div>
+      <div class="catalog-layout">
+        <div>
+          <p class="result-count" id="resultado" role="status" aria-live="polite"></p>
+          <div id="grade" class="product-grid"></div>
+          <div id="sem-resultados" class="no-results" hidden>Nenhum serviço encontrado. Tente outro termo ou categoria.</div>
+        </div>
+        <aside id="resumo" class="summary" aria-labelledby="summary-title">
+          <div class="summary-header"><span class="eyebrow">SEU PEDIDO</span><span class="summary-label">ORÇAMENTO</span></div>
+          <h3 id="summary-title">Monte seu pedido<span>.</span></h3>
+          <p>Selecione serviços e envie tudo em uma única mensagem.</p>
+          <ul id="itens" class="cart-items" aria-live="polite"></ul>
+          <div class="summary-total"><span>Estimativa inicial</span><strong id="total">R$ 0</strong></div>
+          <p class="summary-hint">Valores “a partir de”. Planos mensais, quando selecionados, são indicados à parte na conversa.</p>
+          <a id="enviar-pedido" class="button button-primary button-wide" href="#contato">Solicitar orçamento <span aria-hidden="true">↗</span></a>
+          <button type="button" id="limpar-pedido" class="clear-button">Limpar seleção</button>
+          <p class="contact-state" id="estado-contato" role="status" aria-live="polite"></p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="process" id="como-funciona" aria-labelledby="process-title">
+      <div class="container">
+        <div class="section-heading"><div><p class="eyebrow">02 / PROCESSO</p><h2 id="process-title">Simples do início <em>ao fim.</em></h2></div></div>
+        <div class="steps">
+          <article><span>01 / ESCOLHER</span><h3>Encontre o serviço</h3><p>Navegue por categoria e adicione ao pedido o que faz sentido para você.</p></article>
+          <article><span>02 / CONVERSAR</span><h3>Explique a necessidade</h3><p>O WhatsApp abre uma mensagem com o pedido pronto. Descreva os detalhes.</p></article>
+          <article><span>03 / RESOLVER</span><h3>Combine a solução</h3><p>Receba uma proposta com escopo, prazo e valor final antes de contratar.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="faq container" id="duvidas" aria-labelledby="faq-title">
+      <div><p class="eyebrow">03 / PERGUNTAS FREQUENTES</p><h2 id="faq-title">Antes de <em>começar.</em></h2><p>Informação clara também faz parte do atendimento.</p></div>
+      <div class="faq-list">
+        <details><summary>Os preços exibidos são definitivos?</summary><p>Não. São valores iniciais de referência. O orçamento final depende do problema, escopo, complexidade e disponibilidade.</p></details>
+        <details><summary>Posso pedir mais de um serviço?</summary><p>Sim. Adicione os serviços ao pedido para conversar sobre todos de uma vez no WhatsApp.</p></details>
+        <details><summary>O atendimento é remoto ou presencial?</summary><p>Há serviços que podem ser realizados remotamente. Visitas presenciais dependem da localização, disponibilidade e orçamento combinado.</p></details>
+        <details><summary>Como funcionam os serviços de segurança?</summary><p>As avaliações são realizadas apenas mediante autorização expressa do responsável pelo ambiente e definição prévia de escopo.</p></details>
+        <details><summary>Este site recebe pagamentos ou meus dados?</summary><p>A loja não tem checkout nem formulário de cadastro. A Cloudflare pode processar dados técnicos de acesso para servir e proteger o site. Ao abrir o WhatsApp, a conversa segue as políticas daquela plataforma. Não envie senhas ou códigos de autenticação.</p></details>
+      </div>
+    </section>
+    <section class="contact-banner container" id="contato">
+      <div><p class="eyebrow">PRECISA DE ALGO DIFERENTE?</p><h2>Não encontrou na lista?<br><em>Conta o desafio.</em></h2><p>Projetos especiais, dúvidas técnicas e soluções sob medida também são bem-vindos.</p></div>
+      <a id="contato-geral" class="button button-primary contact-link" href="#contato">Pedir atendimento <span aria-hidden="true">↗</span></a>
+    </section>
+  </main>
+  <footer class="footer"><div class="container footer-inner"><div><a href="#inicio" class="footer-brand">THE WORKSHOP<span>.</span></a><small>Build. Break. Understand. Rebuild.</small></div><div><a href="https://workshop-labs.pages.dev/" target="_blank" rel="noopener noreferrer">Labs ↗</a><a href="https://github.com/kingmaker-lab/The-Workshop." target="_blank" rel="noopener noreferrer">GitHub ↗</a></div><p>© <span id="ano">2026</span> The Workshop. Serviços comerciais independentes dos laboratórios educativos gratuitos. <a href="./privacidade.html">Privacidade e dados</a></p></div></footer>
+</body>
+</html>

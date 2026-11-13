@@ -1,0 +1,9 @@
+name = "workshop-store"
+main = "dist/worker.mjs"
+compatibility_date = "2026-11-10"
+workers_dev = true
+
+[observability]
+enabled = true
+head_sampling_rate = 0.1
+redact_query_string = true
