@@ -46,3 +46,19 @@ Scope: Python forward-only attention, isolated browser heatmap, Docs and CI.
 
 CI links and preview / production deployment evidence will be appended after
 the corresponding checks. This gate is not a production AI certification.
+
+## Evidence recorded during implementation
+
+- Python 3.11, 44/44 passing tests plus CLI smoke with
+  `causal_mask_ok=True`: https://github.com/kingmaker-lab/The-Workshop./actions/runs/43456310541
+- Workshop Labs Node, 20/20 passing security and behavior tests:
+  https://github.com/kingmaker-lab/The-Workshop./actions/runs/43456535555
+- Source review: `HEARTAI_HTML` and `HEARTAI_ATTENTION_JS` match
+  their original GitHub source files byte-for-byte; existing ARGUS,
+  CERBERUS and NEXUS Worker routes remain in the aggregate bundle.
+- Cloudflare Pages preview: **NOT VERIFIED** as of this revision.
+  Cloudflare Pages GET and POST calls from the connected Cloudflare
+  API were returning HTTP 503 ("no healthy upstream"). This is a
+  deployment blocker, not evidence of a defect in the static site.
+- No claim of public HEART_005 availability should be made until
+  preview/production deploy succeeds and the canonical URL is checked.
