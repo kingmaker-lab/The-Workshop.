@@ -245,3 +245,15 @@ A sequência é determinística e consulta apenas elementos atualmente visíveis
 ### Validação
 
 A suíte `sites/workshop-news/tests/site.test.mjs` verifica o corpo articulado, os cinco estados de animação, seletores de interação, ausência de `Math.random`, respeito a movimento reduzido, passagem de clique e sintaxe do JavaScript do mascote.
+
+### Revisão visual do Fake 4D
+
+A jaqueta, as patas e os tênis fazem parte do corpo articulado em CSS. Cotovelos e joelhos dobram durante a passada e a escalada. O mesmo rig é reduzido em telas de até 760 px, com as dimensões externas e os controles usados pelo script. O rosto continua vindo de `/fake.svg`. Ao alterar o markup do rig, atualize também a versão da folha de estilo em `index.html`.
+
+#### Publicação e rollback
+
+1. Rode `node sites/workshop-news/scripts/build.mjs` e `node --test sites/workshop-news/tests/*.test.mjs` na raiz. Revise as poses e os controles no desktop e no celular.
+2. Abra o PR e aguarde o CI. Execute **Pages · preview → production promotion** para `workshop-news` com o run e SHA do artefato validado pelo **Pages · immutable artifact gate** e `promote_production=false`. Registre a URL e o ID do preview.
+3. Confira a versão da folha de estilo no preview, as ações sobre cards, a passagem de cliques, os controles e o movimento reduzido. Verifique também `/api/feed` e os atalhos do portal.
+4. Faça o merge após a revisão do preview e o CI do PR. Aguarde o CI de `main` e confirme que os arquivos de deploy coincidem com os revisados. Promova o artefato validado para produção com `promote_production=true`. Registre o SHA, as URLs, os IDs dos deploys e o run do CI.
+5. Em caso de regressão, selecione a última implantação de produção bem-sucedida em **Cloudflare → Workers & Pages → workshop-news → Deployments** e use **Rollback to this deployment**. Confira a versão servida e `/api/feed` no domínio principal. A versão em produção antes desta revisão foi registrada como `0ecf5285-ac08-47db-8840-abe16018b98a` (`e164bc3`).

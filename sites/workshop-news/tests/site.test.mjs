@@ -282,8 +282,11 @@ test('Fake 4D keeps the existing face and adds articulated, non-blocking site in
   }
   assert.match(css,/data-pass-through="true"[^}]*\.fw-character\{pointer-events:none\}/);
   assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
-  assert.match(css,/@keyframes fw-leg-left/);
-  assert.match(css,/@keyframes fw-arm-right/);
+  assert.equal((html.match(/class="fw-sleeve"><span class="fw-paw"/g)||[]).length,2);
+  assert.equal((html.match(/class="fw-shin"><span class="fw-foot"/g)||[]).length,2);
+  assert.match(css,/@keyframes fw-knee/);
+  assert.match(css,/@keyframes fw-elbow/);
+  assert.match(css,/@media\(prefers-reduced-motion:reduce\)\{[^}]+}\s*#fake-walker \.fw-rig,#fake-walker \.fw-rig \*\{animation:none!important/);
 
   assert.match(js,/selector:'\.news-item',action:'point'/);
   assert.match(js,/selector:'\.highlight-card',action:'climb'/);
@@ -316,9 +319,9 @@ test('Fake 4D browser script is syntactically valid JavaScript',async()=>{
 test('Fake 4D rollout uses versioned walker assets and query-safe routes',async()=>{
   const {readFile}=await import('node:fs/promises');
   const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
-  assert.match(html,/\/fake-walker\.css\?v=fake4d-20261113/);
+  assert.match(html,/\/fake-walker\.css\?v=fake4d-chibi-20261113/);
   assert.match(html,/\/fake-walker\.js\?v=fake4d-20261113/);
-  for(const url of ['/fake-walker.css?v=fake4d-20261113','/fake-walker.js?v=fake4d-20261113']){
+  for(const url of ['/fake-walker.css?v=fake4d-chibi-20261113','/fake-walker.js?v=fake4d-20261113']){
     const response=await handler(new Request(new URL(url,base)),fakeAssets);
     assert.equal(response.status,200,url);
   }
