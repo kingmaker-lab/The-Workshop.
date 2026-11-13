@@ -6,7 +6,7 @@ const apps={
   'workshop-news':{
     project:'workshop-news',
     root:'sites/workshop-news',
-    files:['_worker.js','index.html','styles.css','app.js','favicon.svg','fake.svg','fake-walker.css','fake-walker.js','fake-3d.svg']
+    files:['_worker.js','index.html','styles.css','app.js','favicon.svg','fake.svg','fake-walker.css','fake-walker.js','fake-3d.svg','fake-rig-neon.png']
   },
   'workshop-labs':{
     project:'workshop-labs',

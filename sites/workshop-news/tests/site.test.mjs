@@ -263,14 +263,15 @@ test('Ruby Tool entry is a fixed redirect to the standalone Protocolo Ruby tool'
 });
 
 
-test('Fake 4D keeps the existing face and adds articulated, non-blocking site interactions',async()=>{
+test('Fake 4D uses the illustrated rig with articulated, non-blocking site interactions',async()=>{
   const {readFile}=await import('node:fs/promises');
   const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
   const css=await readFile(new URL('../fake-walker.css',import.meta.url),'utf8');
   const js=await readFile(new URL('../fake-walker.js',import.meta.url),'utf8');
 
   assert.match(html,/class="fw-rig"/);
-  assert.match(html,/class="fw-head"><img src="\/fake\.svg"/);
+  assert.match(html,/class="fw-head"/);
+  assert.match(css,/fake-rig-neon\.png/);
   assert.match(html,/fw-arm-left/);
   assert.match(html,/fw-arm-right/);
   assert.match(html,/fw-leg-left/);
@@ -300,7 +301,7 @@ test('Fake 4D keeps the existing face and adds articulated, non-blocking site in
 });
 
 test('Fake 4D assets remain allowlisted by the News Worker',async()=>{
-  for(const asset of ['/fake.svg','/fake-3d.svg','/fake-walker.css','/fake-walker.js']){
+  for(const asset of ['/fake.svg','/fake-3d.svg','/fake-rig-neon.png','/fake-walker.css','/fake-walker.js']){
     const response=await handler(new Request(new URL(asset,base)),fakeAssets);
     assert.equal(response.status,200,asset);
     assert.equal(response.headers.get('x-frame-options'),'DENY');
@@ -319,9 +320,9 @@ test('Fake 4D browser script is syntactically valid JavaScript',async()=>{
 test('Fake 4D rollout uses versioned walker assets and query-safe routes',async()=>{
   const {readFile}=await import('node:fs/promises');
   const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
-  assert.match(html,/\/fake-walker\.css\?v=fake4d-chibi-20261113/);
+  assert.match(html,/\/fake-walker\.css\?v=fake4d-neon-20261113/);
   assert.match(html,/\/fake-walker\.js\?v=fake4d-20261113/);
-  for(const url of ['/fake-walker.css?v=fake4d-chibi-20261113','/fake-walker.js?v=fake4d-20261113']){
+  for(const url of ['/fake-walker.css?v=fake4d-neon-20261113','/fake-walker.js?v=fake4d-20261113']){
     const response=await handler(new Request(new URL(url,base)),fakeAssets);
     assert.equal(response.status,200,url);
   }
