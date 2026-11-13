@@ -52,7 +52,7 @@ test("Histórias e invenções têm conteúdo editável e seguro",()=>{
  assert.match(story,/floresta de estrelas/);
  assert.equal(helpers.buildStory("invalid","forest","garden"),"");
  const inv=helpers.buildInvention("organize","paper");
- assert.match(inv.text,/Organizar|organizar/);
+ assert.match(inv.text,/guardar objetos de brincar/);
  assert.match(inv.text,/papel e lápis/);
  assert.match(inv.text,/peça ajuda de um adulto/);
  assert.equal(helpers.buildInvention("invalid","paper"),null);
