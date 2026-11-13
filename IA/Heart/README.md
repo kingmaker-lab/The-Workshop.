@@ -123,6 +123,55 @@ python -m unittest discover -s tests -v
 python -m scripts.heart_experiments --db /tmp/heart-demo.db --tokenizer /tmp/heart-tokenizer.json
 ```
 
-Próximo experimento planejado: **HEART_005 Causal Attention**. A arquitetura
-não inclui, nesta etapa, Transformer, geração autoregressiva ou modelo de
-linguagem treinado.
+## HEART_005 — Atenção causal (forward-only)
+
+`heart.neural.CausalAttention` implementa uma cabeça pequena de
+**scaled dot-product self-attention**, com projeções **Q/K/V** determinísticas,
+codificação posicional senoidal, **softmax numericamente estabilizado** e
+máscara estritamente causal (triangular inferior). Os vetores para PAD não
+participam como consultas nem como chaves.
+
+O experimento **integra o tokenizer do HEART_003** e os embeddings do
+HEART_004. As matrizes Q/K/V são inicializadas por seed, mas **não são
+treinadas**. É uma operação forward-only, não um decoder Transformer,
+modelo de linguagem ou sistema capaz de gerar texto.
+
+```python
+from heart.neural import BPETokenizer, TokenEmbeddings, CausalAttention
+
+tokenizer = BPETokenizer()
+tokenizer.train(["heartai e linguagem", "redes neurais e atenção"] * 6, vocab_size=280)
+embeddings = TokenEmbeddings(tokenizer.vocab_size, dimension=8, seed=7)
+tokens = tokenizer.encode("Olá, HeartAI!")[:16]
+layer = CausalAttention(dimension=8, seed=17)
+output = layer.forward(tokens, embeddings)
+
+assert len(output.weights) == len(tokens)
+assert all(all(weight == 0 for weight in row[i + 1:])
+           for i, row in enumerate(output.weights))
+print(output.weights[-1])
+```
+
+**Limites experimentais:** até 64 tokens, até 64 dimensões e entradas numéricas
+finitas e limitadas. A operação é local, sem dependência nova nem serviço de
+inferência. Não são salvos pesos ou históricos de atenção automaticamente.
+
+Experimento web (independente da matriz Q/K/V do Python):
+[HEART_005 Attention Playground](https://workshop-labs.pages.dev/heartai/#attention).
+Permite digitar texto, visualizar a matriz causal e selecionar uma posição
+para ver seus pesos e vetor de saída. A demonstração JavaScript utiliza
+vetores e projeções sintéticos determinísticos, limitados a 14 tokens,
+**não usa os pesos Python nem do HEART_004** e não realiza chamadas de rede.
+
+Testes:
+
+```bash
+cd IA/Heart
+python -m unittest discover -s tests -v
+python -m scripts.heart_experiments --db /tmp/heart005.db --tokenizer /tmp/heart005-tokens.json
+```
+
+A próxima etapa prevista é **HEART_006 Transformer Decoder**, começando com
+residuals, normalização e camadas empilhadas; treinamento com backpropagation
+e inferência autoregressiva permanecem projetos separados.
+
