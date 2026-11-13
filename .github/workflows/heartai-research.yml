@@ -29,6 +29,8 @@ jobs:
         run: python -m compileall -q heart scripts
       - name: Full local runtime regression suite
         run: python -m unittest discover -s tests -v
-      - name: HEART_002 to HEART_004 experiment smoke
+      - name: HEART_002 to HEART_005 experiment smoke
         run: |
-          python -m scripts.heart_experiments --db /tmp/heart-004-test.db --tokenizer /tmp/heart-004-tokenizer.json
+          python -m scripts.heart_experiments --db /tmp/heart-005-test.db --tokenizer /tmp/heart-005-tokenizer.json | tee /tmp/heart-005-smoke.log
+          grep -q 'HEART_005:' /tmp/heart-005-smoke.log
+          grep -q 'causal_mask_ok=True' /tmp/heart-005-smoke.log
