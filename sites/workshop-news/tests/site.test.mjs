@@ -261,3 +261,53 @@ test('Ruby Tool entry is a fixed redirect to the standalone Protocolo Ruby tool'
  assert.equal((html.match(/href="\/ruby"/g)||[]).length,2);
  assert.match(html,/Protocolo Ruby/);
 });
+
+
+test('Fake 4D keeps the existing face and adds articulated, non-blocking site interactions',async()=>{
+  const {readFile}=await import('node:fs/promises');
+  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
+  const css=await readFile(new URL('../fake-walker.css',import.meta.url),'utf8');
+  const js=await readFile(new URL('../fake-walker.js',import.meta.url),'utf8');
+
+  assert.match(html,/class="fw-rig"/);
+  assert.match(html,/class="fw-head"><img src="\/fake\.svg"/);
+  assert.match(html,/fw-arm-left/);
+  assert.match(html,/fw-arm-right/);
+  assert.match(html,/fw-leg-left/);
+  assert.match(html,/fw-leg-right/);
+  assert.match(html,/id="fw-pause"/);
+
+  for(const action of ['walk','point','climb','sit','peek']){
+    assert.match(css,new RegExp('data-action="'+action+'"'));
+  }
+  assert.match(css,/data-pass-through="true"[^}]*\.fw-character\{pointer-events:none\}/);
+  assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
+  assert.match(css,/@keyframes fw-leg-left/);
+  assert.match(css,/@keyframes fw-arm-right/);
+
+  assert.match(js,/selector:'\.news-item',action:'point'/);
+  assert.match(js,/selector:'\.highlight-card',action:'climb'/);
+  assert.match(js,/selector:'\.activity-item',action:'peek'/);
+  assert.match(js,/selector:'\.lab-links a',action:'sit'/);
+  assert.match(js,/targetLabel\(target\)/);
+  assert.match(js,/prefers-reduced-motion: reduce/);
+  assert.match(js,/localStorage\.setItem\(pausedKey/);
+  assert.doesNotMatch(js,/Math\.random/);
+  assert.doesNotMatch(js,/innerHTML\s*=/);
+});
+
+test('Fake 4D assets remain allowlisted by the News Worker',async()=>{
+  for(const asset of ['/fake.svg','/fake-3d.svg','/fake-walker.css','/fake-walker.js']){
+    const response=await handler(new Request(new URL(asset,base)),fakeAssets);
+    assert.equal(response.status,200,asset);
+    assert.equal(response.headers.get('x-frame-options'),'DENY');
+  }
+});
+
+
+test('Fake 4D browser script is syntactically valid JavaScript',async()=>{
+  const {execFileSync}=await import('node:child_process');
+  const {fileURLToPath}=await import('node:url');
+  const file=fileURLToPath(new URL('../fake-walker.js',import.meta.url));
+  execFileSync(process.execPath,['--check',file],{stdio:'pipe'});
+});

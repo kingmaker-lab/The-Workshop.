@@ -118,9 +118,20 @@
     </main>
   </div>
 </div>
-  <div id="fake-walker" data-facing="right" data-moving="false" aria-label="Fake, mascote interativo">
-    <button id="fw-character" class="fw-character" type="button" aria-label="Fake: abrir minha coluna de novidades"><img src="/fake-3d.svg" width="88" height="88" alt=""></button>
-    <span id="fw-bubble" class="fw-bubble" role="status" hidden></span>
+  <div id="fake-walker" data-facing="right" data-moving="false" data-action="idle" data-pass-through="false" aria-label="Fake, mascote interativo">
+    <button id="fw-character" class="fw-character" type="button" aria-label="Fake: abrir minha coluna de novidades">
+      <span class="fw-rig" aria-hidden="true">
+        <span class="fw-shadow"></span>
+        <span class="fw-leg fw-leg-left"><span class="fw-foot"></span></span>
+        <span class="fw-leg fw-leg-right"><span class="fw-foot"></span></span>
+        <span class="fw-body"><span class="fw-body-mark">F</span></span>
+        <span class="fw-arm fw-arm-left"><span class="fw-paw"></span></span>
+        <span class="fw-arm fw-arm-right"><span class="fw-paw"></span></span>
+        <span class="fw-head"><img src="/fake.svg" width="96" height="96" alt=""></span>
+      </span>
+    </button>
+    <span id="fw-bubble" class="fw-bubble" role="status" aria-live="polite" hidden></span>
+    <button id="fw-pause" class="fw-pause" type="button" title="Pausar Fake" aria-label="Pausar animações do Fake" aria-pressed="false">Ⅱ</button>
     <button id="fw-hide" class="fw-hide" type="button" title="Ocultar Fake" aria-label="Ocultar mascote Fake">×</button>
   </div>
   <button id="fake-walker-toggle" type="button" aria-label="Mostrar mascote Fake novamente" title="Mostrar Fake" hidden>🐺</button>

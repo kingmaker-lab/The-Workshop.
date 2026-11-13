@@ -1,18 +1,158 @@
-/* Fake Walker: scoped, independent of the News feed and styles. */
-#fake-walker{--fw-size:88px;position:fixed;left:16px;bottom:14px;width:var(--fw-size);height:calc(var(--fw-size) + 12px);z-index:70;pointer-events:none;contain:layout style;user-select:none;will-change:left}
+/* Fake 4D: scoped progressive enhancement for Workshop News. */
+#fake-walker{
+  --fw-w:116px;--fw-h:154px;--fw-head:76px;
+  position:fixed;left:0;top:0;width:var(--fw-w);height:var(--fw-h);z-index:70;
+  pointer-events:none;contain:layout style;user-select:none;
+  transform:translate3d(18px,calc(100vh - 170px),0);
+  will-change:transform
+}
 #fake-walker[hidden]{display:none!important}
-#fake-walker .fw-character{position:absolute;left:0;bottom:0;display:block;width:var(--fw-size);height:var(--fw-size);padding:0;border:0;background:transparent;pointer-events:auto;cursor:pointer;filter:drop-shadow(0 8px 11px #0009) drop-shadow(0 0 11px #b14be777)}
-#fake-walker .fw-character img{display:block;width:100%;height:100%;object-fit:contain;transform-origin:50% 80%;transition:filter .2s}
-#fake-walker .fw-character:hover img{filter:brightness(1.13)}
-#fake-walker[data-facing="left"] .fw-character img{transform:scaleX(-1)}
-#fake-walker[data-moving="true"] .fw-character{animation:fw-walk .42s ease-in-out infinite alternate}
-#fake-walker .fw-bubble{position:absolute;bottom:calc(var(--fw-size) + 13px);left:50%;transform:translateX(-50%);padding:10px 12px;width:max-content;max-width:min(220px,calc(100vw - 24px));border:1px solid #9e57bd;border-radius:12px;background:#1b122beF;box-shadow:0 12px 28px #05030eaa;color:#ffedff;font:600 12px/1.45 system-ui,sans-serif;text-align:center}
+#fake-walker .fw-character{
+  position:absolute;inset:0;display:block;width:100%;height:100%;padding:0;border:0;
+  background:transparent;pointer-events:auto;cursor:pointer;filter:drop-shadow(0 10px 14px #000a)
+}
+#fake-walker[data-pass-through="true"] .fw-character{pointer-events:none}
+#fake-walker .fw-rig{position:absolute;inset:0;transform-origin:50% 70%;transition:filter .2s}
+#fake-walker[data-facing="left"] .fw-rig{transform:scaleX(-1)}
+#fake-walker .fw-character:hover .fw-rig{filter:brightness(1.08)}
+#fake-walker .fw-shadow{
+  position:absolute;left:25px;bottom:2px;width:66px;height:16px;border-radius:50%;
+  background:#05020eb8;filter:blur(5px);transform-origin:center
+}
+#fake-walker .fw-head{
+  position:absolute;z-index:7;left:20px;top:0;width:var(--fw-head);height:var(--fw-head);
+  border-radius:44% 44% 38% 38%;overflow:hidden;
+  filter:drop-shadow(0 0 10px #b14be788)
+}
+#fake-walker .fw-head img{display:block;width:100%;height:100%;object-fit:cover;transform:scale(1.45) translateY(5px)}
+#fake-walker .fw-body{
+  position:absolute;z-index:4;left:37px;top:62px;width:43px;height:52px;
+  border-radius:18px 18px 13px 13px;
+  background:linear-gradient(155deg,#6e2a8d 0 20%,#321542 52%,#171020 100%);
+  border:1px solid #9f55bd;box-shadow:inset 0 1px #ffffff28,0 5px 12px #08040f80
+}
+#fake-walker .fw-body:before{
+  content:"";position:absolute;left:6px;right:6px;top:6px;height:13px;border-radius:9px 9px 4px 4px;
+  border:2px solid #b66bd0;border-bottom:0;opacity:.8
+}
+#fake-walker .fw-body-mark{
+  position:absolute;left:50%;top:23px;transform:translateX(-50%);
+  color:#f0c8ff;font:900 14px/1 system-ui,sans-serif;text-shadow:0 0 8px #d75cff
+}
+#fake-walker .fw-arm{
+  position:absolute;z-index:3;top:69px;width:13px;height:44px;border-radius:9px;
+  background:linear-gradient(#4d2062,#24112f);border:1px solid #8750a0;transform-origin:50% 6px
+}
+#fake-walker .fw-arm-left{left:27px;transform:rotate(16deg)}
+#fake-walker .fw-arm-right{right:26px;transform:rotate(-16deg)}
+#fake-walker .fw-paw{
+  position:absolute;left:50%;bottom:-4px;width:16px;height:14px;transform:translateX(-50%);
+  border-radius:50%;background:#2d2332;border:1px solid #77637e
+}
+#fake-walker .fw-leg{
+  position:absolute;z-index:2;top:105px;width:15px;height:39px;border-radius:8px;
+  background:linear-gradient(#281631,#15101c);border:1px solid #674078;transform-origin:50% 5px
+}
+#fake-walker .fw-leg-left{left:40px}
+#fake-walker .fw-leg-right{right:39px}
+#fake-walker .fw-foot{
+  position:absolute;bottom:-5px;width:23px;height:12px;border-radius:8px 11px 6px 7px;
+  background:#15101b;border:1px solid #66516f
+}
+#fake-walker .fw-leg-left .fw-foot{right:2px}
+#fake-walker .fw-leg-right .fw-foot{left:2px}
+#fake-walker .fw-bubble{
+  position:absolute;bottom:calc(100% + 7px);left:50%;transform:translateX(-50%);
+  padding:10px 12px;width:max-content;max-width:min(250px,calc(100vw - 28px));
+  border:1px solid #9e57bd;border-radius:12px;background:#1b122bf2;box-shadow:0 12px 28px #05030eaa;
+  color:#ffedff;font:650 12px/1.45 system-ui,sans-serif;text-align:center
+}
 #fake-walker .fw-bubble[hidden]{display:none}
-#fake-walker .fw-bubble:after{content:"";position:absolute;width:10px;height:10px;background:#1b122b;border-bottom:1px solid #9e57bd;border-right:1px solid #9e57bd;transform:translateX(-50%) rotate(45deg);bottom:-6px;left:50%}
-#fake-walker .fw-hide{position:absolute;right:-3px;top:0;width:25px;height:25px;border-radius:50%;border:1px solid #88549a;background:#1a1229;color:#ead3fa;pointer-events:auto;cursor:pointer;font:700 16px/1 system-ui,sans-serif}
-#fake-walker .fw-character:focus-visible,#fake-walker .fw-hide:focus-visible,#fake-walker-toggle:focus-visible{outline:2px solid #e69bff;outline-offset:2px}
-#fake-walker-toggle{position:fixed;right:12px;bottom:12px;z-index:70;border:1px solid #784a9d;border-radius:50%;width:43px;height:43px;background:#211331;color:#f2dcff;cursor:pointer;font-size:22px;box-shadow:0 5px 15px #0009}
+#fake-walker .fw-bubble:after{
+  content:"";position:absolute;width:10px;height:10px;background:#1b122b;border-bottom:1px solid #9e57bd;
+  border-right:1px solid #9e57bd;transform:translateX(-50%) rotate(45deg);bottom:-6px;left:50%
+}
+#fake-walker .fw-hide,#fake-walker .fw-pause{
+  position:absolute;top:4px;width:26px;height:26px;border-radius:50%;border:1px solid #88549a;
+  background:#1a1229;color:#ead3fa;pointer-events:auto;cursor:pointer;font:750 14px/1 system-ui,sans-serif;
+  box-shadow:0 4px 10px #0008
+}
+#fake-walker .fw-hide{right:-4px}
+#fake-walker .fw-pause{right:26px;font-size:11px}
+#fake-walker .fw-character:focus-visible,#fake-walker .fw-hide:focus-visible,#fake-walker .fw-pause:focus-visible,#fake-walker-toggle:focus-visible{outline:2px solid #e69bff;outline-offset:2px}
+#fake-walker-toggle{
+  position:fixed;right:12px;bottom:12px;z-index:70;border:1px solid #784a9d;border-radius:50%;width:43px;height:43px;
+  background:#211331;color:#f2dcff;cursor:pointer;font-size:22px;box-shadow:0 5px 15px #0009
+}
 #fake-walker-toggle[hidden]{display:none!important}
-@keyframes fw-walk{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-5px) rotate(2deg)}}
-@media(max-width:760px){#fake-walker{--fw-size:65px;bottom:6px}#fake-walker .fw-bubble{font-size:11px;max-width:170px}#fake-walker .fw-hide{width:24px;height:24px}}
-@media(prefers-reduced-motion:reduce){#fake-walker[data-moving="true"] .fw-character{animation:none}#fake-walker{will-change:auto}}
+
+/* Walking: arms and legs alternate while the JS moves the character across the viewport. */
+#fake-walker[data-action="walk"][data-moving="true"] .fw-body{animation:fw-body-bob .34s ease-in-out infinite alternate}
+#fake-walker[data-action="walk"][data-moving="true"] .fw-head{animation:fw-head-bob .34s ease-in-out infinite alternate}
+#fake-walker[data-action="walk"][data-moving="true"] .fw-arm-left{animation:fw-arm-left .42s ease-in-out infinite alternate}
+#fake-walker[data-action="walk"][data-moving="true"] .fw-arm-right{animation:fw-arm-right .42s ease-in-out infinite alternate}
+#fake-walker[data-action="walk"][data-moving="true"] .fw-leg-left{animation:fw-leg-left .42s ease-in-out infinite alternate}
+#fake-walker[data-action="walk"][data-moving="true"] .fw-leg-right{animation:fw-leg-right .42s ease-in-out infinite alternate}
+#fake-walker[data-action="walk"][data-moving="true"] .fw-shadow{animation:fw-shadow .34s ease-in-out infinite alternate}
+
+/* Point at a real visible headline/card. */
+#fake-walker[data-action="point"] .fw-body{transform:rotate(-3deg)}
+#fake-walker[data-action="point"] .fw-arm-right{transform:rotate(-76deg) translateY(-2px)}
+#fake-walker[data-action="point"] .fw-arm-left{transform:rotate(24deg)}
+#fake-walker[data-action="point"] .fw-head{transform:rotate(5deg)}
+#fake-walker[data-action="point"] .fw-paw{box-shadow:0 0 10px #e69bff}
+
+/* Climb the edge of a card. */
+#fake-walker[data-action="climb"] .fw-body{animation:fw-climb-body .36s ease-in-out infinite alternate}
+#fake-walker[data-action="climb"] .fw-arm-left{animation:fw-climb-arm-a .4s ease-in-out infinite alternate}
+#fake-walker[data-action="climb"] .fw-arm-right{animation:fw-climb-arm-b .4s ease-in-out infinite alternate}
+#fake-walker[data-action="climb"] .fw-leg-left{animation:fw-climb-leg-a .38s ease-in-out infinite alternate}
+#fake-walker[data-action="climb"] .fw-leg-right{animation:fw-climb-leg-b .38s ease-in-out infinite alternate}
+
+/* Sit on the top edge of a real card. */
+#fake-walker[data-action="sit"] .fw-body{transform:translateY(4px)}
+#fake-walker[data-action="sit"] .fw-leg-left{transform:rotate(-66deg) translate(3px,2px)}
+#fake-walker[data-action="sit"] .fw-leg-right{transform:rotate(-43deg) translate(1px,2px)}
+#fake-walker[data-action="sit"] .fw-arm-left{transform:rotate(33deg)}
+#fake-walker[data-action="sit"] .fw-arm-right{transform:rotate(-26deg)}
+#fake-walker[data-action="sit"] .fw-shadow{transform:scaleX(.72);opacity:.55}
+
+/* Peek from behind a panel. */
+#fake-walker[data-action="peek"] .fw-rig{transform:translateX(17px) rotate(7deg)}
+#fake-walker[data-facing="left"][data-action="peek"] .fw-rig{transform:scaleX(-1) translateX(17px) rotate(7deg)}
+#fake-walker[data-action="peek"] .fw-arm-right{transform:rotate(-72deg)}
+#fake-walker[data-action="idle"] .fw-head{animation:fw-idle 2.4s ease-in-out infinite alternate}
+
+@keyframes fw-body-bob{from{transform:translateY(0)}to{transform:translateY(-4px)}}
+@keyframes fw-head-bob{from{transform:translateY(0) rotate(-1deg)}to{transform:translateY(-4px) rotate(2deg)}}
+@keyframes fw-arm-left{from{transform:rotate(30deg)}to{transform:rotate(-28deg)}}
+@keyframes fw-arm-right{from{transform:rotate(-30deg)}to{transform:rotate(28deg)}}
+@keyframes fw-leg-left{from{transform:rotate(25deg)}to{transform:rotate(-24deg)}}
+@keyframes fw-leg-right{from{transform:rotate(-25deg)}to{transform:rotate(24deg)}}
+@keyframes fw-shadow{from{transform:scaleX(.94);opacity:.72}to{transform:scaleX(.72);opacity:.45}}
+@keyframes fw-climb-body{from{transform:rotate(-8deg) translateY(1px)}to{transform:rotate(4deg) translateY(-3px)}}
+@keyframes fw-climb-arm-a{from{transform:rotate(120deg)}to{transform:rotate(62deg)}}
+@keyframes fw-climb-arm-b{from{transform:rotate(-118deg)}to{transform:rotate(-61deg)}}
+@keyframes fw-climb-leg-a{from{transform:rotate(34deg)}to{transform:rotate(-32deg)}}
+@keyframes fw-climb-leg-b{from{transform:rotate(-34deg)}to{transform:rotate(32deg)}}
+@keyframes fw-idle{from{transform:translateY(0) rotate(-1deg)}to{transform:translateY(-3px) rotate(1deg)}}
+
+@media(max-width:760px){
+  #fake-walker{--fw-w:82px;--fw-h:112px;--fw-head:54px}
+  #fake-walker .fw-head{left:14px}
+  #fake-walker .fw-body{left:26px;top:45px;width:31px;height:39px;border-radius:13px}
+  #fake-walker .fw-body-mark{top:18px;font-size:11px}
+  #fake-walker .fw-arm{top:50px;width:10px;height:33px}
+  #fake-walker .fw-arm-left{left:18px}#fake-walker .fw-arm-right{right:17px}
+  #fake-walker .fw-leg{top:81px;width:11px;height:28px}
+  #fake-walker .fw-leg-left{left:28px}#fake-walker .fw-leg-right{right:27px}
+  #fake-walker .fw-foot{width:17px;height:9px}
+  #fake-walker .fw-shadow{left:17px;bottom:0;width:49px;height:11px}
+  #fake-walker .fw-bubble{font-size:11px;max-width:190px}
+  #fake-walker .fw-hide,#fake-walker .fw-pause{width:23px;height:23px;top:1px}
+  #fake-walker .fw-hide{right:-3px}#fake-walker .fw-pause{right:21px}
+}
+@media(prefers-reduced-motion:reduce){
+  #fake-walker{will-change:auto}
+  #fake-walker .fw-rig,#fake-walker .fw-head,#fake-walker .fw-body,#fake-walker .fw-arm,#fake-walker .fw-leg,#fake-walker .fw-shadow{animation:none!important;transition:none!important}
+}

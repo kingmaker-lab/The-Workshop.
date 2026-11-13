@@ -216,3 +216,32 @@ A seção `#cronograma` agora prioriza cinco projetos: Protocolo Ruby, ARGUS/Hea
 - O feed de atividade agora acompanha também `exp-009-round-function-analysis`.
 - EXP-009 é descrito como análise exaustiva da função de rodada: DDT e LAT completas, diferencial máximo 0,25 e correlação absoluta máxima 0,5. O portal não apresenta isso como ataque completo à cifra.
 - Verificação ao vivo confirmou `ED. 003`, seis cards, EXP-009 e o atalho correto do Protocolo Ruby.
+
+
+## Fake 4D — mascote integrado ao News (2026-11-13)
+
+O mascote **Fake** mantém o rosto e a identidade visual do portal: o walker usa o retrato canônico `/fake.svg` como cabeça do novo corpo articulado em HTML/CSS; `/fake-3d.svg` continua preservado no Fake’s Corner. A máquina de movimento contextual permanece em `fake-walker.js`.
+
+### Ações
+
+- **Caminhar:** braços e pernas alternam enquanto o personagem se desloca pelo rodapé da área útil.
+- **Apontar:** quando uma `.news-item` está visível, Fake pode caminhar até a lateral e apontar para a manchete já renderizada.
+- **Escalar:** em `.highlight-card`, ele se desloca até a borda, sobe e senta no topo do card.
+- **Espiar:** em `.activity-item`, aparece parcialmente por trás do painel.
+- **Sentar:** pode pousar sobre a borda de cards de `.lab-links a`.
+- **Balões:** os comentários são genéricos ou usam somente o texto já presente no elemento visível. O mascote não consulta fontes próprias e não inventa fatos.
+
+A sequência é determinística e consulta apenas elementos atualmente visíveis. O Fake não move a página automaticamente.
+
+### UX, segurança e acessibilidade
+
+- Durante interações sobre cards, o personagem usa `pointer-events: none`, preservando cliques e leitura do conteúdo.
+- Há controles de **pausa** e **ocultar/mostrar**, persistidos em `localStorage`.
+- `prefers-reduced-motion: reduce` desliga caminhada e ações automáticas.
+- O loop de animação também é interrompido quando o mascote está pausado, oculto ou a aba fica em segundo plano.
+- Em viewport menor, o corpo é reduzido e as ações usam tempos mais espaçados.
+- Nenhuma API, rota, feed ou cabeçalho de segurança foi alterado para implementar o mascote.
+
+### Validação
+
+A suíte `sites/workshop-news/tests/site.test.mjs` verifica o corpo articulado, os cinco estados de animação, seletores de interação, ausência de `Math.random`, respeito a movimento reduzido, passagem de clique e sintaxe do JavaScript do mascote.
