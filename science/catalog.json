@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "snapshot_date": "2026-11-13",
+  "source_repository": "kingmaker-lab/The-Workshop.",
+  "snapshot_baseline_commit": "cadaed1bc18d788e6e5ce6381a6abbba68c2c1e5",
+  "assessment": "Revisao de caminhos e documentacao no repositorio; nao equivale a execucao de suites ou auditoria cientifica.",
+  "maturity_legend": {
+    "prototype": "Codigo inicial sem evidencia de reproducao abrangente",
+    "experimental": "Experimento versionado, ainda nao validado para producao",
+    "published_demo": "Demonstracao publica; nao equivale a produto ou validacao cientifica"
+  },
+  "projects": [
+    {
+      "id": "SCI-001",
+      "name": "ARGUS",
+      "area": "detection-engineering",
+      "maturity": "experimental",
+      "source_path": "argus",
+      "documentation_path": "argus/README.md",
+      "tests_path": "argus/tests",
+      "validation_command": "python -m unittest discover -s argus/tests -v",
+      "ci_workflow": ".github/workflows/argus-tests.yml",
+      "limitations": "Sigma e estatistica opt-in; anomalia nao comprova ataque. API local nao deve ser exposta publicamente.",
+      "next_gate": "Construir conjunto sintetico benigno/adversarial e medir taxas de falso positivo, cobertura e custo do subconjunto Sigma."
+    },
+    {
+      "id": "SCI-002",
+      "name": "HeartAI",
+      "area": "machine-learning",
+      "maturity": "experimental",
+      "source_path": "IA/Heart",
+      "documentation_path": "IA/Heart/README.md",
+      "tests_path": "IA/Heart/tests",
+      "validation_command": "cd IA/Heart && python -m unittest discover -s tests -v",
+      "ci_workflow": ".github/workflows/heartai-research.yml",
+      "limitations": "Tokenizer e embeddings didaticos; nao ha modelo de linguagem treinado ou semantica validada.",
+      "next_gate": "Congelar corpus publico, seeds e metricas para comparacoes HEART_002-004 antes de iniciar HEART_005."
+    },
+    {
+      "id": "SCI-003",
+      "name": "Ouroboros Low Level",
+      "area": "cryptography",
+      "maturity": "experimental",
+      "source_path": "research/cryptography/ouroboros-low-level",
+      "documentation_path": "research/cryptography/ouroboros-low-level/README.md",
+      "tests_path": "research/cryptography/ouroboros-low-level/experiments/007-strict-avalanche/test_sac_probe.py",
+      "validation_command": null,
+      "ci_workflow": null,
+      "limitations": "Analises de referencia nao auditam automaticamente a implementacao C/Assembly; hashes reduzidos nao protegem dados reais.",
+      "next_gate": "Adicionar vetores verificados da implementacao nativa e repetir sensibilidade, ciclos e SAC no mesmo protocolo."
+    },
+    {
+      "id": "SCI-004",
+      "name": "Ouroboros Reduced Feistel (EXP-008-014)",
+      "area": "cryptography",
+      "maturity": "published_demo",
+      "source_path": "sites/wolfpack-crypto",
+      "documentation_path": "sites/wolfpack-crypto/README.md",
+      "tests_path": "sites/wolfpack-crypto/test_worker.mjs",
+      "validation_command": "node sites/wolfpack-crypto/test_worker.mjs",
+      "ci_workflow": ".github/workflows/wolfpack-crypto-lab.yml",
+      "limitations": "Cifras reduzidas e resultados de pesquisa nao devem ser usados para protecao real; pagina publicada nao e auditoria.",
+      "next_gate": "Publicar tabela de parametros, vetores e resultados replicaveis por experimento, distinguindo medicao de hipotese."
+    },
+    {
+      "id": "SCI-005",
+      "name": "Crypto Lab Web (Blockchain, PoW, Signatures)",
+      "area": "cryptography-education",
+      "maturity": "published_demo",
+      "source_path": "web/crypto-lab",
+      "documentation_path": "web/crypto-lab/README.md",
+      "tests_path": "web/crypto-lab/signatures/tests/protocol.test.cjs",
+      "validation_command": "node --test web/crypto-lab/pow/tests/pow.test.cjs web/crypto-lab/signatures/tests/protocol.test.cjs",
+      "ci_workflow": null,
+      "limitations": "Simulacoes educacionais; nao usar carteiras, chaves ou tokens reais nos experimentos.",
+      "next_gate": "Consolidar testes de regressao da interface e rotas de integracao sem substituir o proxy legado."
+    },
+    {
+      "id": "SCI-006",
+      "name": "Cerberus",
+      "area": "software-architecture",
+      "maturity": "experimental",
+      "source_path": "Cerberus",
+      "documentation_path": "Cerberus/README.md",
+      "tests_path": "Cerberus/worker.test.mjs",
+      "validation_command": "cd Cerberus && npm test",
+      "ci_workflow": ".github/workflows/cerberus-architecture.yml",
+      "limitations": "Falhas simuladas e SQLite local nao representam benchmarks de sistemas distribuidos em producao.",
+      "next_gate": "Formalizar metricas comparativas de falhas, idempotencia e latencia, com ADR antes do experimento 04."
+    },
+    {
+      "id": "SCI-007",
+      "name": "ARES",
+      "area": "systems-engineering",
+      "maturity": "experimental",
+      "source_path": "ares",
+      "documentation_path": "ares/http-server/README.md",
+      "tests_path": "ares/http-server/tests",
+      "validation_command": "make test-ares",
+      "ci_workflow": ".github/workflows/ares-security.yml",
+      "limitations": "Servidor HTTP experimental, executado no loopback; nao e servidor pronto para Internet.",
+      "next_gate": "Construir corpus deterministico de requisicoes validas/malformadas e avaliar parser, timeout e limites."
+    },
+    {
+      "id": "SCI-008",
+      "name": "WOLF-VM",
+      "area": "virtual-machines",
+      "maturity": "experimental",
+      "source_path": "wolf-vm",
+      "documentation_path": "wolf-vm/README.md",
+      "tests_path": "wolf-vm/tests",
+      "validation_command": "make -C wolf-vm test",
+      "ci_workflow": ".github/workflows/wolf-vm.yml",
+      "limitations": "ISA educacional e bytecode controlado; isolamento e ausencia de escapes nao foram demonstrados de forma geral.",
+      "next_gate": "Adicionar testes diferenciais do assembler e invariantes de memoria/pilha com entradas geradas."
+    },
+    {
+      "id": "SCI-009",
+      "name": "RAVEN",
+      "area": "detection-engineering",
+      "maturity": "experimental",
+      "source_path": "raven",
+      "documentation_path": "raven/README.md",
+      "tests_path": "raven/spec",
+      "validation_command": "cd raven && bundle exec rspec",
+      "ci_workflow": null,
+      "limitations": "Arquivos de regras Ruby executam codigo; somente regras confiaveis podem ser carregadas.",
+      "next_gate": "Adicionar conjunto compartilhado de eventos sinteticos com ARGUS e comparar deteccoes sem misturar APIs."
+    },
+    {
+      "id": "SCI-010",
+      "name": "Active Sensing / VOI",
+      "area": "applied-mathematics",
+      "maturity": "prototype",
+      "source_path": "Pesquisa cientifica labs praticos/active_sensing_lab.py",
+      "documentation_path": "Pesquisa cientifica labs praticos/active_sensing_lab.py",
+      "tests_path": null,
+      "validation_command": null,
+      "ci_workflow": null,
+      "limitations": "Prototipo usa aleatoriedade global e NumPy sem ambiente de reproduzibilidade registrado; ainda sem README dedicado ou suite identificada.",
+      "next_gate": "Criar ambiente isolado, seeds explicitas, contrato de dados CSV e baselines comparaveis por custo/beneficio."
+    },
+    {
+      "id": "SCI-011",
+      "name": "Ruby Malware Analysis / Protocolo Ruby",
+      "area": "malware-analysis",
+      "maturity": "experimental",
+      "source_path": "Ruby/wolfpack-ruby-protocol-v0.1/wolfpack-ruby-protocol",
+      "documentation_path": "Ruby/wolfpack-ruby-protocol-v0.1/wolfpack-ruby-protocol/README.md",
+      "tests_path": "Ruby/wolfpack-ruby-protocol-v0.1/wolfpack-ruby-protocol/test",
+      "validation_command": null,
+      "ci_workflow": null,
+      "limitations": "Implementacao historica em main; backend Render evolui em branch distinta. Nao afirmar equivalencia entre versoes.",
+      "next_gate": "Mapear branch feature/protocolo-ruby-v0.1, fixtures e contrato API antes de reconciliar com main."
+    }
+  ],
+  "external_tracks": [
+    {
+      "id": "SCI-EXT-001",
+      "name": "NEXUS adaptive intelligence",
+      "repository": "kingmaker-lab/The-Arsenal-",
+      "tracking_branch": "feat/nexus-03-adaptive-intelligence",
+      "maturity": "prototype",
+      "assessment": "Branch de pesquisa em repositorio privado separado; nao representa modelo treinado em producao.",
+      "next_gate": "Avaliar testes, seeds, benchmarks e contrato de integracao sem fundir repositorios."
+    }
+  ]
+}

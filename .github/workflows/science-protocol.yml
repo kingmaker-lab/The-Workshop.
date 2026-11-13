@@ -1,0 +1,30 @@
+name: Science protocol registry
+
+on:
+  push:
+    paths:
+      - 'science/**'
+      - '.github/workflows/science-protocol.yml'
+  pull_request:
+    paths:
+      - 'science/**'
+      - '.github/workflows/science-protocol.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  catalog-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Registry paths, uniqueness, and schema
+        run: python3 science/validate.py
+      - name: Registry unit tests
+        run: python3 -m unittest discover -s science/tests -v
+      - name: Generate inventory preview
+        run: python3 science/validate.py --format markdown >> "$GITHUB_STEP_SUMMARY"
