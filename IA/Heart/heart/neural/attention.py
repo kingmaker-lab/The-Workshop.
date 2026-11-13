@@ -64,8 +64,10 @@ class CausalAttention:
             raise TypeError("embeddings must be a TokenEmbeddings instance")
         if embeddings.dimension != self.dimension:
             raise ValueError("embedding and attention dimensions must agree")
-        if not isinstance(token_ids, (list, tuple)) or not 1 <= len(token_ids) <= self.max_tokens:
-            raise ValueError("token_ids must be a bounded nonempty list or tuple")
+        if not isinstance(token_ids, (list, tuple)):
+            raise TypeError("token_ids must be a list or tuple")
+        if not 1 <= len(token_ids) <= self.max_tokens:
+            raise ValueError("token_ids must be nonempty and within max_tokens")
         if type(add_positions) is not bool:
             raise TypeError("add_positions must be boolean")
         ids = tuple(token_ids)
