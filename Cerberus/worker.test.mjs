@@ -42,8 +42,8 @@ test('CERBERUS_02 is live and contains the complete learning trail',async()=>{
  assert.equal((await send('/labs/02/')).status,200);
  assert.equal((await send('/labs/02','HEAD')).status,200);
  const status=await (await send('/api/status')).json();
- assert.equal(status.available_labs,3);
- assert.equal(status.version,'0.4.0');
+ assert.equal(status.available_labs,4);
+ assert.equal(status.version,'0.5.0');
  const modules=await (await send('/api/modules')).json();
  const lab=modules.modules.find(m=>m.id==='cerberus-02');
  assert.deepEqual({status:lab.status,route:lab.route},{status:'available',route:'/labs/02'});
@@ -71,4 +71,37 @@ test('CERBERUS_03 presents a reproducible persistent local delivery exercise',as
   const r=await send('/labs/03');
   assert.match(r.headers.get('content-security-policy'),/script-src 'none'/);
   assert.match(r.headers.get('content-security-policy'),/frame-ancestors 'none'/);
+});
+
+
+test('CERBERUS_04 is available, documented and read-only',async()=>{
+  const home=await(await send('/')).text();
+  assert.match(home,/CERBERUS_04/);
+  assert.match(home,/href="\/labs\/04"/);
+  const response=await send('/labs/04');
+  assert.equal(response.status,200);
+  const html=await response.text();
+  for(const marker of ['SOLID','DDD','Strategy','bounded contexts','ADR-0004','C4','CapacityStrategy','lab04.test.mjs']){
+    assert.ok(html.includes(marker),marker);
+  }
+  assert.match(html,/<details/);
+  assert.doesNotMatch(html,/<script\b/i);
+  assert.doesNotMatch(html,/<iframe\b/i);
+  assert.equal((await send('/labs/04/')).status,200);
+  const head=await send('/labs/04','HEAD');
+  assert.equal(head.status,200);
+  assert.equal(await head.text(),'');
+  assert.equal((await send('/labs/04','POST')).status,405);
+  assert.equal((await send('/.git/config')).status,404);
+  assert.match(response.headers.get('content-security-policy'),/script-src 'none'/);
+  assert.match(response.headers.get('content-security-policy'),/connect-src 'none'/);
+  assert.equal(response.headers.get('x-frame-options'),'DENY');
+  const status=await(await send('/api/status')).json();
+  assert.equal(status.version,'0.5.0');
+  assert.equal(status.available_labs,4);
+  const modules=await(await send('/api/modules')).json();
+  assert.equal(modules.modules.length,5);
+  const fourth=modules.modules.find(x=>x.id==='cerberus-04');
+  assert.deepEqual({status:fourth.status,route:fourth.route},{status:'available',route:'/labs/04'});
+  assert.equal(modules.modules.find(x=>x.id==='cerberus-05').status,'planned');
 });

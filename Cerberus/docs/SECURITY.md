@@ -1,4 +1,4 @@
-# Security Review — CERBERUS v0.4 / 2026-10-30
+# Security Review — CERBERUS v0.5 / 2026-11-13
 
 ## Escopo
 
@@ -24,7 +24,7 @@ Este documento cobre somente o laboratório público de arquitetura de software.
 
 1. Verificar escopo da alteração e impacto no site ativo.
 2. `cd Cerberus && npm test` (Node 20+).
-3. Conferir página inicial, experimentos 01/02/03, `/api/status`, `/api/modules` e `/api/projects`.
+3. Conferir página inicial, experimentos 01/02/03/04, `/api/status`, `/api/modules` e `/api/projects`.
 4. Inspecionar cabeçalhos efetivamente recebidos e links externos em deploy de preview/produção.
 5. Validar responsividade, navegação por teclado e funcionamento de recursos preservados.
 6. Confirmar rollback para versão anterior no dashboard.
@@ -41,3 +41,10 @@ Testes de unidade não verificam TLS, DNS, WAF, funcionalidades de outros Worker
 - Dispatcher aceita exclusivamente URL HTTP com hostname `127.0.0.1` e porta explícita; não é um proxy genérico.
 - Não há autenticação, anti-CSRF, TLS, rate limit, proteção multiusuário, isolamento forte, agendamento de retentativas nem broker. **Não implantar o receptor local na Internet.**
 - `script-src 'none'` no Worker continua intacto: página 03 utiliza componentes HTML nativos (`details`) para mostrar os passos, sem executar JavaScript do cliente.
+
+## Bancada 04 e isolamento do portal
+
+- Fonte e testes em memória, somente Node.js, sem dependências externas e sem chamadas de rede.
+- O exemplo não publica endpoints, não cria acesso a bancos de produção nem envia notificações reais.
+- O Worker mantém a CSP com scripts e conexões externos desabilitados; a página 04 usa somente HTML/CSS e elementos details nativos.
+- Os limites de ID e capacidade são validados na aggregate de demonstração; não equivalem a autenticação ou controle de concorrência.

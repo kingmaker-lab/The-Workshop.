@@ -1,4 +1,4 @@
-# Arquitetura do CERBERUS — v0.4
+# Arquitetura do CERBERUS — v0.5
 
 ## Contexto
 
@@ -15,6 +15,7 @@ Cloudflare Workers / cerberus
     |-- GET /labs/01      => experimento 001 (documentação)
     |-- GET /labs/02      => experimento 002 (camadas, Clean e Hexagonal)
     |-- GET /labs/03      => experimento 003 (fluxo visual de falhas)
+    |-- GET /labs/04      => experimento 004 (SOLID, DDD, C4, ADR)
     |-- GET /api/modules  => dados estáticos JSON
     |-- GET /api/status   => status declarativo do portal
     '-- GET /api/projects => compatibilidade com versão anterior
@@ -46,3 +47,7 @@ API de orquestração de outros serviços; gateway de identidade; sistema univer
 ## Bancada 03 (somente ambiente local de teste)
 
 Dois arquivos SQLite: `producer.sqlite` registra reservas e outbox de modo transacional; `consumer.sqlite` guarda notificações com chave única. Testes Python instanciam um servidor HTTP bound a 127.0.0.1 com porta efêmera e injetam falhas antes do envio e depois do commit remoto. O Worker de produção **não** possui conexão, binding, proxy ou chamadas a esses bancos; fornece apenas documentação estática de leitura. Não existe isolamento em processos diferentes nem garantia universal exactly-once.
+
+## CERBERUS 04: desenho de software como experimento
+
+O portal continua uma página estática e somente leitura em /labs/04. O exercício executável usa Node.js com aggregate Schedule, política Strategy, porta load/commit, adaptador InMemoryScheduleStore e anti-corruption layer para Comunicações. Os diagramas são **containers lógicos**, não serviços de deploy. ADR-0004 documenta alternativas e hipóteses. Não há armazenamento ou rede pública nesta bancada.
