@@ -303,3 +303,11 @@ test('Fake 4D assets remain allowlisted by the News Worker',async()=>{
     assert.equal(response.headers.get('x-frame-options'),'DENY');
   }
 });
+
+
+test('Fake 4D browser script is syntactically valid JavaScript',async()=>{
+  const {execFileSync}=await import('node:child_process');
+  const {fileURLToPath}=await import('node:url');
+  const file=fileURLToPath(new URL('../fake-walker.js',import.meta.url));
+  execFileSync(process.execPath,['--check',file],{stdio:'pipe'});
+});
