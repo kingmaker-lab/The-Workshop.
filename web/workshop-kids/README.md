@@ -119,3 +119,13 @@ Deploy manual: `npx wrangler deploy web/workshop-kids/worker.js --name workshop-
 - Orientações para responsáveis com acesso a `/#responsaveis` e `https://workshop-news.pages.dev/#workshop`.
 - Novas rotas estáticas `/jogos/discovery.js` e `/jogos/access.js` com CSP de primeira parte. Arquivo editorial `games/catalog.js` sincronizado com o Worker.
 - Preservados o jogo clássico, as conversas da Heart e do Blade, as imagens oficiais, os limites distribuídos e a observabilidade da Cloudflare.
+
+## Kids Create 1.0 (13/11/2026)
+- **Ativo** em `/criar/` (e alias `/create/`), acessível pelo menu e card da página principal.
+- **Ateliê de Pixel Art**: malha 16×16, cores, borracha, desfazer (até 25 alterações), modelos, exportação PNG local 512×512, interação por mouse, toque e teclado.
+- **Oficina de histórias**: seleção de personagem, cenário e objetivo, texto editável e exportação TXT.
+- **Inventos criativos**: ideias predefinidas com materiais domésticos seguros para desenho e imaginação; exportação TXT.
+- Processamento exclusivamente no navegador. Não pede nome, conta, idade ou fotos; não envia criações à API, não usa armazenamento persistente ou métricas de comportamento. Nenhuma criação é salva automaticamente.
+- Os arquivos-fonte estão em `web/workshop-kids/create/create.js` (constantes `CREATE_HTML`, `CREATE_CSS`, `CREATE_JS`), embutidos no Worker, mantendo a política CSP já existente.
+- Supervisão por adultos e acesso aos comunicados: `https://workshop-news.pages.dev/#workshop`.
+- Novas verificações em `tests/kids-create.test.mjs` e smoke test de publicação. Sem alteração nas APIs das mascotes, rate limits ou jogos.

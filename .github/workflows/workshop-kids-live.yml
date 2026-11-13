@@ -80,3 +80,17 @@ jobs:
           grep -q 'kidsCatalogMatches' /tmp/kids-discovery.js
           grep -q 'reading-mode' /tmp/kids-access.js
           echo "Game Lab + three interactive games live: OK"
+
+          # Kids Create is now functional and stays on this Worker.
+          echo "Kids Create frontend"
+          curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/criar/" -o /tmp/kids-create.html
+          grep -q 'id="pixel-board"' /tmp/kids-create.html
+          grep -q 'id="story-text"' /tmp/kids-create.html
+          grep -q 'id="invent-result"' /tmp/kids-create.html
+          curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/criar/create.js" -o /tmp/kids-create.js
+          curl --retry 3 --retry-delay 2 --connect-timeout 8 --max-time 30 -fsS "$URL/criar/create.css" -o /tmp/kids-create.css
+          grep -q 'PIXEL_SIZE=16' /tmp/kids-create.js
+          grep -q 'buildStory' /tmp/kids-create.js
+          grep -q 'buildInvention' /tmp/kids-create.js
+          grep -q 'pixel-board' /tmp/kids-create.css
+          echo "Kids Create live: OK"
