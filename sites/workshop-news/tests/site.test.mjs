@@ -311,3 +311,15 @@ test('Fake 4D browser script is syntactically valid JavaScript',async()=>{
   const file=fileURLToPath(new URL('../fake-walker.js',import.meta.url));
   execFileSync(process.execPath,['--check',file],{stdio:'pipe'});
 });
+
+
+test('Fake 4D rollout uses versioned walker assets and query-safe routes',async()=>{
+  const {readFile}=await import('node:fs/promises');
+  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
+  assert.match(html,/\/fake-walker\.css\?v=fake4d-20261113/);
+  assert.match(html,/\/fake-walker\.js\?v=fake4d-20261113/);
+  for(const url of ['/fake-walker.css?v=fake4d-20261113','/fake-walker.js?v=fake4d-20261113']){
+    const response=await handler(new Request(new URL(url,base)),fakeAssets);
+    assert.equal(response.status,200,url);
+  }
+});
