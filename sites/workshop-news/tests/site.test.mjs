@@ -270,7 +270,7 @@ test('Fake 4D keeps the existing face and adds articulated, non-blocking site in
   const js=await readFile(new URL('../fake-walker.js',import.meta.url),'utf8');
 
   assert.match(html,/class="fw-rig"/);
-  assert.match(html,/class="fw-head"><img src="\/fake-3d\.svg"/);
+  assert.match(html,/class="fw-head"><img src="\/fake\.svg"/);
   assert.match(html,/fw-arm-left/);
   assert.match(html,/fw-arm-right/);
   assert.match(html,/fw-leg-left/);
@@ -297,7 +297,7 @@ test('Fake 4D keeps the existing face and adds articulated, non-blocking site in
 });
 
 test('Fake 4D assets remain allowlisted by the News Worker',async()=>{
-  for(const asset of ['/fake-3d.svg','/fake-walker.css','/fake-walker.js']){
+  for(const asset of ['/fake.svg','/fake-3d.svg','/fake-walker.css','/fake-walker.js']){
     const response=await handler(new Request(new URL(asset,base)),fakeAssets);
     assert.equal(response.status,200,asset);
     assert.equal(response.headers.get('x-frame-options'),'DENY');
