@@ -1,11 +1,11 @@
-"""Run HEART_002 through HEART_004 as a local research demo."""
+"""Run HEART_002 through HEART_005 as a local research demo."""
 from __future__ import annotations
 
 import argparse
 from pathlib import Path
 
 from heart.conversation import ConversationStore
-from heart.neural import BPETokenizer, TokenEmbeddings
+from heart.neural import BPETokenizer, TokenEmbeddings, CausalAttention
 
 
 def main() -> None:
@@ -45,6 +45,17 @@ def main() -> None:
         print(f"HEART_004: dimension={embeddings.dimension}, training_loss={losses[-1]:.4f}")
         print(f"Toy cosine similarity: {embeddings.cosine(a, b):.4f}")
         print("Nota: embeddings demonstrativos não são compreensão semântica nem um LLM.")
+        attention = CausalAttention(dimension=8, seed=17)
+        attention_ids = tokenizer.encode("HeartAI estuda atenção causal")[:16]
+        forward = attention.forward(attention_ids, embeddings)
+        causal = all(
+            all(value == 0.0 for value in row[i+1:])
+            for i, row in enumerate(forward.weights)
+        )
+        assert causal, "causal attention unexpectedly leaked future tokens"
+        print(f"HEART_005: tokens={len(attention_ids)}, dimension=8, causal_mask_ok={causal}")
+        print(f"Last token attention weights: {[round(w, 4) for w in forward.weights[-1]]}")
+        print("Nota: projeções Q/K/V ainda NÃO foram treinadas; não há Transformer nem geração textual.")
     finally:
         memory.close()
 
