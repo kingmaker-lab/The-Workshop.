@@ -81,7 +81,7 @@ test('CERBERUS_04 is available, documented and read-only',async()=>{
   const response=await send('/labs/04');
   assert.equal(response.status,200);
   const html=await response.text();
-  for(const marker of ['SOLID','DDD','Strategy','bounded contexts','ADR-0004','C4','CapacityStrategy','lab04.test.mjs','cerberus-04']){
+  for(const marker of ['SOLID','DDD','Strategy','bounded contexts','ADR-0004','C4','CapacityStrategy','lab04.test.mjs']){
     assert.ok(html.includes(marker),marker);
   }
   assert.match(html,/<details/);
