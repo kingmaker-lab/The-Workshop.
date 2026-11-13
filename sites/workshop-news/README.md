@@ -220,7 +220,7 @@ A seção `#cronograma` agora prioriza cinco projetos: Protocolo Ruby, ARGUS/Hea
 
 ## Fake 4D — mascote integrado ao News (2026-11-13)
 
-O mascote **Fake** mantém o rosto e a identidade visual existentes em `/fake-3d.svg`, mas o walker recebeu um corpo articulado em HTML/CSS e uma máquina de movimento contextual em `fake-walker.js`.
+O mascote **Fake** mantém o rosto e a identidade visual do portal: o walker usa o retrato canônico `/fake.svg` como cabeça do novo corpo articulado em HTML/CSS; `/fake-3d.svg` continua preservado no Fake’s Corner. A máquina de movimento contextual permanece em `fake-walker.js`.
 
 ### Ações
 
