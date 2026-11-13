@@ -62,3 +62,33 @@ the corresponding checks. This gate is not a production AI certification.
   deployment blocker, not evidence of a defect in the static site.
 - No claim of public HEART_005 availability should be made until
   preview/production deploy succeeds and the canonical URL is checked.
+
+## Cloudflare preview and production (verified 2026-11-13)
+
+- Main merge commit: `27c76c1ae73592a901f5a3341ea098708fbddd9d` (PR #48).
+- Immutable Pages artifact gate on main: SUCCESS,
+  https://github.com/kingmaker-lab/The-Workshop./actions/runs/43457081600.
+- Python 44/44 and Workshop Labs 20/20 CI: SUCCESS on main,
+  https://github.com/kingmaker-lab/The-Workshop./actions/runs/43457080045
+  and https://github.com/kingmaker-lab/The-Workshop./actions/runs/43457079698.
+- Cloudflare Pages PREVIEW deployment
+  `7fb3d37b-a7b9-4e53-9def-6e13f703a611`: SUCCESS;
+  https://7fb3d37b.workshop-labs.pages.dev/heartai/.
+  Browser rendering confirmed the attention matrix, nonempty causal
+  output summing to 1, Byte-BPE, embeddings and absence of NaN.
+- Cloudflare Pages PRODUCTION deployment
+  `323b69c0-9542-40e7-b001-caf62b77b370`: SUCCESS;
+  https://323b69c0.workshop-labs.pages.dev.
+- Canonical https://workshop-labs.pages.dev/heartai/#attention:
+  production Browser Rendering confirms attention heatmap and
+  numerical output, both previous playgrounds, no NaN.
+- Canonical root https://workshop-labs.pages.dev/:
+  Browser Rendering confirmed the new HeartAI catalog card and
+  preserved links to ARGUS, CERBERUS and NEXUS.
+- Additional separate browser rendering for ARGUS and NEXUS:
+  NOT VERIFIED in this last pass (Cloudflare Browser Rendering HTTP 429,
+  rate limit). Their Worker routes and Node regression tests were
+  verified before publication; no claims of separate live checks.
+
+Release decision: public static HEART_005 teaching demo PUBLISHED.
+No Python model/runtime deployed, no external inference API created.
