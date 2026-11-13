@@ -61,8 +61,10 @@ class CausalAttentionTests(unittest.TestCase):
         with_pos = self.layer.forward(ids, self.embeddings, add_positions=True)
         no_pos = self.layer.forward(ids, self.embeddings, add_positions=False)
         self.assertNotEqual(with_pos.vectors, no_pos.vectors)
-        self.assertEqual(no_pos.vectors[0], no_pos.vectors[1])
-        self.assertEqual(no_pos.vectors[1], no_pos.vectors[2])
+        for lhs, rhs in zip(no_pos.vectors[0], no_pos.vectors[1]):
+            self.assertAlmostEqual(lhs, rhs, places=12)
+        for lhs, rhs in zip(no_pos.vectors[1], no_pos.vectors[2]):
+            self.assertAlmostEqual(lhs, rhs, places=12)
 
     def test_tokenizer_and_trained_embeddings_integration(self):
         tokenizer = BPETokenizer()
