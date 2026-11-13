@@ -24,7 +24,7 @@
   border-radius:44% 44% 38% 38%;overflow:hidden;
   filter:drop-shadow(0 0 10px #b14be788)
 }
-#fake-walker .fw-head img{display:block;width:100%;height:100%;object-fit:cover;transform:scale(1.04)}
+#fake-walker .fw-head img{display:block;width:100%;height:100%;object-fit:cover;transform:scale(1.45) translateY(5px)}
 #fake-walker .fw-body{
   position:absolute;z-index:4;left:37px;top:62px;width:43px;height:52px;
   border-radius:18px 18px 13px 13px;
