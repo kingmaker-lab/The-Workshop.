@@ -30,6 +30,7 @@
   let frame=0;
   let lastTime=0;
   let bubbleUntil=0;
+  let bubbleTimer=0;
   let scheduleTimer=0;
   let planIndex=0;
   let targetIndex=0;
@@ -66,11 +67,14 @@
     bubble.textContent=String(message||'').slice(0,110);
     bubble.hidden=false;
     bubbleUntil=performance.now()+duration;
+    if(bubbleTimer)window.clearTimeout(bubbleTimer);
+    bubbleTimer=window.setTimeout(()=>{bubble.hidden=true;bubbleTimer=0;},duration);
   }
   function updateBubble(now){
     if(!bubble.hidden&&now>=bubbleUntil)bubble.hidden=true;
   }
   function clearSchedule(){if(scheduleTimer)window.clearTimeout(scheduleTimer);scheduleTimer=0;}
+  function stopFrame(){if(frame)cancelAnimationFrame(frame);frame=0;lastTime=0;}
   function shouldAnimate(){return visible&&!paused&&!reduced.matches&&!document.hidden;}
   function canInteract(){return shouldAnimate()&&!busy&&!hover;}
 
@@ -106,9 +110,10 @@
       lastTime=time;
       if(root.dataset.action==='walk')root.dataset.moving='false';
     }
-    if(visible)frame=requestAnimationFrame(walkTick);
+    if(shouldAnimate()&&!busy)frame=requestAnimationFrame(walkTick);
+    else frame=0;
   }
-  function ensureFrame(){if(visible&&!frame)frame=requestAnimationFrame(walkTick);}
+  function ensureFrame(){if(shouldAnimate()&&!frame&&!busy)frame=requestAnimationFrame(walkTick);}
 
   function visibleTargets(selector){
     return [...document.querySelectorAll(selector)].filter(node=>{
@@ -302,7 +307,7 @@
     visible=Boolean(next);
     root.hidden=!visible;restore.hidden=visible;
     cancelActive();
-    if(!visible){bubble.hidden=true;if(frame)cancelAnimationFrame(frame);frame=0;}
+    if(!visible){bubble.hidden=true;if(bubbleTimer)window.clearTimeout(bubbleTimer);bubbleTimer=0;stopFrame();}
     else{place(x,dockY());ensureFrame();if(shouldAnimate()){setAction('walk');scheduleNext(2600);}else setAction('idle');}
     try{localStorage.setItem(hiddenKey,visible?'0':'1');}catch{}
   }
@@ -332,13 +337,14 @@
 
   document.addEventListener('visibilitychange',()=>{
     cancelActive();
-    if(document.hidden){setAction('idle');}
+    if(document.hidden){setAction('idle');stopFrame();}
     else{resetToDock(shouldAnimate()?'walk':'idle');ensureFrame();scheduleNext(3000);}
   });
   reduced.addEventListener('change',()=>{
     cancelActive();
     resetToDock(reduced.matches?'idle':paused?'idle':'walk');
-    if(!reduced.matches&&!paused){ensureFrame();scheduleNext(3000);}
+    if(reduced.matches||paused)stopFrame();
+    else{ensureFrame();scheduleNext(3000);}
   });
   window.addEventListener('resize',()=>{
     if(anchor)queueAnchorSync();
