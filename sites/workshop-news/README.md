@@ -257,3 +257,11 @@ A jaqueta, as patas e os tênis fazem parte do corpo articulado em CSS. Cotovelo
 3. Confira a versão da folha de estilo no preview, as ações sobre cards, a passagem de cliques, os controles e o movimento reduzido. Verifique também `/api/feed` e os atalhos do portal.
 4. Faça o merge após a revisão do preview e o CI do PR. Aguarde o CI de `main` e confirme que os arquivos de deploy coincidem com os revisados. Promova o artefato validado para produção com `promote_production=true`. Registre o SHA, as URLs, os IDs dos deploys e o run do CI.
 5. Em caso de regressão, selecione a última implantação de produção bem-sucedida em **Cloudflare → Workers & Pages → workshop-news → Deployments** e use **Rollback to this deployment**. Confira a versão servida e `/api/feed` no domínio principal. A versão em produção antes desta revisão foi registrada como `0ecf5285-ac08-47db-8840-abe16018b98a` (`e164bc3`).
+
+### Fake ilustrado neon — 13/11/2026
+
+A revisão ilustrada usa a referência fornecida pelo autor e a proposta de corpo inteiro aprovada na conversa. O walker passa a usar o rosto anime dessa proposta, com óculos, capuz e expressão característica. O atlas transparente `fake-rig-neon.png` contém nove peças e é compartilhado entre os membros. Os recortes e encaixes são definidos em CSS. A imagem foi gerada com ImageGen integrado, a partir da proposta aprovada, pedindo uma grade 3×3 de cabeça, torso, braço, antebraço, mão, coxa, canela, tênis e cauda, preservando traço anime e preto/magenta.
+
+O carregamento adiciona uma imagem compartilhada de aproximadamente 1,4 MB. Os movimentos continuam por transformações CSS e pela máquina contextual existente. O build, o pacote de release e a lista explícita de assets do Worker incluem o atlas. A troca de aparência exige atualizar a versão do CSS no HTML.
+
+Rollback desta revisão: restaurar no Cloudflare Pages a implantação de produção `96b927ca-cebf-4f1e-bfff-bdc670a71774`, correspondente ao corpo CSS do commit `499b85b`.
