@@ -5,7 +5,8 @@ Fonte versionada do portal [workshop-labs.pages.dev](https://workshop-labs.pages
 ## Páginas e destinos
 
 - `/`, `/index.html`: catálogo de cinco laboratórios.
-- `/argus/`: laboratório estático expandido do ARGUS com arquitetura, sinais, cenário reproduzível, formatos, quick start, segurança e roadmap.\n- `argus/index.html`: fonte editorial da página ARGUS; cópia embutida em `const ARGUS_HTML` no Worker; teste CI exige correspondência literal.\n- `/heartai/`: laboratório HeartAI com tokenizer e embeddings locais no navegador; independente do ARGUS.
+- `/argus/`: laboratório estático expandido do ARGUS com arquitetura, sinais, cenário reproduzível, formatos, quick start, segurança e roadmap.\n- `argus/index.html`: fonte editorial da página ARGUS; cópia embutida em `const ARGUS_HTML` no Worker; teste CI exige correspondência literal.\n- `/heartai/`: laboratório HeartAI com Byte-BPE, embeddings e mapa de atenção causal, totalmente no navegador; independente do ARGUS.
+- `/heartai/tokenizer.js`, `/heartai/embeddings.js`, `/heartai/attention.js`: três demonstradores locais, sem API e com CSP `connect-src 'none'`.
 - `/assets/labs.css`: folha de estilo de primeira parte.
 - ARES: link para o diretório de código ARES no repositório, evitando um caminho interno que retornava 404.
 - Crypto Lab: portal Cloudflare Pages independente.
@@ -33,3 +34,7 @@ A implantação por API do Cloudflare Pages exige `manifest` JSON e o arquivo `_
 ## Atualização editorial do ARGUS (30/10/2026)
 
 O ARGUS tem agora uma página com navegação por âncoras, pipeline visual, detalhes das cinco famílias de sinais, exemplo didático de 17 eventos/3 alertas, formatos, configuração padrão, comandos locais, limitações de segurança e experimentos planejados. Todos os números descrevem **a versão de laboratório**, não uma API ativa ou serviço de monitoramento online. Para atualizar a página, edite `web/workshop-labs/argus/index.html` e sincronize a constante `ARGUS_HTML` em `web/workshop-labs/_worker.js` antes do deploy. `tests/argus-content.test.mjs` impedirá que as versões divirjam.
+
+## HEART_005 (13/11/2026)
+
+A pesquisa de atenção causal foi publicada no repositório como forward pass Python de uma cabeça (`IA/Heart/heart/neural/attention.py`) e como mapa de calor client-side em `/heartai/#attention`. O peso do navegador não é o modelo Python nem é treinado. A implementação exige sequência curta, não armazena prompts, não baixa pesos e não expõe os dados do runtime do HeartAI. O Worker precisa preservar todas as suas constantes (incluindo `HEARTAI_ATTENTION_JS`) ao fazer deploy.
