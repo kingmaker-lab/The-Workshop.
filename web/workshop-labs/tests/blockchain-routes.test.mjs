@@ -14,7 +14,7 @@ test('Blockchain EXP-001 through EXP-003 and assets',async()=>{
  for(const [path,needle] of [
   ['/crypto-lab/','Blockchain, por dentro'],
   ['/crypto-lab/pow/','Proof-of-Work'],
-  ['/crypto-lab/signatures/','Wallets'],
+  ['/crypto-lab/signatures/','Assinaturas Digitais'],
   ['/crypto-lab/app.js','crypto.subtle.digest'],
   ['/crypto-lab/pow/miner.worker.js','SHA-256'],
   ['/crypto-lab/signatures/protocol.js','ECDSA'],
