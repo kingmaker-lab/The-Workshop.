@@ -38,3 +38,12 @@ O ARGUS tem agora uma página com navegação por âncoras, pipeline visual, det
 ## HEART_005 (13/11/2026)
 
 A pesquisa de atenção causal foi publicada no repositório como forward pass Python de uma cabeça (`IA/Heart/heart/neural/attention.py`) e como mapa de calor client-side em `/heartai/#attention`. O peso do navegador não é o modelo Python nem é treinado. A implementação exige sequência curta, não armazena prompts, não baixa pesos e não expõe os dados do runtime do HeartAI. O Worker precisa preservar todas as suas constantes (incluindo `HEARTAI_ATTENTION_JS`) ao fazer deploy.
+
+## Blockchain & Crypto Experiments (19/11/2026)
+
+- EXP-001: `/crypto-lab/` (encadeamento SHA-256 e detecção de adulteração).
+- EXP-002: `/crypto-lab/pow/` (Proof-of-Work local no browser).
+- EXP-003: `/crypto-lab/signatures/` (carteiras fictícias ECDSA P-256).
+- EXP-004/005: UTXO e P2P planejados, não implementados.
+
+O Worker do Workshop Labs incorpora as rotas do `web/crypto-lab/workshop-labs-integration-worker.js` sem proxy ao snapshot legado, junto com o catálogo Blockchain. Testar `tests/blockchain-routes.test.mjs` e as rotas de ARGUS, HeartAI, NEXUS, Ouroboros e CERBERUS antes de publicar.
