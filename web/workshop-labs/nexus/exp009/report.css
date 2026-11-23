@@ -1,0 +1,12 @@
+/* EXP-009 report-only styles; no script or external dependencies */
+.report-table-scroll{overflow-x:auto;border:1px solid #293244;border-radius:10px;margin:1.4rem 0 1.8rem;background:#111622}
+.report-table{width:100%;border-collapse:collapse;min-width:680px;text-align:left;font-size:.94rem;line-height:1.55}
+.report-table caption{text-align:left;padding:1rem 1.15rem;color:#aab6c9;font-size:.82rem}
+.report-table th,.report-table td{padding:.88rem 1rem;border-bottom:1px solid #293244;vertical-align:top}
+.report-table thead th{background:#1c2535;color:#eaf0f7;font-weight:700}
+.report-table tbody th{font-weight:600}
+.report-table tbody tr:last-child th,.report-table tbody tr:last-child td{border-bottom:0}
+.report-table tbody tr:hover{background:#1a2231}
+.report-table td:nth-child(2),.report-table td:nth-child(3),.report-table td:nth-child(4){font-variant-numeric:tabular-nums;white-space:nowrap}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media(max-width:700px){.report-table{font-size:.85rem}}
