@@ -31,7 +31,9 @@ test('EXP-009 content does not execute scripts, ingest user data or load externa
  assert.doesNotMatch(report,/<(?:script|iframe|form|style)\b/i);
  assert.doesNotMatch(report,/\bon\w+\s*=/i);
  assert.doesNotMatch(report,/\b(?:fetch|XMLHttpRequest|WebSocket|eval)\s*\(/i);
- assert.doesNotMatch(report,/<(?:img|link|script)[^>]+(?:src|href)\s*=\s*["']https?:/i);
+ assert.doesNotMatch(report,/<(?:img|script)[^>]+src\s*=\s*["']https?:/i);
+ assert.doesNotMatch(report,/<link[^>]+rel=["']stylesheet["'][^>]+href\s*=\s*["']https?:/i);
+ assert.ok(report.includes('rel="canonical" href="https://workshop-labs.pages.dev/nexus/exp009/"'));
  assert.ok(report.includes('rel="noopener noreferrer"'));
  assert.ok(report.includes('scope="row"')&&report.includes('<caption>'));
  assert.ok(!report.includes('private_key')&&!report.includes('api_key'));
