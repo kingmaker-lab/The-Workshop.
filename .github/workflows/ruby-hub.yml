@@ -1,0 +1,26 @@
+name: Ruby Hub registry
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'sites/ruby-hub/**'
+      - '.github/workflows/ruby-hub.yml'
+  pull_request:
+    paths:
+      - 'sites/ruby-hub/**'
+      - '.github/workflows/ruby-hub.yml'
+permissions:
+  contents: read
+jobs:
+  registry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+      - name: Validate project registry
+        run: ruby sites/ruby-hub/scripts/validate_registry.rb
+      - name: Check Ruby source syntax
+        run: ruby -c sites/ruby-hub/scripts/validate_registry.rb

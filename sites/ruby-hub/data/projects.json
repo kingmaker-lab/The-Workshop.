@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "initiative": "The Workshop Ruby Initiative",
+  "updated_at": "2026-11-23",
+  "projects": [
+    {
+      "id": "protocolo-ruby",
+      "name": "Protocolo Ruby",
+      "category": "Segurança",
+      "status": "development",
+      "featured": true,
+      "kind": "LAB / SECURITY",
+      "description": "Laboratório de pesquisa em análise de binários, indicadores e engenharia reversa. Integração e endereços públicos em validação.",
+      "stack": [
+        "Ruby",
+        "Cybersecurity",
+        "Reverse Engineering"
+      ],
+      "repo": null,
+      "site": null
+    },
+    {
+      "id": "raven",
+      "name": "RAVEN",
+      "category": "Segurança",
+      "status": "development",
+      "featured": true,
+      "kind": "ENGINE / DSL",
+      "description": "Motor de regras temporais e detecção defensiva com DSL escrita em Ruby, janelas de tempo e integração com eventos JSONL.",
+      "stack": [
+        "Ruby",
+        "DSL",
+        "Detection Engineering"
+      ],
+      "repo": "https://github.com/kingmaker-lab/The-Workshop./tree/main/raven",
+      "site": null
+    },
+    {
+      "id": "raven-http",
+      "name": "RAVEN HTTP",
+      "category": "Ferramentas",
+      "status": "experimental",
+      "featured": false,
+      "kind": "TOOL / NETWORK",
+      "description": "Auditor passivo de postura HTTP/HTTPS escrito em Ruby puro, com relatórios JSON e verificações de cabeçalhos, TLS e cookies.",
+      "stack": [
+        "Ruby",
+        "HTTP",
+        "Security Headers"
+      ],
+      "repo": "https://github.com/kingmaker-lab/The-Workshop./tree/main/Ruby/raven-http-v0.1/raven-http",
+      "site": null
+    },
+    {
+      "id": "vulpes-77",
+      "name": "VULPES-77",
+      "category": "Jogos",
+      "status": "experimental",
+      "featured": true,
+      "kind": "GAME / TERMINAL",
+      "description": "RPG de investigação de incidentes em terminal, totalmente simulado e construído com Ruby e sua biblioteca padrão.",
+      "stack": [
+        "Ruby",
+        "CLI",
+        "RPG"
+      ],
+      "repo": "https://github.com/kingmaker-lab/The-Workshop./tree/main/Ruby/vulpes77-terminal",
+      "site": null
+    },
+    {
+      "id": "wolfpack-ruby-protocol",
+      "name": "Wolfpack Ruby Protocol",
+      "category": "Educação",
+      "status": "experimental",
+      "featured": false,
+      "kind": "LEARN / TERMINAL",
+      "description": "Aprendizado de Ruby em 12 missões práticas, com desafios, avaliação local de exercícios e progressão de campanha.",
+      "stack": [
+        "Ruby",
+        "Learning",
+        "CLI"
+      ],
+      "repo": "https://github.com/kingmaker-lab/The-Workshop./tree/main/Ruby/wolfpack-ruby-protocol-v0.1/wolfpack-ruby-protocol",
+      "site": null
+    },
+    {
+      "id": "wolfpack-workshop-web",
+      "name": "Wolfpack Workshop Web",
+      "category": "Educação",
+      "status": "experimental",
+      "featured": false,
+      "kind": "LEARN / WEB",
+      "description": "Experiência educacional web que reúne Ruby Protocol e VULPES-77; inclui execução de Ruby/WASM no navegador.",
+      "stack": [
+        "Ruby",
+        "WebAssembly",
+        "JavaScript"
+      ],
+      "repo": "https://github.com/kingmaker-lab/The-Workshop./tree/main/Ruby/wolfpack-the-workshop-web-v0.3-completo/wolfpack-workshop-web-v0.3",
+      "site": null
+    }
+  ]
+}

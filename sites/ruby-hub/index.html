@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0b090d">
+  <meta name="description" content="Ruby Hub: um único lugar para explorar os projetos Ruby da iniciativa The Workshop.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <title>Ruby Hub · The Workshop</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./assets/styles.css">
+  <script src="./assets/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#catalog">Ir para os projetos</a>
+  <div class="grain" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="wordmark" href="#home" aria-label="Ruby Hub, início"><span class="ruby-mark" aria-hidden="true">◆</span><span>RUBY<span class="wordmark-light">HUB</span></span><span class="wordmark-sub">/ THE WORKSHOP</span></a>
+    <nav class="nav" aria-label="Navegação principal">
+      <a href="#catalog">Projetos</a><a href="#initiative">Iniciativa</a><a href="#roadmap">Roadmap</a>
+      <a class="nav-github" href="https://github.com/kingmaker-lab/The-Workshop." target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+  <main id="home">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-content">
+        <p class="eyebrow"><span class="pulse"></span> THE WORKSHOP / RUBY INITIATIVE <span class="meta-version">EST. 2026</span></p>
+        <h1 id="hero-title">One language.<br><em>Many worlds.</em></h1>
+        <p class="hero-copy">De motores de detecção a jogos de terminal. Do primeiro <code>puts</code> à engenharia de sistemas. Nosso universo Ruby vive aqui.</p>
+        <div class="hero-actions"><a class="btn btn-primary" href="#catalog">Explorar projetos <span aria-hidden="true">↗</span></a><a class="btn btn-outline" href="#initiative">Conhecer a iniciativa <span aria-hidden="true">→</span></a></div>
+        <div class="hero-stats" aria-label="Indicadores do catálogo">
+          <div><strong id="stat-projects">—</strong><span>PROJETOS INDEXADOS</span></div>
+          <div><strong id="stat-areas">—</strong><span>ÁREAS DE CRIAÇÃO</span></div>
+          <div><strong>100%</strong><span>FOCO EM RUBY</span></div>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="gem-shell"><span class="gem">◆</span></div><div class="art-label label-top">RUBY / 0x52</div><div class="art-label label-bottom">BUILD · LEARN · EXPLORE</div></div>
+    </section>
+    <section id="catalog" class="catalog section" aria-labelledby="catalog-title">
+      <div class="section-top"><div><p class="section-kicker">01 / EXPLORE THE ECOSYSTEM</p><h2 id="catalog-title">Projetos<span class="dot">.</span></h2><p class="section-description">Pesquisa, ferramentas e experiências construídas com Ruby, reunidas num só lugar.</p></div><span class="section-count" id="visible-count" aria-live="polite">CARREGANDO...</span></div>
+      <div class="toolbar"><label class="searchbox"><span aria-hidden="true">⌕</span><span class="sr-only">Pesquisar projetos</span><input id="search" type="search" placeholder="Buscar por nome, área ou tecnologia..." autocomplete="off"></label><div class="filters" id="filters" role="group" aria-label="Filtrar por categoria"><button class="filter active" type="button" data-category="Todos" aria-pressed="true">Todos</button></div></div>
+      <div id="project-grid" class="project-grid" aria-live="polite"><p class="loading">Carregando catálogo Ruby...</p></div>
+      <p class="empty-state" id="empty-state" hidden>Nenhum projeto encontrado. Experimente outro termo ou filtro.</p>
+    </section>
+    <section id="project-detail" class="detail section" hidden aria-labelledby="detail-title"><a class="back-link" href="#catalog">← Voltar ao catálogo</a><div id="detail-content"></div></section>
+    <section id="initiative" class="manifesto section" aria-labelledby="initiative-title"><div><p class="section-kicker">02 / WHY RUBY?</p><h2 id="initiative-title">Código com<br><em>identidade.</em></h2></div><div class="manifesto-copy"><p>O Ruby Hub é a porta de entrada da iniciativa Ruby do <strong>The Workshop</strong>. Cada projeto preserva seu próprio código, histórico e identidade. O Hub conecta essas peças.</p><p>Queremos mostrar Ruby além de um único framework: ferramentas CLI, automação, programação de redes, educação, jogos e segurança defensiva.</p><a href="#catalog" class="inline-link">Descubra os projetos <span aria-hidden="true">↗</span></a></div></section>
+    <section id="roadmap" class="roadmap section" aria-labelledby="roadmap-title"><div class="section-top"><div><p class="section-kicker">03 / NEXT ITERATIONS</p><h2 id="roadmap-title">Em construção<span class="dot">.</span></h2></div><span class="section-count">RUBY HUB / v0.1</span></div><div class="roadmap-grid"><div><span>01</span><h3>Catálogo vivo</h3><p>Manifesto de projetos versionado, busca, filtros e páginas individuais.</p><span class="roadmap-state">v0.1 · IMPLEMENTADO</span></div><div><span>02</span><h3>Ruby Atlas</h3><p>Trilhas de conhecimento e ferramentas para mostrar Ruby em diversas áreas.</p><span class="roadmap-state">PLANEJADO</span></div><div><span>03</span><h3>Ruby Labs</h3><p>Experimentos reproduzíveis, exemplos práticos e publicação de pesquisa.</p><span class="roadmap-state">PLANEJADO</span></div></div></section>
+  </main>
+  <footer class="footer"><div><a href="#home" class="footer-brand"><span aria-hidden="true">◆</span> RUBY HUB</a><p>One language. Many worlds.</p></div><div class="footer-side"><span>AN INITIATIVE BY THE WORKSHOP</span><span>BUILT TO EXPLORE, NOT TO LIMIT.</span></div></footer>
+</body>
+</html>
