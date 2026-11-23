@@ -47,3 +47,13 @@ A pesquisa de atenção causal foi publicada no repositório como forward pass P
 - EXP-004/005: UTXO e P2P planejados, não implementados.
 
 O Worker do Workshop Labs incorpora as rotas do `web/crypto-lab/workshop-labs-integration-worker.js` sem proxy ao snapshot legado, junto com o catálogo Blockchain. Testar `tests/blockchain-routes.test.mjs` e as rotas de ARGUS, HeartAI, NEXUS, Ouroboros e CERBERUS antes de publicar.
+
+## NEXUS-06 EXP-009 — relatório estático (23/11/2026)
+
+- Nova rota aditiva `/nexus/exp009/`, com página-fonte em `nexus/exp009/index.html` e CSS de primeira parte `nexus/exp009/report.css`.
+- A página `/nexus/` conserva todo o seu conteúdo histórico e acrescenta somente um link para o novo relatório.
+- Os números apresentados são derivados de saídas de terminal fornecidas pelo pesquisador, não de JSONs brutos verificados pelo site. O EXP-009 utiliza séries sintéticas e não prova generalização ou detecção operacional.
+- Para atualizar o conteúdo de NEXUS ou EXP-009, sincronizar as constantes `NEXUS_HTML`, `NEXUS_EXP009_HTML` e `NEXUS_EXP009_CSS` dentro do advanced Worker `_worker.js`.
+- Segurança: nenhuma dependência client-side, `script-src 'none'`, `connect-src 'none'`, estilos somente da origem, 405 para métodos não GET/HEAD, HSTS, nosniff, anti-framing e cache limitado; verificar com `node --test web/workshop-labs/tests/*.test.mjs`.
+- Arquivos locais de métricas/modelos e quaisquer fontes de dados privadas **não** são publicados.
+- Não remover nem sobrescrever `/argus/`, `/heartai/`, `/nexus/`, `/crypto-lab/` e seus assets, páginas originais nem o snapshot histórico legado.
