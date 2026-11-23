@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="NEXUS-06 EXP-009: relatório de pesquisa sobre Elman versus GRU com orçamento prospectivo de CPU, resultados sintéticos e limitações.">
+<link rel="canonical" href="https://workshop-labs.pages.dev/nexus/exp009/">
+<link rel="stylesheet" href="/assets/labs.css">
+<link rel="stylesheet" href="/nexus/exp009/report.css">
+<title>EXP-009 · CPU Budget Matched | NEXUS-06</title>
+</head>
+<body>
+<a class="skip" href="#resultados">Pular para os resultados</a>
+<header><div class="wrap"><a class="brand" href="/">🐺 WOLFPACK <b>/</b> THE WORKSHOP<small>WORKSHOP LABS / NEXUS EXP-009</small></a>
+<nav aria-label="Navegação"><a href="/">TODOS OS LABS</a><a href="/nexus/">NEXUS-06</a><a href="#resultados">RESULTADOS</a><a href="#seguranca">SEGURANÇA</a></nav></div></header>
+<main>
+<section class="hero"><div class="wrap"><div class="kicker">THE ARSENAL / NEURAL RESEARCH / EXP-009</div>
+<h1>MEMÓRIA. <span>SOB ORÇAMENTO.</span></h1>
+<p class="intro">Elman × GRU sob orçamento prospectivo de tempo de CPU. Pesquisa experimental local com dados sintéticos, sem modelos implantados e sem qualquer processamento de telemetria neste site.</p>
+<div class="status-panel"><div><strong>RESULTADOS EXPLORATÓRIOS, NÃO UMA CERTIFICAÇÃO</strong><p>Números transcritos das execuções locais apresentadas pelo pesquisador em 23/11/2026; os arquivos JSON locais não foram recebidos pelo site ou auditados aqui. Os resultados compartilham o mesmo gerador sintético usado em experimentos anteriores, portanto não constituem validação externa nem demonstração de detecção real de ataques.</p></div><span class="pill">RESEARCH ONLY</span></div>
+</div></section>
+<section class="section"><div class="wrap">
+<div class="section-top"><div><div class="kicker">01 / PROTOCOLO</div><h2>Tempo comparável. Conclusões limitadas.</h2></div><p>Treinos pareados em NumPy, com 16 unidades ocultas, mesmo horizonte de pontuação t ≥ 24 (536 alvos), conjuntos cronologicamente separados e pilotos sem acesso ao holdout.</p></div>
+<div class="cards">
+<article class="card"><div class="label">AMOSTRA / 5 SEGUNDOS</div><div class="kind">JANELA 6 · 60 ÉPOCAS MÁXIMAS</div><h3>0 / 9</h3><p>Pares válidos. Todos esgotaram o limite de épocas sem atingir o orçamento. Não há ΔF1 elegível nessa execução.</p></article>
+<article class="card feature"><div class="label">ORÇAMENTO / 1,5 SEGUNDO</div><div class="kind">JANELA 6 · ATÉ 200 ÉPOCAS</div><h3>6 / 9</h3><p>Pares aceitos pelo gate de ±25% do orçamento. ΔF1 elegível agregado ≈ −0,00378 (GRU − Elman). Amostra reduzida.</p></article>
+<article class="card feature"><div class="label">JANELAS AMPLIADAS</div><div class="kind">12 E 24 · 1,5 SEGUNDO</div><h3>18 / 18</h3><p>Pares aceitos pelo mesmo gate. Diferença média descritiva ≈ −0,01474, favorecendo Elman neste gerador e orçamento.</p></article>
+<article class="card"><div class="label">COMPLEXIDADE</div><div class="kind">HIDDEN = 16 · 8 FEATURES</div><h3>536 × 1.336</h3><p>Parâmetros treináveis da Elman e da GRU, respectivamente. Não igualamos parâmetros, FLOPs nem consumo energético.</p></article>
+</div>
+</div></section>
+<section id="resultados" class="section"><div class="wrap">
+<div class="section-top"><div><div class="kicker">02 / RESULTADOS OBSERVADOS</div><h2>Elman prevalece na maioria das janelas longas.</h2></div><p>ΔF1 = F1(GRU) − F1(Elman). Valor negativo favorece Elman. Cada média usa três sementes pareadas; a linha de janela 6 inclui somente pares MATCHED para a média elegível.</p></div>
+<div class="report-table-scroll"><table class="report-table"><caption>Média de diferenças F1 pareadas por cenário e janela, extraída dos logs de execução informados</caption><thead><tr><th scope="col">Regime sintético</th><th scope="col">Janela</th><th scope="col">Pares MATCHED</th><th scope="col">ΔF1 médio elegível</th><th scope="col">Leitura descritiva</th></tr></thead><tbody>
+<tr><th scope="row">Curto (período 8)</th><td>6</td><td>2/3</td><td>−0,02324</td><td>Elman</td></tr>
+<tr><th scope="row">Curto (período 8)</th><td>12</td><td>3/3</td><td>−0,02934</td><td>Elman</td></tr>
+<tr><th scope="row">Curto (período 8)</th><td>24</td><td>3/3</td><td>−0,02924</td><td>Elman</td></tr>
+<tr><th scope="row">Referência (período 12)</th><td>6</td><td>3/3</td><td>+0,00637</td><td>GRU, diferença pequena</td></tr>
+<tr><th scope="row">Referência (período 12)</th><td>12</td><td>3/3</td><td>−0,00759</td><td>Elman</td></tr>
+<tr><th scope="row">Referência (período 12)</th><td>24</td><td>3/3</td><td>−0,01843</td><td>Elman</td></tr>
+<tr><th scope="row">Longo e ruidoso (período 24)</th><td>6</td><td>1/3</td><td>+0,00471</td><td>GRU, 1 par elegível</td></tr>
+<tr><th scope="row">Longo e ruidoso (período 24)</th><td>12</td><td>3/3</td><td>−0,00766</td><td>Elman</td></tr>
+<tr><th scope="row">Longo e ruidoso (período 24)</th><td>24</td><td>3/3</td><td>+0,00380</td><td>GRU, diferença pequena</td></tr>
+</tbody></table></div>
+<div class="status-panel"><div><strong>LEITURA RESPONSÁVEL</strong><p>Nos 18 pares MATCHED de janelas 12 e 24, a Elman teve F1 superior em 16 e a GRU em 2. Na janela 6, apenas 6 de 9 pares foram elegíveis. Essas observações não são independentes entre janelas e reutilizam o gerador já explorado; não calcular significância como se fossem novos experimentos independentes.</p></div><span class="pill">SYNTHETIC / PAIRED</span></div>
+</div></section>
+<section class="section" id="metodologia"><div class="wrap"><div class="section-top"><div><div class="kicker">03 / REPRODUÇÃO</div><h2>Compreenda as limitações antes de repetir.</h2></div><p>O experimento estima as épocas que cabem em um orçamento de CPU a partir de pilotos independentes de treino limpo, e depois mede o custo efetivo de cada treino.</p></div>
+<div class="cards">
+<article class="card"><div class="label">GATE</div><h3>MATCHED ≠ igualdade perfeita</h3><p>Cada arquitetura deve ficar até 25% acima ou abaixo do orçamento declarado, e a diferença entre seus tempos também deve respeitar 25% do orçamento. Early stopping, calibração e épocas inteiras podem causar UNMATCHED.</p></article>
+<article class="card"><div class="label">DADOS</div><h3>Sem telemetria real</h3><p>Treino limpo sintético; teste sintético com blocos embaralhados. O rótulo marca intervenções em blocos, não ataques reais nem necessariamente alterações em cada linha.</p></article>
+<article class="card"><div class="label">CUSTO</div><h3>Tempo de CPU, não FLOPs</h3><p>O orçamento exclui pilotos, avaliação, baselines e geração das séries. Resultados dependem de máquina, threads, cache, ruído do sistema e early stopping.</p></article>
+<article class="card"><div class="label">EVIDÊNCIA</div><h3>Logs locais informados</h3><p>Não há arquivo de benchmark assinado, hash dos relatórios locais ou execução independente nesta publicação. Não é um estudo revisado por pares.</p></article>
+</div>
+<div class="status-panel"><div><strong>CÓDIGO-FONTE ABERTO</strong><p>O protocolo, os testes e as ressalvas metodológicas estão versionados no The Arsenal; a publicação não expõe arquivos de modelos nem resultados individuais brutos.</p></div><a href="https://github.com/kingmaker-lab/The-Arsenal-/blob/feat/nexus-06-gru-sequence-core/packages/neural-core/experiments/exp009_cpu_budget.py" rel="noopener noreferrer">VER EXP-009 ↗</a></div>
+</div></section>
+<section class="section" id="seguranca"><div class="wrap"><div class="section-top"><div><div class="kicker">04 / SEGURANÇA E PRIVACIDADE</div><h2>Relatório estático. Superfície mínima.</h2></div><p>Nenhum treinamento, inferência ou diagnóstico de dispositivos é executado no navegador. Esta página não exige login, não coleta formulários e não chama APIs de terceiros.</p></div>
+<div class="status-panel"><div><strong>RESTRIÇÕES DE ENTREGA</strong><p>A rota publica apenas HTML e CSS da própria origem. JavaScript e conexões de rede iniciadas pela página são bloqueados por CSP; POST é recusado; cabeçalhos de proteção e testes de regressão preservam o comportamento dos laboratórios existentes.</p></div><span class="pill">STATIC / READ ONLY</span></div>
+<div class="status-panel"><div><strong>PRÓXIMA ETAPA: EXP-010</strong><p>Para testar generalização, precisamos de um gerador causal distinto, orçamentos múltiplos, avaliação dos baselines e um conjunto de teste realmente independente. Não houve promoção da Elman ou da GRU para uso operacional.</p></div><a href="/nexus/">VOLTAR AO NEXUS-06 ↗</a></div>
+</div></section>
+</main><footer><div class="wrap">© 2026 THE WORKSHOP × THE ARSENAL · EXP-009 · RESEARCH ONLY · NO LIVE DETECTION</div></footer>
+</body></html>
