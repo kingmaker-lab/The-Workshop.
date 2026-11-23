@@ -10,14 +10,14 @@
       "status": "development",
       "featured": true,
       "kind": "LAB / SECURITY",
-      "description": "Laboratório de pesquisa em análise de binários, indicadores e engenharia reversa. Integração e endereços públicos em validação.",
+      "description": "Laboratório de pesquisa em análise de binários, indicadores e engenharia reversa. A expansão dos módulos de segurança segue em desenvolvimento.",
       "stack": [
         "Ruby",
         "Cybersecurity",
         "Reverse Engineering"
       ],
       "repo": null,
-      "site": null
+      "site": "https://protocolo-ruby.wolfpackworkshop.workers.dev/"
     },
     {
       "id": "raven",
@@ -97,7 +97,7 @@
         "JavaScript"
       ],
       "repo": "https://github.com/kingmaker-lab/The-Workshop./tree/main/Ruby/wolfpack-the-workshop-web-v0.3-completo/wolfpack-workshop-web-v0.3",
-      "site": null
+      "site": "https://wolfpack.wolfpackworkshop.workers.dev/"
     }
   ]
 }
