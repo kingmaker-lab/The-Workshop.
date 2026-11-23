@@ -11,7 +11,7 @@ projects = data.fetch("projects")
 abort "projects must be a non-empty array" unless projects.is_a?(Array) && !projects.empty?
 ids = Set.new
 allowed_status = %w[development experimental stable planned]
-allowed_hosts = %w[github.com wolfpack.wolfpackworkshop.workers.dev]
+allowed_hosts = %w[github.com wolfpack.wolfpackworkshop.workers.dev protocolo-ruby.wolfpackworkshop.workers.dev]
 projects.each do |p|
   abort "project must be an object" unless p.is_a?(Hash)
   %w[id name category status kind description].each do |key|
