@@ -52,3 +52,22 @@ O site apenas cataloga projetos. **Não executa código Ruby arbitrário**, não
 - Automatizar releases públicos a partir de metadados verificados, sem dar ao site acesso a tokens.
 
 **The Workshop** • Build. Break. Understand. Rebuild.
+
+## Deployment atual
+
+A v0.1 está publicada em **https://ruby-hub.wolfpackworkshop.workers.dev/**, com o
+Worker `ruby-hub` isolado das demais aplicações. O artefato de produção reúne
+HTML/CSS/JS/JSON gerados a partir desta árvore; não executa código Ruby no
+navegador nem no servidor. A construção do bundle é reproduzível em Ruby:
+
+```sh
+ruby sites/ruby-hub/scripts/validate_registry.rb
+ruby sites/ruby-hub/scripts/build_worker.rb
+node --check sites/ruby-hub/dist/worker.js
+```
+
+**Deploy é manual nesta etapa.** O commit no GitHub não atualiza o Worker
+automaticamente, pois a integração Git da Cloudflare Pages não pôde ser concluída.
+Não grave tokens, credenciais, variáveis sensíveis ou URLs internas no registro ou
+em `dist/`. O próximo passo operacional é configurar uma integração CI/CD com
+credencial de escopo mínimo para o Worker dedicado.

@@ -24,3 +24,7 @@ jobs:
         run: ruby sites/ruby-hub/scripts/validate_registry.rb
       - name: Check Ruby source syntax
         run: ruby -c sites/ruby-hub/scripts/validate_registry.rb
+      - name: Build deployment artifact with Ruby
+        run: ruby sites/ruby-hub/scripts/build_worker.rb
+      - name: Check generated Worker syntax
+        run: node --check sites/ruby-hub/dist/worker.js
