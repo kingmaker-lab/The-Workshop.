@@ -29,5 +29,7 @@ Target reference environment: Intel Celeron N4020, 8 GB RAM, Debian Linux. Actua
 Candidate comparison: ICARUS-S (static), ICARUS-D (confidence-based), ICARUS-A (resource-aware).
 Aspirational targets for later experiments: 50% lower mean CPU time, 25% lower peak memory, at most 1 percentage point accuracy loss. Not results; each must be evaluated separately under fair conditions.
 
-## First experiment
+## Experiments
 See [WAX protocol](experiments/exp001-wax/README.md). No measurements have yet been recorded.
+
+See [FEATHER protocol](experiments/exp002-feather/README.md): synthetic conditional computation; implementation and tests prepared, execution pending.
