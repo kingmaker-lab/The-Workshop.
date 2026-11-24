@@ -44,3 +44,27 @@ jobs:
           ruby bin/orion ipc demo --timeout 5 --json
       - name: Gem packaging
         run: gem build ruby-orion.gemspec
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    defaults:
+      run:
+        working-directory: Ruby/Ruby-Orion/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate Ruby labs and UI contract
+        run: ruby scripts/validate_site.rb
+      - name: Check JavaScript parser
+        run: |
+          node --check assets/studio.js
+          node --check assets/ruby-worker.js
+      - name: Rebuild deployable Worker and check syntax
+        run: |
+          ruby scripts/build-worker.rb
+          node --check dist/worker.mjs

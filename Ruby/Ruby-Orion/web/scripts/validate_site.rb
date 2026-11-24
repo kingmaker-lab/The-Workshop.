@@ -34,6 +34,7 @@ class OrionStudioTest < Minitest::Test
       # Last key is a deliberate check for actual supported runtime text.
       assert html.include?(key == "ruby-runtime" ? "runtime-selftest" : key), "Missing #{key}"
     end
+    assert_includes html, '/assets/favicon.svg'
     refute_match(/<script[^>]+src="https:/, html)
   end
 
