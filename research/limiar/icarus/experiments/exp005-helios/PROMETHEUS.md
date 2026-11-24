@@ -9,3 +9,6 @@ python3 prometheus.py --observe-only
 python3 prometheus.py --seeds 1 > prometheus-smoke.json
 python3 prometheus.py > prometheus-local.json
 Native library from EXP-004 must be compiled as documented in HELIOS README. Stop on guard failure, close unused applications; do not bypass. No --pressure flag.
+
+## Completed passive run (local, revision cf771e0)
+20 seeds, 480 batches, 30,720 unique synthetic test rows and 2,880 strategy evaluations. Amortized observer CPU 609.139 us vs 2774.729 us (78.0469% reduction; 80% goal not met). PROMETHEUS Repack CPU 1.583 ms vs HELIOS 3.820 ms, P95 4.149 vs 8.916 ms; accuracy 93.1087% vs 93.5677% (FULL 94.9154%). Mean terms 14.0078 vs FULL 32; 412 batches budget16 and 68 budget8. No recorded prefix overrun. Passive single-session synthetic results, not controlled pressure or independent physical environments. Raw JSON not archived here. No static-baseline CPU superiority demonstrated.
