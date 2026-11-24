@@ -1,0 +1,33 @@
+database: argus-v05-demo.db
+rules: rules/default.yaml
+
+api:
+  host: 127.0.0.1
+  port: 8765
+
+correlation:
+  window_seconds: 30
+  failure_threshold: 15
+  risk_window_seconds: 300
+# Opt-in statistical detection. Requires a representative baseline;
+# use only on trusted, prefiltered local telemetry.
+anomaly:
+  enabled: false
+  metrics: [orig_bytes, resp_bytes]
+  minimum_samples: 20
+  z_threshold: 4.0
+
+# Experimental Sigma-shaped rules (strict, ARGUS-normalized subset).
+# Off by default; unsupported expressions and fields fail closed.
+sigma:
+  enabled: false
+  rules_dir: sigma/rules
+
+# ARGUS v0.5 opt-in local temporal multi-host correlation
+temporal_v05:
+  enabled: true
+  window_seconds: 120
+  min_hosts: 3
+  min_failures: 6
+  max_ips: 1024
+  max_events_per_ip: 128
