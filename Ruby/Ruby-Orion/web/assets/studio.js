@@ -143,7 +143,7 @@ function runCode() {
     if (!state.worker) {
       const worker = new Worker("/assets/ruby-worker.js", { type: "module", name: "ruby-orion-runtime" });
       worker.onmessage = onRuntimeMessage;
-      worker.onerror = event => { event.preventDefault(); failRun("Falha na inicialização do Web Worker Ruby. Verifique conexão e política CSP."); };
+      worker.onerror = event => { event.preventDefault(); const diagnostic = [event.message, event.filename, event.lineno].filter(Boolean).join(" / ").slice(0, 450); failRun("Falha na inicialização do Web Worker Ruby: " + (diagnostic || "verifique conexão e CSP.")); };
       worker.onmessageerror = () => failRun("Erro na comunicação com o Worker.");
       state.worker = worker;
     }
