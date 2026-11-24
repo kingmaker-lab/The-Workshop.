@@ -13,3 +13,6 @@ python3 helios.py --seeds 1 > helios-quiet-smoke.json
 python3 helios.py --pressure > helios-local.json
 ```
 If pressure cannot run safely, use python3 helios.py > helios-local.json for quiet only. Keep machine attended. Record compiler version and flags, hardware and power context separately. No external packages. Results pending.
+
+## HELIOS v0.2
+See [PROMETHEUS](PROMETHEUS.md) for passive contention and observer overhead ablation. The original HELIOS remains unchanged. Smoke measurement is preliminary; v0.2 execution pending.
