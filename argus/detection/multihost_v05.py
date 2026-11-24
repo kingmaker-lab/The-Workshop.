@@ -30,8 +30,8 @@ class _IPState:
 class MultiHostCorrelationV05:
     """Bounded streaming correlation with one alert per qualifying active burst."""
 
-    MAX_IPS = 4096
-    MAX_EVENTS_PER_IP = 256
+    MAX_IPS = 1024
+    MAX_EVENTS_PER_IP = 128
     CONFIG_KEYS = frozenset({
         "enabled", "window_seconds", "min_hosts", "min_failures",
         "max_ips", "max_events_per_ip",
