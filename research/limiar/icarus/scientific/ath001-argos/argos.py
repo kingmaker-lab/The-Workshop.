@@ -17,6 +17,22 @@ HERE=Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE.parent/"ath001-metis"))
 import metis as m
 b1=m.b1
+from prometheus import memory, cached_temperature
+from helios import TEMP_LIMIT
+MIN_AVAILABLE_KIB=256*1024
+
+def safety_snapshot(paths):
+    # ARGOS-only passive workload floor; other experiments retain 512 MiB.
+    avail=memory().get("MemAvailable")
+    if avail is None or avail<MIN_AVAILABLE_KIB:
+        raise RuntimeError("Safety stop: ARGOS less than 256 MiB available or unknown")
+    t=cached_temperature(paths)
+    if paths and t is None:
+        raise RuntimeError("Safety stop: previously discovered temperature unavailable")
+    if t is not None and t>=TEMP_LIMIT:
+        raise RuntimeError("Safety stop: CPU >=80 C")
+    return {"mem_available_kib":avail,"temperature_c":t}
+
 N=64
 B=16
 K=N*(B-4)//28
@@ -85,17 +101,17 @@ def refit_policy(history,original,initial):
 def experiment(seed,s,paths):
     root=910000000+seed*100000+SCENARIOS.index(s)*10000
     src=source(s)
-    b1.safety_snapshot(paths)
+    safety_snapshot(paths)
     model=m.fit(m.data(root,2048,src))
     def validation():
         for i in range(32):
-            b1.safety_snapshot(paths)
+            safety_snapshot(paths)
             yield m.data(root+1+i,N,src)
     initial=m.gate(model,validation())[B]["policy"]
     pending=[];history=[];events=[]
     refmodel=model;refchoice=initial;refscore=None;refitted=False
     for t in range(BATCHES):
-        time.sleep(.05);b1.safety_snapshot(paths)
+        time.sleep(.05);safety_snapshot(paths)
         delivered=[r for due,r in pending if due<=t]
         history.extend(delivered);pending=[(due,r) for due,r in pending if due>t]
         choice,score=policy(history,model,initial)
@@ -168,7 +184,7 @@ def summarize(runs):
     return result
 def main():
     p=argparse.ArgumentParser();p.add_argument("--smoke",action="store_true");a=p.parse_args()
-    paths=b1.sensor_paths();b1.safety_snapshot(paths);runs=[]
+    paths=b1.sensor_paths();safety_snapshot(paths);runs=[]
     for seed in ((2299,) if a.smoke else SEEDS):
         for s in SCENARIOS:
             runs.append(experiment(seed,s,paths))
@@ -177,6 +193,7 @@ def main():
     print(json.dumps({"experiment":"ATH-001-BENEFIT-03-ARGOS","schema_version":1,"revision":git("rev-parse","HEAD"),
         "tracked_tree_dirty":bool(git("status","--porcelain","--untracked-files=no")),"exploratory":True,"smoke":a.smoke,
         "data":"synthetic","batch_size":N,"batches":BATCHES,"budget":B,"audits_per_batch":AUDITS,
+        "safety_min_available_kib":MIN_AVAILABLE_KIB,"safety_temperature_limit_c":TEMP_LIMIT,
         "feedback_delay_batches":DELAY,"monitor_window_batches":WINDOW,"fit_n":2048,"gate_batches":32,
         "environment":{"python":platform.python_version(),"kernel":platform.release(),"machine":platform.machine()},
         "process_peak_rss_kib":resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,"runs":runs,"summary":summarize(runs)},indent=2,allow_nan=False))
