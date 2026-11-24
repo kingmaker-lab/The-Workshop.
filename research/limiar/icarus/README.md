@@ -33,3 +33,5 @@ Aspirational targets for later experiments: 50% lower mean CPU time, 25% lower p
 See [WAX protocol](experiments/exp001-wax/README.md). No measurements have yet been recorded.
 
 See [FEATHER protocol](experiments/exp002-feather/README.md): synthetic conditional computation; implementation and tests prepared, execution pending.
+
+See [DAEDALUS protocol](experiments/exp003-daedalus/README.md): causal feedback and prefix feature-term budgets; implementation and tests prepared, execution pending.
