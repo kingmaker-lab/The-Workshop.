@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "labs": [
+    {
+      "id": "001",
+      "slug": "object-model",
+      "pillar": "ALNITAK / LEARN",
+      "title": "O modelo de objetos",
+      "level": "INICIANTE",
+      "summary": "Descubra classes, instâncias e introspecção com Ruby real.",
+      "limitation": "Executável no WebAssembly.",
+      "expected": "Alnitak :: Star\nMétodos: name\n",
+      "code": "class Star\n  attr_reader :name\n\n  def initialize(name)\n    @name = name\n  end\nend\n\nstar = Star.new(\"Alnitak\")\nputs \"#{star.name} :: #{star.class}\"\nputs \"Métodos: #{Star.instance_methods(false).sort.join(', ')}\"\n",
+      "hint": "Experimente adicionar um método describe e observar Star.ancestors."
+    },
+    {
+      "id": "002",
+      "slug": "process-lifecycle",
+      "pillar": "ALNILAM / BUILD",
+      "title": "O ciclo de um processo",
+      "level": "INTERMEDIÁRIO",
+      "summary": "Modele transições de estado em Ruby antes de executar o experimento nativo.",
+      "limitation": "Simulação conceitual na web. Use 'orion process run 002' na CLI para criar um processo real.",
+      "expected": "created -> running -> completed\n",
+      "code": "states = %w[created running completed]\nputs states.join(\" -> \")\n",
+      "hint": "Crie uma condição para representar um processo que terminou em falha."
+    },
+    {
+      "id": "003",
+      "slug": "ipc-json",
+      "pillar": "ALNILAM / BUILD",
+      "title": "Mensagens de IPC",
+      "level": "INTERMEDIÁRIO",
+      "summary": "Monte, serialize e decodifique um frame JSON do protocolo Orion IPC.",
+      "limitation": "Serialização real em Ruby, sem pipe entre processos no navegador. Rode 'orion ipc demo' na CLI para testar IPC real.",
+      "expected": "orion-ipc/1 -> ALNILAM ONLINE\n",
+      "code": "require \"json\"\n\nframe = {\n  protocol: \"orion-ipc/1\",\n  type: \"message\",\n  payload: { message: \"ALNILAM ONLINE\" }\n}\n\nwire = JSON.generate(frame)\nreceived = JSON.parse(wire)\nputs \"#{received.fetch('protocol')} -> #{received.fetch('payload').fetch('message')}\"\n",
+      "hint": "Adicione uma chave sequence ao frame e valide se ela existe após JSON.parse."
+    }
+  ]
+}

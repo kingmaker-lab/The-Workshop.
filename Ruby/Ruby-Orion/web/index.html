@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#090d16">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Ruby Orion Studio: escreva e execute Ruby no navegador, explore laboratórios guiados e inspecione arquivos localmente.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; worker-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <title>Ruby Orion Studio | The Workshop</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/studio.css">
+  <script src="/assets/studio.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Pular para o conteúdo</a>
+  <div class="ambient" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Ruby Orion, início">
+      <span class="brand-diamond" aria-hidden="true">◆</span>
+      <span>RUBY <b>ORION</b><small>THE WORKSHOP INITIATIVE</small></span>
+    </a>
+    <nav aria-label="Navegação principal">
+      <a href="#playground" data-nav="playground">Studio</a>
+      <a href="#labs" data-nav="labs">Laboratórios</a>
+      <a href="#inspector" data-nav="inspector">File Lab</a>
+      <a href="https://ruby-hub.wolfpackworkshop.workers.dev/" rel="noopener noreferrer" target="_blank">Ruby Hub ↗</a>
+    </nav>
+  </header>
+  <main id="main">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="kicker"><span class="tiny-star" aria-hidden="true">✦</span> PROJECT ORION / INTERACTIVE ENVIRONMENTS</p>
+        <h1>O universo Ruby.<br><em>Nas suas mãos.</em></h1>
+        <p class="lede">Aprenda a linguagem explorando. Escreva Ruby real, experimente conceitos de engenharia e acompanhe cada descoberta diretamente no navegador.</p>
+        <div class="hero-metadata">
+          <span><i class="signal"></i> STUDIO / PREVIEW</span>
+          <span>CRUBY 3.4 + WEBASSEMBLY</span>
+          <span>NO SERVER-SIDE EXECUTION</span>
+        </div>
+      </div>
+      <div class="constellation" aria-label="Três estrelas do cinturão de Órion representando Learn, Build e Explore" role="img">
+        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
+        <div class="starline"></div>
+        <div class="star star-1"><span>ALNITAK</span></div>
+        <div class="star star-2"><span>ALNILAM</span></div>
+        <div class="star star-3"><span>MINTAKA</span></div>
+        <div class="constellation-caption">THREE STARS <span>∞</span> POSSIBILITIES</div>
+      </div>
+    </section>
+    <div class="studio-shell">
+      <div class="section-heading">
+        <div><p class="kicker">01 / YOUR WORKBENCH</p><h2>Ambientes <em>interativos.</em></h2></div>
+        <p>Uma bancada, três maneiras de descobrir.</p>
+      </div>
+      <div class="tab-bar" role="tablist" aria-label="Ambientes do Ruby Orion">
+        <button id="tab-playground" class="tab active" type="button" role="tab" aria-selected="true" aria-controls="panel-playground" data-panel="playground">⌘ <span>Ruby Playground</span></button>
+        <button id="tab-labs" class="tab" type="button" role="tab" aria-selected="false" aria-controls="panel-labs" data-panel="labs">✦ <span>Orion Labs</span></button>
+        <button id="tab-inspector" class="tab" type="button" role="tab" aria-selected="false" aria-controls="panel-inspector" data-panel="inspector">◈ <span>File Lab</span></button>
+      </div>
+      <section id="panel-playground" class="workspace" role="tabpanel" aria-labelledby="tab-playground">
+        <div class="workspace-heading">
+          <div><p class="eyebrow">ALNITAK / RUBY RUNTIME</p><h3>Ruby Playground</h3><p>Seu código roda em um Web Worker separado, no seu próprio navegador. Nenhum script é enviado para execução no nosso servidor.</p></div>
+          <div class="runtime-chip"><span id="engine-dot" class="dot-indicator"></span><span id="engine-status" role="status" aria-live="polite">Runtime sob demanda</span></div>
+        </div>
+        <div class="playground-grid">
+          <div class="editor-column">
+            <div class="editor-header"><span><span class="file-mark">◆</span> playground.rb</span><span>RUBY 3.4 / WASM</span></div>
+            <label class="sr-only" for="source">Código Ruby</label>
+            <textarea id="source" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off" aria-label="Editor de código Ruby"></textarea>
+            <div class="editor-actions">
+              <div class="button-group">
+                <button id="run-code" class="button button-primary" type="button">▶ Executar <kbd>Ctrl ↵</kbd></button>
+                <button id="stop-code" class="button button-secondary" type="button" disabled>■ Parar</button>
+                <button id="reset-code" class="button button-quiet" type="button">↺ Restaurar</button>
+              </div>
+              <small id="code-count">0 / 8.000</small>
+            </div>
+            <div class="stdin-box"><label for="stdin">STDIN <span>(opcional, usado por gets)</span></label><textarea id="stdin" rows="2" maxlength="4000" placeholder="Digite aqui a entrada para gets..."></textarea></div>
+          </div>
+          <div class="console-column">
+            <div class="console-header"><span><span class="signal"></span> CONSOLE / STDOUT</span><span id="elapsed">READY</span></div>
+            <pre id="stdout" class="console-content" aria-label="Saída padrão do programa" aria-live="polite"># O universo espera pelo seu código.
+# Pressione Executar para iniciar.</pre>
+            <div class="stderr-header">STDERR / DIAGNÓSTICO</div>
+            <pre id="stderr" class="stderr-content" aria-label="Erros do programa">Nenhum erro.</pre>
+            <div id="exercise-check" class="exercise-check" role="status" aria-live="polite">Carregue um laboratório para verificar seu resultado.</div>
+          </div>
+        </div>
+        <div class="templates"><div><span class="eyebrow">STARTER SNIPPETS</span><p>Experimentos rápidos</p></div><div id="template-list" class="template-list"></div></div>
+        <div class="runtime-caution"><span>◌</span><p><strong>Ambiente de laboratório.</strong> A VM WebAssembly é isolada em um Worker e pode ser interrompida, mas não deve ser tratada como sandbox de segurança completa. Não cole segredos ou código hostil. Processos nativos e sockets não estão disponíveis no WASI deste navegador.</p></div>
+      </section>
+      <section id="panel-labs" class="workspace" role="tabpanel" aria-labelledby="tab-labs" hidden>
+        <div class="workspace-heading"><div><p class="eyebrow">ALNITAK + ALNILAM / EXPERIMENTAL ENGINEERING</p><h3>Orion Labs</h3><p>Laboratórios com código executável, resultados esperados e desafios progressivos. O código pode ser alterado à vontade.</p></div><span class="counter" id="lab-count">CARREGANDO LABORATÓRIOS</span></div>
+        <div class="lab-grid" id="lab-grid"><p>Carregando laboratórios...</p></div>
+        <p class="lab-disclaimer">Os laboratórios de Process e IPC na versão web demonstram conceitos em Ruby. A execução de processos filhos reais e os pipes do sistema operacional continuam disponíveis apenas na CLI local do Orion.</p>
+      </section>
+      <section id="panel-inspector" class="workspace" role="tabpanel" aria-labelledby="tab-inspector" hidden>
+        <div class="workspace-heading"><div><p class="eyebrow">ALNILAM / BROWSER TOOLKIT</p><h3>File Lab</h3><p>Inspecione um arquivo local sem enviá-lo para qualquer servidor. As operações de hash utilizam a Web Crypto API do navegador.</p></div><span class="counter">LOCAL ONLY / MAX 8 MiB</span></div>
+        <div class="file-workspace">
+          <div class="file-drop"><span class="file-icon">◈</span><label for="file-input">Escolha um arquivo para analisar</label><p>Assinatura mágica, tamanho, entropia de amostra e SHA-256/SHA-512.</p><input id="file-input" type="file"><button id="inspect-file" class="button button-primary" type="button" disabled>Analisar arquivo ↗</button></div>
+          <div class="file-result"><p class="eyebrow">RESULTADO / NÃO ENVIADO</p><dl id="file-results"><div><dt>STATUS</dt><dd>Selecione um arquivo local.</dd></div></dl><p id="file-error" class="file-error" role="alert"></p></div>
+        </div>
+        <p class="lab-disclaimer">A identificação de formatos é heurística. Um hash não comprova que um arquivo é seguro. O módulo nativo <code>orion inspect</code> permanece disponível na CLI.</p>
+      </section>
+    </div>
+    <section class="bottom-band" aria-labelledby="beyond-title">
+      <div><p class="kicker">02 / BEYOND THE BROWSER</p><h2 id="beyond-title">Da experiência<br><em>à engenharia real.</em></h2></div>
+      <div class="bottom-text"><p>O navegador permite experimentar a linguagem. Para processos, IPC por pipes e ferramentas completas, o Orion continua sendo uma CLI Ruby instalada localmente.</p><pre>ruby bin/orion process run 002 --timeout 5 --json
+ruby bin/orion ipc demo --json</pre><a class="inline-link" href="https://github.com/kingmaker-lab/The-Workshop./tree/main/Ruby/Ruby-Orion" target="_blank" rel="noopener noreferrer">Explorar o código do Orion ↗</a></div>
+    </section>
+  </main>
+  <footer><span><b>◆ RUBY ORION</b> / THREE STARS, INFINITE POSSIBILITIES</span><span>THE WORKSHOP · BUILD. BREAK. UNDERSTAND. REBUILD.</span></footer>
+  <span id="runtime-selftest" data-result="not-requested" hidden></span>
+</body>
+</html>
