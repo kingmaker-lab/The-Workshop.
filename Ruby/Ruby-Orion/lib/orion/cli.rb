@@ -17,6 +17,7 @@ module Orion
         hash ARQUIVO         SHA-256/SHA-512 com leitura em blocos
         labs                 Laboratórios disponíveis e planejados
         help                 Esta ajuda
+        version              Versão do Ruby Orion
 
       Opções:
         --json               Saída estruturada (info, inspect, hash, labs)
@@ -35,6 +36,9 @@ module Orion
       case command
       when nil, "help", "--help", "-h"
         @out.puts HELP
+        0
+      when "version", "--version", "-v"
+        @out.puts "Ruby Orion #{Orion::VERSION}"
         0
       when "info" then info(args)
       when "inspect" then inspect_file(args)

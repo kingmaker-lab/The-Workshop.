@@ -7,6 +7,7 @@ Gem::Specification.new do |spec|
   spec.description = "The Workshop Ruby Orion initiative: inspect, hash, explore and learn Ruby."
   spec.authors = ["The Workshop"]
   spec.license = "MIT"
+  spec.homepage = "https://github.com/kingmaker-lab/The-Workshop./tree/main/Ruby/Ruby-Orion"
   spec.required_ruby_version = ">= 3.1"
   spec.files = Dir["lib/**/*.rb", "README.md", "LICENSE", "docs/**/*", "labs/**/*"]
   spec.bindir = "bin"

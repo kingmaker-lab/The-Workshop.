@@ -14,10 +14,11 @@ CLI escrito em Ruby puro (Ruby 3.1+), sem dependências externas em tempo de exe
 
 ```sh
 ruby -Ilib bin/orion help
+ruby -Ilib bin/orion --version
 ruby -Ilib bin/orion info --json
 ruby -Ilib bin/orion inspect README.md --json
 ruby -Ilib bin/orion hash README.md --algorithm sha256
-ruby -Ilib bin/orion hash README.md --verify <digest-hex>
+ruby -Ilib bin/orion hash README.md --verify "SEU_DIGEST_SHA256_HEX"
 ruby -Ilib bin/orion labs
 ruby labs/001-object-model/example.rb
 ```
