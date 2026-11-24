@@ -37,3 +37,5 @@ See [FEATHER protocol](experiments/exp002-feather/README.md): synthetic conditio
 See [DAEDALUS protocol](experiments/exp003-daedalus/README.md): causal feedback and prefix feature-term budgets; implementation and tests prepared, execution pending.
 
 See [ASCENSION protocol](experiments/exp004-ascension/README.md): Python/C overhead ablation; 20 seeds, implementation and tests prepared; execution pending.
+
+See [HELIOS protocol](experiments/exp005-helios/README.md): Linux-observed batch budgets and bounded opt-in contention; implementation and tests prepared, execution pending.
