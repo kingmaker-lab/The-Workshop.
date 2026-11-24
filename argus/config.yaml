@@ -22,3 +22,12 @@ anomaly:
 sigma:
   enabled: false
   rules_dir: sigma/rules
+
+# ARGUS v0.5 opt-in local temporal multi-host correlation
+temporal_v05:
+  enabled: false
+  window_seconds: 120
+  min_hosts: 3
+  min_failures: 6
+  max_ips: 1024
+  max_events_per_ip: 128
