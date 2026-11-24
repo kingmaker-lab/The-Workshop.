@@ -16,3 +16,6 @@ Characterize tradeoff of logical prefix constraints, native OS telemetry, confid
 
 ## Wave 01 | 2026-11-24
 [Search log](ALEXANDRIA-SEARCH-LOG.md) records 15 exploratory queries and prospective database screening. [Evidence matrix](ALEXANDRIA-MATRIX.md) records 15 distinct references (including methods, survey and artifact policy), abstract-level evidence and experimental requirements. ALERT, Apparate, EENet and ICML 2026 EEFP materially narrow the working gap. Full-text and systematic screening remain pending; no novelty conclusion. Cycle I code unchanged.
+
+## BENEFIT-01 | Local exploratory pilot
+[Protocol and execution instructions](ath001-benefit/README.md). Tests margin versus calibrated net gain at matched prefix quotas, with IID and deliberately heteroskedastic synthetic scenarios. Smoke and 10-seed exploratory run prepared; local execution pending. No runtime superiority or novelty claim. Full-text review remains open.
