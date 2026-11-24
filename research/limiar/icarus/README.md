@@ -30,12 +30,14 @@ Candidate comparison: ICARUS-S (static), ICARUS-D (confidence-based), ICARUS-A (
 Aspirational targets for later experiments: 50% lower mean CPU time, 25% lower peak memory, at most 1 percentage point accuracy loss. Not results; each must be evaluated separately under fair conditions.
 
 ## Experiments
-See [WAX protocol](experiments/exp001-wax/README.md). No measurements have yet been recorded.
+See [WAX protocol](experiments/exp001-wax/README.md). Local baseline measured; see project portal.
 
-See [FEATHER protocol](experiments/exp002-feather/README.md): synthetic conditional computation; implementation and tests prepared, execution pending.
+See [FEATHER protocol](experiments/exp002-feather/README.md): synthetic conditional computation; local results measured.
 
 See [DAEDALUS protocol](experiments/exp003-daedalus/README.md): causal feedback and prefix feature-term budgets; implementation and tests prepared, execution pending.
 
-See [ASCENSION protocol](experiments/exp004-ascension/README.md): Python/C overhead ablation; 20 seeds, implementation and tests prepared; execution pending.
+See [ASCENSION protocol](experiments/exp004-ascension/README.md): Python/C overhead ablation; 20 seeds measured.
 
 See [HELIOS protocol](experiments/exp005-helios/README.md): Linux-observed batch budgets and bounded opt-in contention; implementation and tests prepared, execution pending.
+
+See [PROMETHEUS results](experiments/exp005-helios/PROMETHEUS.md) and [SOLARIS protocol](experiments/exp006-solaris/README.md): integrated native binary input, 30 seeds, implementation and tests prepared; execution pending.
