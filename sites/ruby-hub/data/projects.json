@@ -26,15 +26,16 @@
       "status": "development",
       "featured": true,
       "kind": "ENGINEERING / RUBY",
-      "description": "Ruby Orion v0.2 (Alnilam): engenharia com Ruby, CLI, inspeção local, SHA-256/512, supervisor de processos com timeout e IPC JSON por pipes. Laboratórios EXP-001, 002 e 003.",
+      "description": "Ruby Orion v0.2 (Alnilam): engenharia Ruby, supervisor de processos e IPC na CLI. Agora com Orion Studio interativo: playground Ruby/WebAssembly, laboratórios guiados e File Lab local.",
       "stack": [
         "Ruby",
         "CLI",
         "Systems",
-        "IPC"
+        "IPC",
+        "WebAssembly"
       ],
       "repo": "https://github.com/kingmaker-lab/The-Workshop./tree/main/Ruby/Ruby-Orion",
-      "site": null,
+      "site": "https://orion.wolfpackworkshop.workers.dev/",
       "version": "0.2.0"
     },
     {

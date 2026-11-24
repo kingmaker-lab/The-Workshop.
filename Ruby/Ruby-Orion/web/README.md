@@ -39,6 +39,10 @@ A execução real de Ruby/WASM exige internet na primeira inicialização para c
 - Nenhum laboratório permite execução de comandos do sistema por um servidor.
 - **Aviso:** WebAssembly e Web Workers não constituem isolamento absoluto. O runtime de terceiros opera no contexto do Worker; não cole credenciais, informações privadas ou código deliberadamente hostil.
 
+## Endereço público
+
+https://orion.wolfpackworkshop.workers.dev/ (Worker `orion`).
+
 ## Publicação
 
 `ruby scripts/build-worker.rb` gera `web/dist/worker.mjs`, um bundle de recursos estáticos do Studio para Cloudflare Workers. Este arquivo é gerado e ignorado pelo Git.
