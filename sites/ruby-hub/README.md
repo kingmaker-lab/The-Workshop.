@@ -48,7 +48,7 @@ O site apenas cataloga projetos. **Não executa código Ruby arbitrário**, não
 
 - Verificar endpoint público e repositório do Protocolo Ruby antes de ativar botões de acesso.
 - Publicar o Ruby Hub em uma rota própria, com testes de acessibilidade e smoke test HTTP.
-- Estabelecer o Ruby Atlas como projeto independente e adicioná-lo ao registro quando existir.
+- Manter o card Ruby Orion atualizado conforme os releases do projeto e sua página no catálogo.
 - Automatizar releases públicos a partir de metadados verificados, sem dar ao site acesso a tokens.
 
 **The Workshop** • Build. Break. Understand. Rebuild.
