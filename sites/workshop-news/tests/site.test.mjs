@@ -327,3 +327,34 @@ test('Fake 4D rollout uses versioned walker assets and query-safe routes',async(
     assert.equal(response.status,200,url);
   }
 });
+
+
+test('Fake News edition 005 is additive, accessible and honest about release states',async()=>{
+  const {readFile}=await import('node:fs/promises');
+  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
+  const css=await readFile(new URL('../styles.css',import.meta.url),'utf8');
+  assert.match(html,/id="boletim" class="brief" aria-labelledby="brief-title"/);
+  assert.match(html,/href="#boletim"/);
+  assert.match(html,/datetime="2026-11-24"/);
+  assert.match(html,/FAKE NEWS \/ BOLETIM DA ALCATEIA/);
+  const section=html.split('<section id="boletim"')[1]?.split('<section id="destaques"')[0];
+  assert.ok(section,'standalone editorial section before existing highlights');
+  assert.equal((section.match(/class="brief-card"/g)||[]).length,14);
+  for(const name of ['Ruby Hub','Ruby Orion','Financial Hub','ARGUS Project','Projeto Centurião','NEXUS-06','Protocolo Hades','Operação Smokescreen','Linux Steward','Seraph','Ouroboros']){
+    assert.ok(section.includes(name),name);
+  }
+  assert.doesNotMatch(section,/Workshop Kids/);
+  assert.match(section,/INICIATIVA ANUNCIADA/);
+  assert.match(section,/PESQUISA INTERNA/);
+  assert.match(section,/CLI LOCAL/);
+  assert.match(section,/NO PLANEJAMENTO/);
+  for(const link of section.matchAll(/<a[^>]+target="_blank"[^>]*>/g)){
+    assert.match(link[0],/rel="noopener noreferrer"/);
+    assert.match(link[0],/href="https:\/\//);
+  }
+  for(const anchor of ['id="destaques"','id="workshop"','id="laboratorios"','id="fake-walker"']){
+    assert.ok(html.includes(anchor),anchor);
+  }
+  assert.match(css,/\.brief-grid-small/);
+  assert.match(css,/@media\(prefers-reduced-motion:reduce\)\{\.brief-card/);
+});
