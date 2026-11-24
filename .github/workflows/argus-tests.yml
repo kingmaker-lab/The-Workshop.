@@ -48,3 +48,12 @@ jobs:
           grep -q '"processed": 17' /tmp/argus-v04-watch.jsonl
           python -m argus.main --config argus/config-sigma-demo.yaml watch argus/samples/ssh_bruteforce.jsonl --db /tmp/argus-v04-sigma-watch.db --once > /tmp/argus-v04-resume.jsonl
           grep -q '"processed": 0' /tmp/argus-v04-resume.jsonl
+      - name: Multi-host v0.5 opt-in local analyze/watch smoke
+        run: |
+          python -m argus.main --config argus/config-v05-demo.yaml analyze argus/samples/multihost_auth_v05.jsonl --db /tmp/argus-v05-ci.db > /tmp/argus-v05-output.jsonl
+          grep -q '"multi_host_failed_auth_burst"' /tmp/argus-v05-output.jsonl
+          grep -q '"processed": 8' /tmp/argus-v05-output.jsonl
+          python -m argus.main --config argus/config-v05-demo.yaml watch argus/samples/multihost_auth_v05.jsonl --db /tmp/argus-v05-watch-ci.db --once > /tmp/argus-v05-watch.jsonl
+          grep -q '"multi_host_failed_auth_burst"' /tmp/argus-v05-watch.jsonl
+          python -m argus.main --config argus/config-v05-demo.yaml watch argus/samples/multihost_auth_v05.jsonl --db /tmp/argus-v05-watch-ci.db --once > /tmp/argus-v05-resume.jsonl
+          grep -q '"processed": 0' /tmp/argus-v05-resume.jsonl
