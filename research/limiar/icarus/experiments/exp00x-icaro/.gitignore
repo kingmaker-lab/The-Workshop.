@@ -1,0 +1,6 @@
+__pycache__/
+libicaro.so
+icaro_cli
+icaro-*.json
+icaro-*.bin
+icaro-*.csv
