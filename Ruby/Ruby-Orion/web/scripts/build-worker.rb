@@ -22,7 +22,7 @@ assets = mapping.transform_values do |relative, content_type|
 end
 
 csp = "default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; " \
-      "worker-src 'self'; connect-src 'self' https://cdn.jsdelivr.net; style-src 'self'; " \
+      "worker-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net; style-src 'self'; " \
       "img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'none'; " \
       "frame-ancestors 'none'; object-src 'none'"
 
