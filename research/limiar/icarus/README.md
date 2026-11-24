@@ -43,4 +43,7 @@ See [HELIOS protocol](experiments/exp005-helios/README.md): Linux-observed batch
 
 See [PROMETHEUS results](experiments/exp005-helios/PROMETHEUS.md) and [SOLARIS protocol](experiments/exp006-solaris/README.md): integrated native binary input, pilot measured; quality target failed, full run pending.
 
-See [EXP-00X ICARO](experiments/exp00x-icaro/README.md): final candidate, separate pilot and locked 30-seed test, matched budget and exact term count replay. Implementation and tests prepared; execution pending.
+See [EXP-00X ICARO](experiments/exp00x-icaro/README.md): completed locked 30-seed synthetic evaluation; 4/5 criteria met, quality criterion failed. See [Cycle I evidence ledger](scientific/CYCLE-I.md).
+
+## Phase II | PROTOCOL ATHENA
+[Scientific framework](scientific/README.md) opened 2026-11-24. ALEXANDRIA scoping review and EUCLID proof draft started; ARCHIMEDES prospective design drafted. Cycle I source and acceptance criteria unchanged.
