@@ -1,0 +1,33 @@
+name: Ruby Orion foundation
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Ruby/Ruby-Orion/**'
+      - '.github/workflows/ruby-orion.yml'
+  pull_request:
+    paths:
+      - 'Ruby/Ruby-Orion/**'
+      - '.github/workflows/ruby-orion.yml'
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    defaults:
+      run:
+        working-directory: Ruby/Ruby-Orion
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+      - name: Ruby syntax checks
+        run: |
+          find lib bin labs test -name '*.rb' -type f -print0 | xargs -0 -n1 ruby -c
+          ruby -c bin/orion
+      - name: Minitest
+        run: ruby -Ilib -Itest -e 'Dir["test/test_*.rb"].sort.each { |file| require_relative file }'
+      - name: Gem packaging
+        run: gem build ruby-orion.gemspec

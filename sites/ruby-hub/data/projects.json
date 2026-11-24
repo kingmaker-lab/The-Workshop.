@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "initiative": "The Workshop Ruby Initiative",
-  "updated_at": "2026-11-23",
+  "updated_at": "2026-11-24",
   "projects": [
     {
       "id": "protocolo-ruby",
@@ -18,6 +18,22 @@
       ],
       "repo": null,
       "site": "https://protocolo-ruby.wolfpackworkshop.workers.dev/"
+    },
+    {
+      "id": "ruby-orion",
+      "name": "Ruby Orion",
+      "category": "Engenharia",
+      "status": "development",
+      "featured": true,
+      "kind": "ENGINEERING / RUBY",
+      "description": "Iniciativa Ruby de engenharia e aprendizado: CLI Orion, inspeção local de arquivos, hashing, laboratórios reproduzíveis e três pilares inspirados no cinturão de Órion.",
+      "stack": [
+        "Ruby",
+        "CLI",
+        "Engineering"
+      ],
+      "repo": "https://github.com/kingmaker-lab/The-Workshop./tree/main/Ruby/Ruby-Orion",
+      "site": null
     },
     {
       "id": "raven",
