@@ -15,3 +15,6 @@ python3 solaris.py --fixture solaris-fixture.bin
 ./solaris_cli 64 solaris-fixture.bin > solaris-native.csv
 ```
 Stop on safety failure; do not bypass. Test skips are not passes. Research only.
+
+## Pilot result (revision fb58359)
+One seed, 24 batches, 1536 synthetic rows. Persistent observer CPU reduction 92.16%, integrated CPU reduction 84.72%, accuracy 90.56% vs full 94.53% (3.97 pp loss; target failed), zero recorded prefix overruns. Full 30-seed SOLARIS run not executed. Threshold drift observed; quantization-induced windup is a hypothesis. See [EXP-00X ICARO](../exp00x-icaro/README.md) for the final candidate and matched replay.
