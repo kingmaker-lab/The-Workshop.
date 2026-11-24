@@ -33,7 +33,7 @@
 <header><div class="wrap">
   <a class="brand" href="/" aria-label="Workshop Labs, voltar ao catálogo"><span class="brandmark" aria-hidden="true">◉</span><span>ARGUS <small>THE WORKSHOP / DEFENSIVE RESEARCH</small></span></a>
   <nav class="nav" aria-label="Navegação do ARGUS">
-    <a href="#visao">VISÃO</a><a href="#arquitetura">ARQUITETURA</a><a href="#deteccoes">DETECÇÕES</a><a href="#evidencia">EVIDÊNCIA</a><a href="#telemetria">TELEMETRIA</a><a href="#executar">EXECUTAR</a><a href="#continuo">v0.3 / WATCH</a><a href="#sigma">v0.4 / SIGMA</a><a href="#seguranca">SEGURANÇA</a><a href="#roadmap">ROADMAP</a>
+    <a href="#visao">VISÃO</a><a href="#arquitetura">ARQUITETURA</a><a href="#deteccoes">DETECÇÕES</a><a href="#evidencia">EVIDÊNCIA</a><a href="#telemetria">TELEMETRIA</a><a href="#executar">EXECUTAR</a><a href="#continuo">v0.3 / WATCH</a><a href="#sigma">v0.4 / SIGMA</a><a href="#multihost">v0.5 / MULTI-HOST</a><a href="#seguranca">SEGURANÇA</a><a href="#roadmap">ROADMAP</a>
   </nav>
 </div></header>
 <main id="conteudo">
@@ -193,12 +193,54 @@ python -m argus.main \
     <div class="notice warn"><strong>Compatibilidade intencionalmente limitada:</strong> expressões de agregação, correlação temporal Sigma, regex, <code>|exists</code>, <code>|cidr</code>, filtros por plataformas externas e curingas em valores não são suportados. A integração não baixa regras da Internet, não coleta seus logs pela página e não altera o caráter local da API.</div>
     <div class="cta-row"><a class="button" href="https://github.com/kingmaker-lab/The-Workshop./tree/main/argus/sigma/rules" rel="noopener noreferrer">CONSULTAR EXEMPLOS ↗</a><a class="button" href="https://github.com/SigmaHQ/sigma-specification/blob/main/specification/sigma-rules-specification.md" rel="noopener noreferrer">ESPECIFICAÇÃO SIGMA ↗</a></div>
   </div></section>
+
+  <section class="block" id="multihost"><div class="wrap">
+    <div class="section-head"><div><div class="eyebrow">09 / ARGUS v0.5 / TEMPORAL CORRELATION</div><h2>Uma origem. Vários hosts. Um sinal investigável.</h2></div><p>Um experimento defensivo para correlacionar falhas de autenticação associadas ao mesmo IP e a diferentes identidades de host em uma janela temporal. Integração local Python, desativada por padrão.</p></div>
+    <div class="grid">
+      <article class="card"><span class="index">01 / CORRELAÇÃO MULTI-HOST</span><h3>3 hosts · 6 falhas · 120 s</h3><p>Configuração padrão do experimento quando ativado: o mesmo IP de origem deve apresentar no mínimo seis falhas de autenticação distribuídas por três identidades de fonte distintas dentro de 120 segundos.</p><span class="hint">OPT-IN / RESEARCH ONLY</span></article>
+      <article class="card"><span class="index">02 / CONTROLE DE ESTADO</span><h3>Memória limitada</h3><p>No máximo 1.024 IPs e 128 eventos por IP por padrão, com limites máximos validados. Detecções repetidas da mesma sequência ativa são suprimidas; IDs duplicados e observações fora de ordem não contam novamente.</p><span class="hint">NO REMOTE COLLECTION</span></article>
+      <article class="card"><span class="index">03 / RISCO E RASTREABILIDADE</span><h3>Alerta de severidade média</h3><p>A detecção <code>multi_host_failed_auth_burst</code> registra fontes, contagem e janela no alerta existente e contribui 30 pontos ao motor de risco. É um sinal heurístico, não confirmação de ataque.</p><span class="hint amber">LAB ONLY / HUMAN REVIEW</span></article>
+    </div>
+    <div class="section-head" style="margin-top:40px"><div><div class="eyebrow">04 / LINHA DO TEMPO DIDÁTICA</div><h2>Do evento isolado à correlação.</h2></div><p>Sequência fictícia com IP de documentação 192.0.2.70. Não corresponde a incidentes reais e não é uma transmissão em tempo real.</p></div>
+    <div class="evidence">
+      <div class="trace" aria-label="Linha do tempo sintética da correlação multi-host ARGUS v0.5">
+        <div class="trace-row"><time>12:00:00</time><div><strong>node-a · falha 1</strong><p>Uma única falha é observada; o novo motor não emite alerta.</p></div></div>
+        <div class="trace-row"><time>12:00:02</time><div><strong>node-b · falha 2</strong><p>O mesmo IP foi registrado em uma segunda identidade de host; a contagem continua abaixo do limiar.</p></div></div>
+        <div class="trace-row"><time>12:00:06</time><div><strong>node-c · falha 4</strong><p>Três fontes distintas observadas, mas ainda não há seis tentativas na janela.</p></div></div>
+        <div class="trace-row"><time>12:00:10</time><div><strong class="tone">node-c · falha 6 · correlação</strong><p>O novo motor gera uma detecção <code>multi_host_failed_auth_burst</code>. Falhas adicionais da mesma sequência não duplicam a detecção v0.5.</p></div></div>
+      </div>
+      <aside class="summary" aria-label="Resumo da demonstração local v0.5"><small>AMOSTRA SINTÉTICA / SEM API PÚBLICA</small><strong>08</strong><p>registros fictícios no arquivo <code>multihost_auth_v05.jsonl</code>.</p><div class="rule"><strong>01</strong><p>detecção do novo tipo v0.5. O motor legado poderá gerar outros alertas por suas próprias regras.</p></div><a class="button" href="https://github.com/kingmaker-lab/The-Workshop./blob/main/argus/samples/multihost_auth_v05.jsonl" rel="noopener noreferrer">VER AMOSTRA ↗</a></aside>
+    </div>
+    <div class="twocol" style="margin-top:22px">
+      <div class="pane"><div class="code-caption">CONFIGURAÇÃO / DESATIVADO POR PADRÃO</div>
+<pre><code>temporal_v05:
+  enabled: false
+  window_seconds: 120
+  min_hosts: 3
+  min_failures: 6
+  max_ips: 1024
+  max_events_per_ip: 128</code></pre>
+      <p>O recurso exige ativação explícita. As configurações de Sigma, Welford, regras anteriores, SQLite e o watcher permanecem independentes. O motor v0.5 não implementa agregações Sigma universais.</p></div>
+      <div class="pane"><div class="code-caption">REPRODUÇÃO / PYTHON LOCAL</div>
+<pre><code>python -m pip install -r argus/requirements.txt
+python -m unittest discover -s argus/tests -v
+
+python -m argus.main \
+  --config argus/config-v05-demo.yaml \
+  analyze argus/samples/multihost_auth_v05.jsonl \
+  --db /tmp/argus-v05-demo.db</code></pre>
+      <p>Execute somente com dados locais autorizados. O exemplo usa endereços e identidades fictícias, sem conectividade externa e sem publicação de logs pessoais.</p></div>
+    </div>
+    <div class="notice warn"><strong>Limites de segurança e interpretação:</strong> a coluna normalizada <code>source</code> precisa identificar um host de forma confiável; nomes de serviço reutilizados em vários servidores não são identidades de máquina. O estado de correlação é volátil e reinicia a cada processo, inclusive após retomar o watcher. A contagem é limitada, entradas fora de ordem são ignoradas, eventos com o mesmo ID são deduplicados dentro da janela e cardinalidade excessiva pode causar expulsão de estados. Falsos positivos são possíveis. A API permanece local e sem autenticação, portanto <strong>não deve ser exposta à Internet</strong>.</div>
+    <div class="cta-row"><a class="button primary" href="https://github.com/kingmaker-lab/The-Workshop./blob/main/argus/detection/multihost_v05.py" rel="noopener noreferrer">VER MOTOR v0.5 ↗</a><a class="button" href="https://github.com/kingmaker-lab/The-Workshop./blob/main/argus/docs/RELEASE_GATE_V05_2026-11-24.md" rel="noopener noreferrer">RELATÓRIO DE SEGURANÇA ↗</a></div>
+  </div></section>
+
   <section class="block" id="roadmap"><div class="wrap">
-    <div class="section-head"><div><div class="eyebrow">09 / PRÓXIMOS EXPERIMENTOS</div><h2>O que vem depois da v0.4?</h2></div><p>Possibilidades de pesquisa, não funcionalidades publicadas nem compromissos de lançamento.</p></div>
+    <div class="section-head"><div><div class="eyebrow">09 / PRÓXIMOS EXPERIMENTOS</div><h2>O que vem depois da v0.5?</h2></div><p>Possibilidades de pesquisa, não funcionalidades publicadas nem compromissos de lançamento.</p></div>
     <div class="roadmap">
       <div class="future"><span class="index">ENTREGUE / v0.3</span><h3>Ingestão contínua local</h3><p>Watcher de arquivos em lote limitado, checkpoint transacional e retomada experimental.</p></div>
       <div class="future"><span class="index">ENTREGUE / v0.4</span><h3>Sigma Subset</h3><p>Seletores, operadores e regras locais com validação estrita; ativação opcional e limitada.</p></div>
-      <div class="future"><span class="index">PESQUISA / 03</span><h3>Correlação multi-host</h3><p>Contexto entre máquinas, identidade de fontes e deduplicação.</p></div>
+      <div class="future"><span class="index">ENTREGUE / v0.5 · LAB ONLY</span><h3>Correlação multi-host</h3><p>Contexto local entre identidades de host normalizadas, janela temporal e deduplicação limitada em memória, com ativação opcional.</p></div>
       <div class="future"><span class="index">PESQUISA / 04</span><h3>Dashboard protegido</h3><p>Visão de investigação conectada a um backend autenticado, se aprovada pelo gate.</p></div>
     </div>
   </div></section>

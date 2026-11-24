@@ -1,0 +1,8 @@
+{"id":"v05-example-0","timestamp":"2026-11-24T12:00:00Z","source":"node-a","event":"authentication","src_ip":"192.0.2.70","user":"testuser","result":"failed"}
+{"id":"v05-example-1","timestamp":"2026-11-24T12:00:02Z","source":"node-b","event":"authentication","src_ip":"192.0.2.70","user":"testuser","result":"failed"}
+{"id":"v05-example-2","timestamp":"2026-11-24T12:00:04Z","source":"node-a","event":"authentication","src_ip":"192.0.2.70","user":"testuser","result":"failed"}
+{"id":"v05-example-3","timestamp":"2026-11-24T12:00:06Z","source":"node-c","event":"authentication","src_ip":"192.0.2.70","user":"testuser","result":"failed"}
+{"id":"v05-example-4","timestamp":"2026-11-24T12:00:08Z","source":"node-b","event":"authentication","src_ip":"192.0.2.70","user":"testuser","result":"failed"}
+{"id":"v05-example-5","timestamp":"2026-11-24T12:00:10Z","source":"node-c","event":"authentication","src_ip":"192.0.2.70","user":"testuser","result":"failed"}
+{"id":"v05-example-6","timestamp":"2026-11-24T12:00:12Z","source":"node-c","event":"authentication","src_ip":"192.0.2.70","user":"testuser","result":"failed"}
+{"id":"v05-example-7","timestamp":"2026-11-24T12:00:14Z","source":"node-b","event":"authentication","src_ip":"192.0.2.70","user":"testuser","result":"failed"}

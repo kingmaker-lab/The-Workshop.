@@ -57,3 +57,9 @@ O Worker do Workshop Labs incorpora as rotas do `web/crypto-lab/workshop-labs-in
 - Segurança: nenhuma dependência client-side, `script-src 'none'`, `connect-src 'none'`, estilos somente da origem, 405 para métodos não GET/HEAD, HSTS, nosniff, anti-framing e cache limitado; verificar com `node --test web/workshop-labs/tests/*.test.mjs`.
 - Arquivos locais de métricas/modelos e quaisquer fontes de dados privadas **não** são publicados.
 - Não remover nem sobrescrever `/argus/`, `/heartai/`, `/nexus/`, `/crypto-lab/` e seus assets, páginas originais nem o snapshot histórico legado.
+
+## ARGUS v0.5 — correlação temporal multi-host (24/11/2026)
+
+O portal /argus/ recebeu uma seção *aditiva* `#multihost`, com linha do tempo de oito eventos fictícios e explicação do engine local opt-in `argus/detection/multihost_v05.py`. Regras Sigma, watcher v0.3 e seções v0.4 permanecem. O HTML de `argus/index.html` deve continuar literalmente sincronizado à constante `ARGUS_HTML` do advanced Worker. Nenhum payload de usuário, modelo, regra importada ou API de detecção foi publicado.
+
+Testar `argus/tests/test_multihost_v05.py`, `web/workshop-labs/tests/argus-v05.test.mjs`, as suítes históricas, CSP/GET/HEAD/404/405 e a navegação NEXUS/HeartAI/Crypto Lab/CERBERUS antes de qualquer deploy. O CSS legado da página ARGUS ainda tem uma exceção de `style-src 'unsafe-inline'`; scripts, fetch e iframes continuam proibidos. O teste de segurança completo de ambiente local ou da infraestrutura de borda não é substituído por esses controles.

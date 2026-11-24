@@ -239,3 +239,21 @@ regra educacional e **não** prova exploração ou comprometimento.
 - Dependências continuam limitadas à biblioteca Python e PyYAML já
   utilizada pelo ARGUS; não há download de regras durante a execução.
 - Nenhuma mudança autoriza tornar a API não autenticada pública.
+
+## v0.5 — Correlação temporal multi-host (opt-in, lab only)
+
+A v0.5 adiciona `argus/detection/multihost_v05.py`, que observa **falhas de autenticação** do mesmo IP de origem associadas a **identidades normalizadas de hosts diferentes** em uma janela de tempo. Requer que o campo `source` identifique de modo confiável o host; caso seja um nome de serviço compartilhado, não se deve inferir atividade multi-host.
+
+**Desativado por padrão** em `argus/config.yaml`. Parâmetros sugeridos para a demonstração: `window_seconds: 120`, `min_hosts: 3`, `min_failures: 6`, `max_ips: 1024`, `max_events_per_ip: 128`.
+
+```bash
+python -m unittest discover -s argus/tests -v
+python -m argus.main --config argus/config-v05-demo.yaml analyze \
+  argus/samples/multihost_auth_v05.jsonl --db /tmp/argus-v05-demo.db
+python -m argus.main --config argus/config-v05-demo.yaml watch \
+  argus/samples/multihost_auth_v05.jsonl --db /tmp/argus-v05-watch.db --once
+```
+
+No cenário de oito registros artificiais, é esperada **uma detecção do tipo** `multi_host_failed_auth_burst`; motores preexistentes podem emitir outros alertas. O motor v0.5 deduplica IDs apenas dentro da janela ativa, não processa mensagens fora de ordem para o mesmo IP e limita explicitamente IPs e registros retidos em memória. A configuração inválida falha fechada. Evicção e reinício podem perder ou repetir correlações: o estado de detecção **não é persistido** entre execuções, mesmo com checkpoints do watcher. Isso não equivale à agregação/correlação geral de regras Sigma nem à comprovação de ataque.
+
+A API mantém `127.0.0.1:8765` por padrão e **não deve ser exposta diretamente à Internet**. A página pública [ARGUS / Workshop Labs](https://workshop-labs.pages.dev/argus/#multihost) fornece somente uma visualização estática com a sequência fictícia, sem conexão de dados reais. Leia o [release gate e a revisão de segurança](docs/RELEASE_GATE_V05_2026-11-24.md).
