@@ -22,7 +22,7 @@ from argus.models.event import Event
 
 @dataclass(slots=True)
 class _IPState:
-    failures: deque[tuple[datetime, str]] = field(default_factory=deque)
+    failures: deque[tuple[datetime, str, str]] = field(default_factory=deque)
     last_seen: datetime | None = None
     reported: bool = False
 
@@ -82,7 +82,8 @@ class MultiHostCorrelationV05:
         if (event.event_type != "authentication" or event.result != "failed"
                 or not event.src_ip or not isinstance(event.source, str)
                 or event.source.strip().lower() in ("", "unknown")
-                or len(event.source) > 128):
+                or len(event.source) > 128 or not isinstance(event.event_id, str)
+                or len(event.event_id) > 128):
             return []
         try:
             address = str(ip_address(event.src_ip))
@@ -104,15 +105,18 @@ class MultiHostCorrelationV05:
         if state.last_seen is not None and ts < state.last_seen:
             # Do not change state using older records; avoids rearming/false alerts.
             return []
-        state.last_seen = ts
         cutoff = ts - self.window
         while state.failures and state.failures[0][0] < cutoff:
             state.failures.popleft()
-        state.failures.append((ts, event.source))
+        if any(previous_id == event.event_id for _, _, previous_id in state.failures):
+            # A repeated record/ID cannot inflate the failure threshold.
+            return []
+        state.last_seen = ts
+        state.failures.append((ts, event.source, event.event_id))
         while len(state.failures) > self.max_events_per_ip:
             state.failures.popleft()
 
-        hosts = sorted({host for _, host in state.failures})
+        hosts = sorted({host for _, host, _ in state.failures})
         qualified = len(state.failures) >= self.min_failures and len(hosts) >= self.min_hosts
         if not qualified:
             state.reported = False
