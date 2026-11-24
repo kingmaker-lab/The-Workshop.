@@ -73,7 +73,7 @@ footer{border-color:#32233e;color:#a88bb8}
 
 /* FAKE NEWS / EDIÇÃO 005: additive editorial layer; existing newsroom and walker remain untouched. */
 .brief{margin:36px 0 56px;padding:0;border:1px solid rgba(172,100,254,.32);background:linear-gradient(145deg,rgba(27,18,47,.83),rgba(10,20,32,.96) 42%,rgba(9,16,26,.98));border-radius:18px;overflow:hidden;box-shadow:0 14px 62px rgba(8,3,28,.23)}
-.brief-mast{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:14px 23px;border-bottom:1px solid rgba(174,124,240,.23);background:linear-gradient(90deg,rgba(156,70,245,.13),rgba(40,184,207,.06));color:#d9c7f2;font:700 11px/1.5 inherit;letter-spacing:.1em}
+.brief-mast{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:14px 23px;border-bottom:1px solid rgba(174,124,240,.23);background:linear-gradient(90deg,rgba(156,70,245,.13),rgba(40,184,207,.06));color:#d9c7f2;font-weight:700;font-size:11px;line-height:1.5;letter-spacing:.1em}
 .brief-mast time{color:#9fcdd9;font-size:11px;letter-spacing:.07em}
 .brief-live{display:inline-block;width:8px;height:8px;margin-right:10px;border-radius:50%;background:#d788fc;box-shadow:0 0 12px #cc83ff}
 .brief-hero{display:grid;grid-template-columns:minmax(170px,220px) minmax(0,1fr);gap:20px;padding:26px 24px 28px;border-bottom:1px solid rgba(130,137,178,.22);background:radial-gradient(ellipse at 15% 35%,rgba(165,74,244,.15),transparent 62%)}
