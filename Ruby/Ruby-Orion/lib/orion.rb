@@ -1,5 +1,10 @@
 # frozen_string_literal: true
-require_relative "orion/version"
-require_relative "orion/files"
-require_relative "orion/labs"
-require_relative "orion/cli"
+require_relative 'orion/version'
+require_relative 'orion/files'
+require_relative 'orion/labs'
+require_relative 'orion/tasks/registry'
+require_relative 'orion/system/runner'
+require_relative 'orion/system/supervisor'
+require_relative 'orion/ipc/protocol'
+require_relative 'orion/ipc/channel'
+require_relative 'orion/cli'

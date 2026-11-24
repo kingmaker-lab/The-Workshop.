@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors = ["The Workshop"]
   spec.license = "MIT"
   spec.homepage = "https://github.com/kingmaker-lab/The-Workshop./tree/main/Ruby/Ruby-Orion"
-  spec.required_ruby_version = ">= 3.1"
+  spec.required_ruby_version = ">= 3.3"
   spec.files = Dir["lib/**/*.rb", "README.md", "LICENSE", "docs/**/*", "labs/**/*"]
   spec.bindir = "bin"
   spec.executables = ["orion"]

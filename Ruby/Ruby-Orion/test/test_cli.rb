@@ -21,7 +21,7 @@ class OrionCliTest < Minitest::Test
   def test_version
     status, out, = execute("--version")
     assert_equal 0, status
-    assert_equal "Ruby Orion 0.1.0\n", out
+    assert_equal "Ruby Orion 0.2.0\n", out
   end
 
   def test_info_json

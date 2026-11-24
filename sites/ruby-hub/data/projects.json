@@ -26,14 +26,16 @@
       "status": "development",
       "featured": true,
       "kind": "ENGINEERING / RUBY",
-      "description": "Iniciativa Ruby de engenharia e aprendizado: CLI Orion, inspeção local de arquivos, hashing, laboratórios reproduzíveis e três pilares inspirados no cinturão de Órion.",
+      "description": "Ruby Orion v0.2 (Alnilam): engenharia com Ruby, CLI, inspeção local, SHA-256/512, supervisor de processos com timeout e IPC JSON por pipes. Laboratórios EXP-001, 002 e 003.",
       "stack": [
         "Ruby",
         "CLI",
-        "Engineering"
+        "Systems",
+        "IPC"
       ],
       "repo": "https://github.com/kingmaker-lab/The-Workshop./tree/main/Ruby/Ruby-Orion",
-      "site": null
+      "site": null,
+      "version": "0.2.0"
     },
     {
       "id": "raven",
