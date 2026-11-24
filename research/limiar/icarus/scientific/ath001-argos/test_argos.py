@@ -1,8 +1,20 @@
 import itertools
 import random
 import unittest
+from unittest.mock import patch
 import argos as a
 class ArgosTests(unittest.TestCase):
+    def test_local_memory_floor(self):
+        with patch.object(a,"memory",return_value={"MemAvailable":256*1024}), patch.object(a,"cached_temperature",return_value=65.):
+            self.assertEqual(a.safety_snapshot(())["mem_available_kib"],256*1024)
+        for value in (None,256*1024-1):
+            with patch.object(a,"memory",return_value={"MemAvailable":value}):
+                with self.assertRaises(RuntimeError):a.safety_snapshot(())
+    def test_thermal_guard(self):
+        with patch.object(a,"memory",return_value={"MemAvailable":400*1024}):
+            for value,paths in ((80.,()),(None,("known",))):
+                with patch.object(a,"cached_temperature",return_value=value):
+                    with self.assertRaises(RuntimeError):a.safety_snapshot(paths)
     def test_quota_and_audits(self):
         for seed in range(30):
             r=random.Random(seed);s=a.audit_indices(r)
