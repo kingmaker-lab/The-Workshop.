@@ -9,3 +9,6 @@ Stronger induction: for every k<=Q_i, the k smallest elements of current heap ar
 Heap O(n log(n+1)) time, O(n) auxiliary storage, bounded batch size. Native validation scans all 32 features; term count excludes heap, copies, checks, observation and input acquisition. Prefix guarantee is logical, not causal wall-clock or CPU quota. Full batch lookahead required. Smaller margin is a heuristic for benefit; no proof of accuracy, energy or latency. Uniform incremental cost required; heterogeneous costs not covered. No theorem of OS safety: telemetry sampled, not continuous.
 ## Next proof checks
 Independent exhaustive enumeration small n, tie/zero/cap/full cases, property tests against compiled C including selected indices (current C interface reports aggregate only). Formal review pending; no formal verification of entire C program. A future variable-cost model requires a separate proof.
+
+## EUCLID-01 | Verification wave
+[Proof extensions T01–T06](ath002-euclid/PROOFS.md) and [local verification instructions](ath002-euclid/README.md). Native membership reconstructed by label-toggle probe against unchanged rank_batch; bounded enumeration and exact rational HT checks prepared. Local execution and independent mathematical review pending. No performance claim.
