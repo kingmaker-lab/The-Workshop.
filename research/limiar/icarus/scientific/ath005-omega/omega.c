@@ -33,9 +33,8 @@ static void tail(const double *x,double *f){
  }
 }
 int omega_features(const double *x,double *f){if(!x||!f)return -1;cheap(x,f);tail(x,f);return 0;}
-/* Affine squared-distance scores, with common feature-square term removed.
-   Model coefficients stored as standardized centroids and scales.
-   Full and adaptive expansions evaluate precisely the same score function. */
+/* Standardized squared distances. Expanded candidate reuses already computed
+   cheap distances; FULL and expanded candidate use the same score function. */
 static double distance(const double *f,const double *c,const double *scale,int lo,int hi){
  double d=0;for(int j=lo;j<hi;j++){double z=(f[j]-c[j])*scale[j];d+=z*z;}return d;
 }
@@ -114,7 +113,9 @@ int main(int argc,char **argv){
    for(unsigned i=0;i<n;i++){if(!read_exact(f,x+i*D,D*sizeof(double)))return 2;y[i]=(unsigned char)h[3];}
    Result r;int lo=mode<0?0:mode,hi=mode<0?4:mode+1;
    for(int a=lo;a<hi;a++)run(x,y,n,a,q,th,&m,&r);
-   unsigned seed=0x9e3779b9u^batch^((unsigned)q<<24);
+   const char *seed_env=getenv("OMEGA_SEED");
+   unsigned seed=0x9e3779b9u^batch^((unsigned)q<<24)^(seed_env?(unsigned)strtoul(seed_env,NULL,10):0u);
+   if(!seed)seed=1;
    for(int rep=0;rep<reps;rep++){
     int order[4]={0,1,2,3};
     if(mode<0)for(int j=3;j>0;j--){int k=(int)(rng(&seed)%(unsigned)(j+1));int z=order[j];order[j]=order[k];order[k]=z;}
@@ -128,7 +129,10 @@ int main(int argc,char **argv){
   }
  }
  finish:
- {struct rusage u;if(getrusage(RUSAGE_SELF,&u))return 2;
- printf("END,%u,%d,%ld,%llu\n",batch,truncated,u.ru_maxrss,(unsigned long long)(ns(CLOCK_MONOTONIC)-start));}
+ {FILE *status=fopen("/proc/self/status","r");unsigned long hwm=0;char line[256];
+ if(!status)return 2;
+ while(fgets(line,sizeof(line),status))if(sscanf(line,"VmHWM: %lu kB",&hwm)==1)break;
+ fclose(status);if(!hwm)return 2;
+ printf("END,%u,%d,%lu,%llu\n",batch,truncated,hwm,(unsigned long long)(ns(CLOCK_MONOTONIC)-start));}
  free(x);fclose(f);return ferror(stdout)?2:0;
 }
