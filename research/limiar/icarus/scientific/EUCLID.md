@@ -12,3 +12,6 @@ Independent exhaustive enumeration small n, tie/zero/cap/full cases, property te
 
 ## EUCLID-01 | Verification wave
 [Proof extensions T01–T06](ath002-euclid/PROOFS.md) and [local verification instructions](ath002-euclid/README.md). Native membership reconstructed by label-toggle probe against unchanged rank_batch; bounded enumeration and exact rational HT checks prepared. Local execution and independent mathematical review pending. No performance claim.
+
+## EUCLID-01 | Local result
+Uploaded euclid-local.json at revision 1fae7461142a33d48388c499011447dc7e7e9fa9 reports 66,218 successful bounded checks, including 488 native comparisons, 58,304 audit configurations, peak RSS 19,144 KiB. Independent review, raw binary hash and build logs remain pending; not full formal verification.
