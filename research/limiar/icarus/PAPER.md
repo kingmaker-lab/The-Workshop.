@@ -2,13 +2,13 @@
 
 **Projeto Limiar | The Workshop Research | LIM-I001**  
 **Autor:** Gabriel Oliveira Pereira (Kingmaker), The Workshop  
-**Versão:** 0.1.0 — manuscrito técnico preliminar, 24 de novembro de 2026  
-**Estado:** research only; Ciclo I encerrado; sem revisão por pares.  
+**Versão:** 0.2.0 — manuscrito técnico preliminar, 25 de novembro de 2026  
+**Estado:** research only; ICARUS e pilotos exploratórios ATHENA encerrados; validação confirmatória pendente; sem revisão por pares.  
 **Revisão experimental final:** `37e848d2886c6cd9937951139cec6d1e991008f5`.
 
 ## Resumo
 
-Este trabalho investiga a viabilidade de distribuir computação de forma seletiva em hardware de recursos limitados, combinando classificação por estágios, restrições de orçamento lógico, execução nativa e observação de recursos Linux. O protocolo ICARUS evoluiu por seis experimentos (WAX, FEATHER, DAEDALUS, ASCENSION, HELIOS e SOLARIS) e uma validação final, EXP-00X ÍCARO. O domínio inicial é um classificador linear sintético de 32 atributos, com expansão opcional de quatro para 32 termos. A variante final utiliza uma fila de prioridade para selecionar exemplos de menor margem absoluta sob quotas de prefixo. Em 30 sementes, 46.080 exemplos e 720 lotes, a variante obteve 93,5308% de acurácia contra 94,8199% do FULL nativo, redução de 53,1456% dos termos, de 92,4921% do custo de CPU do observador frente a HELIOS e de 85,5273% do custo amortizado total frente a PROMETHEUS. Não houve violação registrada do orçamento lógico. Entretanto, a perda de 1,2891 ponto percentual excedeu o limite pré-declarado de 1 p.p.; o custo total também foi aproximadamente 9,88% superior ao FULL nativo. Quatro dos cinco critérios finais foram satisfeitos. O resultado caracteriza um compromisso entre qualidade, custo de observação e seleção, não uma demonstração de aceleração universal, economia de energia ou redução de memória.
+Este trabalho investiga a viabilidade de distribuir computação de forma seletiva em hardware de recursos limitados, combinando classificação por estágios, restrições de orçamento lógico, execução nativa e observação de recursos Linux. O protocolo ICARUS evoluiu por seis experimentos (WAX, FEATHER, DAEDALUS, ASCENSION, HELIOS e SOLARIS) e uma validação final, EXP-00X ÍCARO. O domínio inicial é um classificador linear sintético de 32 atributos, com expansão opcional de quatro para 32 termos. A variante final utiliza uma fila de prioridade para selecionar exemplos de menor margem absoluta sob quotas de prefixo. Em 30 sementes, 46.080 exemplos e 720 lotes, a variante obteve 93,5308% de acurácia contra 94,8199% do FULL nativo, redução de 53,1456% dos termos, de 92,4921% do custo de CPU do observador frente a HELIOS e de 85,5273% do custo amortizado total frente a PROMETHEUS. Não houve violação registrada do orçamento lógico. Entretanto, a perda de 1,2891 ponto percentual excedeu o limite pré-declarado de 1 p.p.; o custo total também foi aproximadamente 9,88% superior ao FULL nativo. Quatro dos cinco critérios finais foram satisfeitos. O resultado caracteriza um compromisso entre qualidade, custo de observação e seleção. ATHENA amplia a investigação com quatro pilotos de seleção (680.960 exemplos sintéticos), 66.218 verificações matemáticas limitadas e dois pilotos nativos de custo. LEVER observou, em configuração IID específica, redução mediana de CPU de 69,05% com perda de 0,781 p.p. usando seleção causal; em distribuição adversa, as metas conjuntas não foram atingidas. Não se demonstra aceleração universal, economia de energia ou redução de memória.
 
 **Palavras-chave:** computação condicional, orçamento de recursos, seleção por margem, Linux, código nativo, restrições de prefixo, benchmarking.
 
@@ -18,7 +18,7 @@ A escassez de recursos não implica que toda tarefa deva ser executada uniformem
 
 O objetivo de ICARUS é testar esse compromisso empiricamente, e não contornar limites físicos do hardware. As perguntas centrais são: (i) é possível reduzir avaliações de termos preservando qualidade? (ii) é possível limitar rigorosamente o custo lógico de cada prefixo? (iii) qual parcela do custo é atribuível à implementação, ao observador e à política? (iv) quando o sistema adaptativo supera uma alternativa nativa igualmente otimizada?
 
-As três primeiras perguntas motivam o Ciclo I. A quarta permanece em investigação no [Protocolo ATHENA](scientific/README.md).
+As três primeiras perguntas motivam o Ciclo I. A quarta motivou os pilotos exploratórios do [Protocolo ATHENA](scientific/README.md), apresentados na seção 11.
 
 ## 2. Trabalhos relacionados
 
@@ -78,7 +78,7 @@ avaliar pontuação completa somente para i em S
 
 **Proposição 1 (viabilidade e cardinalidade).** Como $Q_i$ é não decrescente e aumenta no máximo uma unidade a cada passo, o heap termina cada passo com cardinalidade $Q_i$. Inserir o índice corrente não modifica prefixos anteriores; remover qualquer elemento não aumenta sua contagem. Por indução, todos os prefixos são viáveis, e a cardinalidade final atinge o limite superior $Q_n$.
 
-**Proposição 2 (mínima soma de margens).** Por indução mais forte, para qualquer $k\le Q_i$, os $k$ menores elementos do heap constituem uma solução viável de peso mínimo com cardinalidade $k$ no prefixo $i$. Uma solução ótima ou exclui o elemento corrente (melhores $k$ anteriores) ou o inclui (melhores $k-1$ anteriores mais o atual). Selecionar os $k$ menores da união compara essas alternativas; remover o máximo acima de $Q_i$ não altera a solução para $k\le Q_i$. Para $k=Q_n$ segue a propriedade desejada. Ver [EUCLID](scientific/EUCLID.md), que contém a formalização e os testes de prova ainda pendentes.
+**Proposição 2 (mínima soma de margens).** Por indução mais forte, para qualquer $k\le Q_i$, os $k$ menores elementos do heap constituem uma solução viável de peso mínimo com cardinalidade $k$ no prefixo $i$. Uma solução ótima ou exclui o elemento corrente (melhores $k$ anteriores) ou o inclui (melhores $k-1$ anteriores mais o atual). Selecionar os $k$ menores da união compara essas alternativas; remover o máximo acima de $Q_i$ não altera a solução para $k\le Q_i$. Para $k=Q_n$ segue a propriedade desejada. Ver [EUCLID](scientific/EUCLID.md), que contém a formalização e as verificações locais concluídas; revisão independente pendente.
 
 Exemplo: para $n=64,b=16$, existem no máximo 27 expansões e 1.012 termos totais, abaixo dos 1.024 permitidos. A complexidade é $O(n\log(n+1))$ em tempo e $O(n)$ em memória auxiliar, com implementação limitada a $n\le256$.
 
@@ -289,15 +289,76 @@ Não sobrescrever resultados originais; usar diretório independente. Registrar 
 
 A publicação futura deve arquivar os arquivos originais autorizados, checksums e código de análise, sem publicar identificadores de máquina ou telemetria sensível. O inventário não implica que os JSON estejam versionados aqui.
 
-## 11. Trabalhos futuros: ATHENA
+## 11. Protocolo ATHENA: resultados da fase exploratória
 
-O [plano científico](scientific/README.md) prevê: ALEXANDRIA (revisão bibliográfica); EUCLID (verificação independente das proposições); ARCHIMEDES (experimentos de ponto de equilíbrio com custo incremental genuíno); GAUSS (estatística hierárquica e não inferioridade); ATLAS (workloads reais e múltiplas arquiteturas); THEMIS (replicação independente); ACADEMIA (manuscrito revisado e arquivo imutável).
+ATHENA desloca a questão de quantas operações podem ser evitadas para quando a seleção produz benefício líquido frente a uma referência nativa igualmente otimizada. O [ledger ATHENA](scientific/ATHENA-RESULTS.md) registra revisões, arquivos locais, contagens e limites das análises anteriores. Os pilotos abaixo não constituem validação confirmatória; os JSON originais ainda não estão arquivados nesta revisão.
 
-O desenho [ARCHIMEDES](scientific/ARCHIMEDES.md) deve incluir baselines nativos igualmente otimizados, top-k global, seleção aleatória viável de mesmo custo, limiar causal, separação da observação e seleção, tamanhos de lote variados e custo real de extração. A hipótese primária futura exige simultaneamente CPU inferior ao FULL e limite superior unilateral de confiança de 95% para perda de qualidade de até 1 p.p. O protocolo prospectivo ainda não está bloqueado; nenhuma dessas metas é um resultado do Ciclo I.
+### 11.1 ALEXANDRIA: benefício, contexto e incerteza
 
-## 12. Conclusão
+Defina o ganho individual $g_i=1[\mathrm{FULL\ correto}]-1[\mathrm{LITE\ correto}]\in\{-1,0,1\}$. A menor margem absoluta é uma prioridade heurística, não necessariamente uma estimativa ótima de $g_i$. BENEFIT-01 investiga a estimação desse ganho por margem e contexto; MÉTIS seleciona uma política por validação independente; ARGOS monitora benefício com auditorias e rótulos atrasados; THEMIS utiliza auditoria probabilística direcionada e retenção da decisão diante de evidência inconclusiva.
 
-ICARUS estabeleceu um protótipo experimental de computação seletiva com orçamento lógico explícito, observação Linux e execução nativa. O último experimento evidencia redução de custo frente aos observadores anteriores e melhora descritiva na escolha de expansões a custo igualado, mas falha no objetivo de acurácia e não supera FULL nativo em CPU. A contribuição científica mais defensável é a delimitação desses resultados, incluindo suas falhas, e a formulação de uma investigação reproduzível sobre as condições em que a adaptação realmente compensa.
+| Piloto | Amostras de teste | Avaliações de seletores | Resultado principal |
+|---|---:|---:|---|
+| [BENEFIT-01](scientific/ath001-benefit/README.md) | 30.720 | 9.600 | Contexto: +1,367 p.p. sob heteroscedasticidade; −0,150 p.p. IID |
+| [MÉTIS](scientific/ath001-metis/README.md) | 76.800 | 52.800 | +1,504 p.p. em contexto estável; −2,969 p.p. após inversão |
+| [ARGOS](scientific/ath001-argos/README.md) | 286.720 | 31.360 | +2,504 p.p. frente ao controle auditado após inversão abrupta; −0,715 p.p. em contexto estável |
+| [THEMIS](scientific/ath001-themis/README.md) | 286.720 | 44.800 | TARGET2: +0,842 p.p. frente a ARGOS4 em contexto estável; recuperação mais lenta após mudança |
+| Total | 680.960 | 138.560 | Zero violações lógicas registradas |
+
+As auditorias são expansões reservadas dentro da mesma quota lógica, não trabalho gratuito. THEMIS-TARGET2 examinou 6.820 divergências em 8.960 auditorias (76,12%), contra 3.804 em 17.920 (21,23%) para ARGOS4. O erro quadrático médio em raiz do estimador por lote caiu de 7,383 para 5,739 p.p. O contraste estimado é entre políticas sem auditorias; não equivale automaticamente ao ganho das políticas auditadas. A histerese preservou contexto estável, mas retardou a reação a mudanças. Não se mediu CPU ou energia nesses pilotos. A revisão de literatura permanece exploratória.
+
+### 11.2 EUCLID: fundamentação e verificação
+
+As quotas de prefixo definem um caso especial de matroide laminar. Para auditorias obrigatórias viáveis $A$, a capacidade residual é $r_i=Q_i-|A\cap P_i|$, com fechamento $R_i=\min_{j\ge i}r_j$. A monotonicidade das contagens de prefixo demonstra a equivalência das restrições residuais originais e fechadas. Isso permite a contração de auditorias sem abandonar a viabilidade.
+
+Para comparar políticas $C,M$, seja $h_i=(1[i\in C]-1[i\in M])g_i$. O estimador de Horvitz–Thompson $\widehat\Delta=(100/n)\sum_{i\in A}h_i/p_i$ tem esperança condicional igual ao contraste verdadeiro quando as probabilidades de inclusão são conhecidas, positivas no suporte relevante e a seleção não utiliza os resultados futuros. Para um sorteio independente por estrato, direcionar probabilidade às divergências reduz ou preserva a variância condicional frente à amostragem uniforme com o mesmo número de sorteios e os mesmos estratos. A regra de erro-padrão de THEMIS é heurística, não garantia sequencial de cobertura.
+
+Se dois ambientes produzem a mesma distribuição de todas as observações acessíveis, mas têm políticas ótimas opostas e vantagem igual a $\delta>0$, a escolha contextual com probabilidade $p$ implica arrependimentos $\delta(1-p)$ e $\delta p$; o pior é ao menos $\delta/2$. Trata-se de construção sob hipóteses específicas, não de limite universal de todos os sistemas. O atraso de feedback $D$ e a janela $W$ impõem que uma janela inteiramente posterior à mudança não esteja disponível antes de $t_0+D+W-1$ sob entrega completa; isso não garante detecção nesse instante.
+
+O arquivo local euclid-local.json registra **66.218 verificações aprovadas**, incluindo 488 comparações nativas e 58.304 combinações de auditoria. Ver [demonstrações](scientific/ath002-euclid/PROOFS.md) e [executor](scientific/ath002-euclid/README.md). Os testes cobrem domínios finitos; não substituem revisão independente ou verificação formal integral do programa.
+
+### 11.3 ARCHIMEDES-01: custo computacional real
+
+O kernel C agrega $W$ observações por característica adicional; as entradas brutas estão residentes em memória e o trabalho caro é realmente omitido quando não há expansão. A fronteira de tempo inclui o kernel, seleção e saída, excluindo geração de dados, Python, observação Linux, aquisição externa e I/O. Foram três sementes, quatro tamanhos de lote, quatro orçamentos e cinco níveis de trabalho, 80 células e 10.080 chamadas temporizadas. Os 7.200 exemplos únicos não se multiplicam pelas repetições.
+
+Nove células HORIZON atingiram descritivamente redução mediana de CPU de ao menos 50% e perda de qualidade de até 1 p.p. Em N256/W64, RANK obteve redução de 60,80%, 742 acertos contra 745 de FULL em 768 exemplos (perda de 0,391 p.p.). A fronteira agregada HORIZON ocorreu entre W1 e W4. GLOBAL-TOP-K apresentou violações em 173 de 240 células por semente, enquanto RANK não registrou excesso lógico.
+
+### 11.4 ARCHIMEDES-02 LEVER: causalidade, custo e adversidade
+
+LEVER fixa as características latentes e os rótulos entre níveis W, salvo arredondamento, e refina a grade de custo. Compara FULL, LITE, STATIC, RANK, CAUSAL (limiar calibrado separadamente, quota exata e sem antecipação das margens futuras), FAST (caminho FULL no orçamento integral) e dois diagnósticos sem expansão. Foram 108 células, 324 células por semente, 1.920 exemplos latentes únicos e 12.960 chamadas temporizadas (9.720 de kernel e 3.240 diagnósticas). A versão adversa aumenta a variância das características adicionais em entradas de margem alta, desafiando a prioridade de RANK.
+
+| HORIZON | IID | ADVERSE |
+|---|---:|---:|
+| FULL | 95,000% | 92,813% |
+| RANK | 94,167% | 83,958% |
+| CAUSAL | 93,958% | 88,125% |
+| STATIC | 90,625% | 86,771% |
+| LITE | 86,354% | 83,125% |
+
+Cada distribuição contém 960 exemplos latentes únicos. Nenhuma célula adversa atingiu conjuntamente as metas descritivas de CPU e qualidade. Na distribuição IID, a fronteira agregada de RANK ocorreu entre W1 e W2, e CAUSAL apresentou economia mediana em todos os nove níveis. A melhor combinação conjunta observada foi **CAUSAL, HORIZON, N256/W16: 69,05% menos CPU e perda de 0,78125 p.p.** (768 exemplos). Essa redução equivale a aproximadamente 3,23 vezes o desempenho em termos de tempo de CPU do kernel, não de latência fim a fim. O candidato foi escolhido após observar os dados; requer confirmação inédita.
+
+No LIBERTAS, FAST apresentou razão mediana de CPU frente a FULL de 1,0030, ante 1,1248 para RANK, com igualdade dos checksums e acertos registrados. O caminho direto elimina seleção redundante no orçamento integral; não constitui novo resultado de economia de expansões. O RSS de pico da invocação LEVER foi 26.132 KiB; não é memória por estratégia. Os ensaios nativos registraram zero violações lógicas dos seletores viáveis.
+
+### 11.5 Limites e objetivos após ATHENA
+
+| Objetivo aspiracional | Estado |
+|---|---|
+| CPU ≥50% menor e perda ≤1 p.p. | Observado conjuntamente em células exploratórias específicas; não confirmado |
+| Redução de memória ≥25% | Não demonstrada por estratégia |
+| Independência de runtime | Kernels C executados; executor Python e validação integral pendente |
+| Orçamento lógico | Demonstrações sob hipóteses explícitas e verificações locais |
+| Robustez sob mudanças | Limitada; nenhum seletor universalmente superior |
+| Energia e aplicações reais | Não avaliadas adequadamente |
+
+Os limites preventivos de ARGOS e pilotos subsequentes de baixo consumo foram alterados localmente para 256 MiB de memória disponível e 80 °C; as rotinas originais do Ciclo I preservam seus limites. Trata-se de guardas amostradas, não garantia de segurança. Checkpoints atômicos com SHA-256 permitem retomar grupos completos, mas não certificam os dados de origem. Resultados de múltiplas sementes numa sessão não equivalem a replicações físicas independentes.
+
+## 12. Trabalhos futuros: validação confirmatória
+
+O ciclo de pilotos de seleção e engenharia está encerrado. ALEXANDRIA ainda requer revisão sistemática de textos completos; EUCLID aguarda revisão matemática independente. GAUSS deverá congelar hipótese, candidato, tamanho amostral, sementes inéditas, sessões, análise e tratamento de interrupções antes da confirmação. Uma hipótese conjunta exige limite superior unilateral de confiança de 95% para perda FULL−candidato de até 1 p.p. e limite superior da razão de CPU abaixo de 1; a meta aspiracional de 50% requer razão de até 0,5, com critério definido antecipadamente. CAUSAL IID HORIZON N256/W16 é candidato proposto, não validado; RANK e FAST são comparadores relevantes. ATLAS estudará cargas reais e outros dispositivos; ATH-006 THEMIS replicação independente (distinta de BENEFIT-04); ACADEMIA, arquivo imutável e revisão do manuscrito. Não há resultado confirmatório antecipado.
+
+## 13. Conclusão
+
+ICARUS estabeleceu um protótipo de computação seletiva nativa com restrições de prefixo, mas a validação final do Ciclo I não cumpriu a meta de qualidade nem superou FULL nativo em CPU. ATHENA delimitou propriedades matemáticas, benefícios condicionais de contexto e auditoria, e condições empíricas em que a economia de trabalho supera o overhead. ARCHIMEDES e LEVER observaram reduções reais de tempo de CPU do kernel sintético em configurações específicas; LEVER também documentou degradação importante sob distribuição adversa. A contribuição defendida é a delimitação dessas condições e dos limites de inferência, não superioridade universal, novidade estabelecida ou prontidão para produção. O encerramento dos pilotos abre a validação científica, não encerra a pesquisa.
 
 ## Referências
 
@@ -311,8 +372,9 @@ Referências iniciais provenientes da revisão exploratória ALEXANDRIA; a revis
 6. Kalibera, T.; Jones, R. *Rigorous Benchmarking in Reasonable Time*. 2013. https://kar.kent.ac.uk/33611/
 7. ACM. *Artifact Review and Badging*. https://www.acm.org/publications/policies/artifact-review-and-badging-current
 8. The Workshop. [Protocolo ICARUS](README.md), [ledger do Ciclo I](scientific/CYCLE-I.md), [EUCLID](scientific/EUCLID.md) e [ALEXANDRIA](scientific/ALEXANDRIA.md), 2026.
+9. The Workshop. [ATHENA: ledger de resultados](scientific/ATHENA-RESULTS.md), [ARCHIMEDES](scientific/ARCHIMEDES.md) e [LEVER](scientific/ath003-lever/README.md), 2026.
 
 ---
 
-*Beyond Limits. Ad Solem.*  
+*Beyond Limits. Ad Solem. Scientia ante gloriam.*  
 Manuscrito de pesquisa; sem DOI, revisão por pares, garantia de uso em produção ou reivindicação de novidade estabelecida.
