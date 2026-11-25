@@ -236,6 +236,7 @@ def session(folder,i,resume):
     lock=get_lock(folder);meta=read(folder/"test.json")
     require(meta["freeze_sha256"]==digest(folder/"freeze.json") and meta["test_sha256"]==digest(folder/"test.bin"),"test fixture changed")
     require(1<=i<=5,"session 1..5")
+    require(not (folder/"omega-final.json").exists(),"terminal verdict already recorded")
     d=folder/f"s{i:02}";d.mkdir(exist_ok=True)
     with (d/".lock").open("a") as f:
         fcntl.flock(f,fcntl.LOCK_EX|fcntl.LOCK_NB)
@@ -269,7 +270,9 @@ def percentile(v,p):
 def stress_summary(stress):
     out={}
     for size,arms in stress.items():
-        n=min(len(v["batches"]) for v in arms.values());entry={"common_batches":n,"arms":{}}
+        n=min(len(v["batches"]) for v in arms.values())
+        require([(b["subject"],b["trial"],b["labels"]) for b in arms["0"]["batches"][:n]]==[(b["subject"],b["trial"],b["labels"]) for b in arms["1"]["batches"][:n]],"stress common prefix mismatch")
+        entry={"common_batches":n,"arms":{}}
         for k,v in arms.items():
             z=v["batches"][:n]
             if not z:entry["arms"][k]={"completed":v["end"],"common_rows":0};continue
@@ -301,19 +304,24 @@ def analyze(folder):
     mem=[math.log(s["memory"]["1"]["rss_kib"]/s["memory"]["0"]["rss_kib"]) for s in sessions]
     qual=upper(losses,1.894578605061305);cpu=math.exp(upper(ratios,2.13184678632665));memory=math.exp(upper(mem,2.13184678632665))
     quality=qual<=1;speed=cpu<=.5;ram=memory<=.75
-    verdict="ASCENSION" if quality and speed and ram else "PARTIAL ASCENSION" if quality or speed else "LIMIT REACHED"
+    verdict="ASCENSION" if quality and speed and ram else "PARTIAL ASCENSION" if quality or speed or ram else "LIMIT REACHED"
     obj={"verdict":verdict,"primary_passed":quality and speed,"quality_passed":quality,"cpu_50_passed":speed,"cpu_superiority":cpu<1,"memory_25_passed":ram,"native_standalone_parity":True,"logical_prefix_violations":0,
          "quality_loss_pp":st.mean(losses),"quality_upper95_pp":qual,"cpu_ratio":math.exp(st.mean(ratios)),"cpu_upper95":cpu,"memory_ratio":math.exp(st.mean(mem)),"memory_upper95":memory,
          "subject_losses_pp":losses,"session_cpu_ratios":[math.exp(v) for v in ratios],"session_memory_ratios":[math.exp(v) for v in mem],"rows":sessions[0]["summary"]["n"],"chosen":lock["chosen"],"session_sha256":[digest(folder/f"s{i:02}"/"session.json") for i in range(1,6)],"freeze_sha256":meta["freeze_sha256"],"test_sha256":meta["test_sha256"],
          "summary":sessions[0]["summary"],"stress":stress_summary(sessions[-1]["stress"]),"sessions":[{"session":s["session"],"starts":s["starts"],"finished":s["finished"],"memory":s["memory"]} for s in sessions]}
     write(folder/"omega-final.json",obj);print(json.dumps({k:v for k,v in obj.items() if k not in ("summary","stress","sessions")},indent=2))
 def main():
-    p=argparse.ArgumentParser();p.add_argument("action",choices=("smoke","freeze","prepare-test","run","analyze"));p.add_argument("--data",type=Path);p.add_argument("--work",type=Path,required=True);p.add_argument("--session",type=int);p.add_argument("--resume",action="store_true");v=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument("action",choices=("smoke","freeze","prepare-test","run","analyze","close-incomplete"));p.add_argument("--data",type=Path);p.add_argument("--work",type=Path,required=True);p.add_argument("--session",type=int);p.add_argument("--resume",action="store_true");v=p.parse_args()
     folder=v.work.resolve();identity()
     if v.action in ("smoke","freeze","prepare-test"):require(v.data is not None,"--data required")
     if v.action=="smoke":smoke(v.data.resolve(),folder)
     elif v.action=="freeze":freeze(v.data.resolve(),folder)
     elif v.action=="prepare-test":prepare_test(v.data.resolve(),folder)
     elif v.action=="run":require(v.session is not None,"--session required");session(folder,v.session,v.resume)
-    else:analyze(folder)
+    elif v.action=="analyze":
+        require(not (folder/"omega-final.json").exists(),"terminal verdict already recorded");analyze(folder)
+    else:
+        require(not (folder/"omega-final.json").exists(),"terminal verdict already recorded")
+        completed=[i for i in range(1,6) if (folder/f"s{i:02}"/"session.json").exists()]
+        write(folder/"omega-final.json",{"verdict":"INCONCLUSIVE","completed_sessions":completed,"reason":"operator terminated incomplete or invalid study; preserve raw logs; no more sessions"})
 if __name__=="__main__":main()
