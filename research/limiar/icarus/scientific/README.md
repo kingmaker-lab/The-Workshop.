@@ -3,7 +3,7 @@ Opened 2026-11-24. Research only. ICARUS Cycle I frozen at experiment revision 3
 Question: when does constrained selective computation outperform an equally optimized full native pipeline while retaining task quality?
 ATH-001 ALEXANDRIA: [exploratory related work and four completed selector pilots](ALEXANDRIA.md), systematic screening pending.
 ATH-002 EUCLID: local bounded verification passed (66,218 checks); [formal model and proof draft](EUCLID.md), [EUCLID-01 verification](ath002-euclid/README.md); independent review pending.
-ATH-003 ARCHIMEDES: ACTIVE; [prospective design](ARCHIMEDES.md), [ARCHIMEDES-01 native pilot](ath003-archimedes/README.md) prepared; execution pending.
+ATH-003 ARCHIMEDES: ACTIVE; [prospective design](ARCHIMEDES.md), [ARCHIMEDES-01 native pilot](ath003-archimedes/README.md) completed locally, [ARCHIMEDES-02 LEVER](ath003-lever/README.md) prepared; local execution pending.
 ATH-004 GAUSS: hierarchical statistical analysis and noninferiority.
 ATH-005 ATLAS: real workloads, multiple hardware environments.
 ATH-006 THEMIS: independent artifact replication.
