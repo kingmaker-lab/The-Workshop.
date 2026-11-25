@@ -9,3 +9,9 @@ Candidate real dataset: UCI Smartphone-Based Recognition of Human Activities and
 
 ## ARCHIMEDES-01 | First exploratory wave
 [Native resident signal aggregation pilot](ath003-archimedes/README.md). Six arms, three fresh seeds, four batch sizes, four budgets, five actual work levels, seven paired repetitions. Fixed synthetic IID fixture, original heap reused. Low-resource amendment: 256 MiB floor and 80 C for this bounded pilot, resumable groups; no external pressure. Later waves address causal policy, distribution variations, live observer, acquisition and independent sessions. Implementation prepared; local compile and tests pending. This is not a frozen confirmatory protocol.
+
+## ARCHIMEDES-01 | Local result
+Uploaded smoke and pilot at dc787f73fd228b6e26a5ad2f41018a16f81d60de, binary SHA256 c8b7c67f0b675855162e8eb4a1c0f2955c36a43a918f01f423f933b7f397f843. Pilot 10,080 timed native calls, 60 fixture groups, 80 cells, 7,200 unique synthetic rows. Prior analysis observed nine HORIZON cells meeting descriptive CPU reduction >=50% and quality loss <=1 pp; not a confirmatory result. Raw archive pending.
+
+## ARCHIMEDES-02 | LEVER
+[Final planned synthetic engineering pilot](ath003-lever/README.md): finer work grid, fixed latent rows across W, adverse stress distribution, separately calibrated causal exact-count comparator, full fast path and selection-only diagnostics. 32,760 independent Boolean preference sequence checks of causal quota/count rule (n<=12, four budgets) passed in an auxiliary JS check; this does not execute C or Python code. Local compilation and pilot pending. Per-policy RSS, live observer, independent timing sessions and real workloads remain pending. GAUSS and ATLAS follow; do not interpret pilot closure as research completion.
