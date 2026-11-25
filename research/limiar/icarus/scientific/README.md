@@ -5,7 +5,7 @@ ATH-001 ALEXANDRIA: [exploratory related work and four completed selector pilots
 ATH-002 EUCLID: local bounded verification passed (66,218 checks); [formal model and proof draft](EUCLID.md), [EUCLID-01 verification](ath002-euclid/README.md); independent review pending.
 ATH-003 ARCHIMEDES: exploratory engineering pilots completed; [prospective design](ARCHIMEDES.md), [ARCHIMEDES-01 native pilot](ath003-archimedes/README.md) completed locally, [ARCHIMEDES-02 LEVER](ath003-lever/README.md) completed locally (s01); see [ATHENA evidence ledger](ATHENA-RESULTS.md).
 ATH-004 GAUSS: conditional synthetic confirmatory criteria met; [prospective locked protocol v1](ath004-gauss/PROTOCOL.md), [local execution](ath004-gauss/README.md). Primary CAUSAL vs FULL, IID HORIZON N256/W16, 5 fresh blocks and 120 seeds. Local five-session confirmation complete; [evidence ledger](ATHENA-RESULTS.md). No changes to LEVER.
-ATH-005 ATLAS: active; [ATLAS-01 MOTION](ath005-atlas/README.md), subject-disjoint real prefiltered smartphone inertial signals, local execution pending. Multiple hardware environments remain pending.
+ATH-005 ATLAS: active; [ATLAS-01 MOTION](ath005-atlas/README.md), subject-disjoint real prefiltered smartphone inertial signals, completed locally (joint target not met); [ATLAS-02 KINESIS](ath005-kinesis/README.md) development CV prepared, local execution pending. Multiple hardware environments remain pending.
 ATH-006 THEMIS: independent artifact replication.
 ATH-007 ACADEMIA: manuscript, immutable artifact archive, peer review.
 [Cycle I evidence ledger](CYCLE-I.md). [Reproducibility checklist](REPRODUCIBILITY.md).
