@@ -1,0 +1,5 @@
+__pycache__/
+libkinesis.so
+.kinesis-*/
+kinesis-*.json
+kinesis-*.json.tmp
