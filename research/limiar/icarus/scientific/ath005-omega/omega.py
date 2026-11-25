@@ -135,7 +135,7 @@ def parse(path,size,q,th,reps,mode,table,expected=None,allow_cut=False):
             require((s,tr,list(y))==(z["subject"],z["trial"],z["labels"]),"batch mismatch")
             ar=z["arms"].setdefault(str(arm),{"pred":list(p),"mask":list(mask),"group":list(g),"margin":list(m),"times":{}})
             require((list(p),list(mask),list(g),list(m))==(ar["pred"],ar["mask"],ar["group"],ar["margin"]) and str(rep) not in ar["times"],"repeat mismatch")
-            ar["times"][str(rep)]=[cpu,wall];order.append((b,rep,arm))
+            ar["times"][str(rep)]=[cpu,wall];order.append([b,rep,arm])
     require(end is not None and end[0]==len(batches) and list(batches)==list(range(len(batches))) and end[1] in (0,1) and end[2]>0 and end[3]>0,"incomplete output")
     require(allow_cut or end[1]==0,"unexpected truncation")
     counts=collections.Counter()
@@ -194,8 +194,11 @@ def smoke(root,folder):
     res=parse(folder/"smoke.csv",64,2,0.,3,-1,[.1]*14,small)
     write(folder/"smoke.json",{"identity":identity(),"fit":counts,"summary":summary(res),"integrity":"passed"})
 def freeze(root,folder):
-    require(not folder.exists(),"new freeze directory required");folder.mkdir(parents=True)
-    ident=identity();src=sources(root);sh=hashes(root,src);spl=split();feat=feature_fn()
+    require(not folder.exists(),"new freeze directory required")
+    ident=identity();smoke_path=folder.parent/".omega-smoke"/"smoke.json";sm=read(smoke_path)
+    require(sm["identity"]==ident and sm["integrity"]=="passed","matching smoke required")
+    folder.mkdir(parents=True)
+    src=sources(root);sh=hashes(root,src);spl=split();feat=feature_fn()
     fit,model=pack_data(folder/"fit.bin",src,spl["fit"],feat,True)
     bf,_=pack_data(folder/"benefit.bin",src,spl["benefit"],feat)
     tu,_=pack_data(folder/"tune.bin",src,spl["tune"],feat)
@@ -209,7 +212,7 @@ def freeze(root,folder):
         v=summary(parse(p,64,q,th,5,-1,table,tu))
         grid.append({"q":q,"threshold":th,"macro":v["arms"]["1"]["macro"],"loss":v["arms"]["0"]["macro"]-v["arms"]["1"]["macro"],"ratio":v["arms"]["1"]["ratio"],"raw_sha256":digest(p)})
     chosen=choose(grid)
-    lock={"identity":ident,"source_sha256":sh,"splits":spl,"fit_counts":fit,"benefit_counts":bf,"tune_counts":tu,"model":model,"learned":learned,"grid":grid,"chosen":chosen,"model_sha256":digest(folder/"model.bin"),"created_utc":time.time()}
+    lock={"identity":ident,"smoke_sha256":digest(smoke_path),"source_sha256":sh,"splits":spl,"fit_counts":fit,"benefit_counts":bf,"tune_counts":tu,"model":model,"learned":learned,"grid":grid,"chosen":chosen,"model_sha256":digest(folder/"model.bin"),"created_utc":time.time()}
     write(folder/"freeze.json",lock);print("FROZEN",chosen,flush=True)
 def get_lock(folder):
     p=folder/"freeze.json";lock=read(p);require(lock["identity"]==identity(),"frozen code/binary/environment mismatch")
@@ -276,7 +279,7 @@ def stress_summary(stress):
     return out
 def analyze(folder):
     lock=get_lock(folder);meta=read(folder/"test.json");sessions=[];finger=None
-    require(meta["freeze_sha256"]==digest(folder/"freeze.json"),"freeze hash")
+    require(meta["freeze_sha256"]==digest(folder/"freeze.json") and meta["test_sha256"]==digest(folder/"test.bin"),"freeze/test hash")
     q=lock["chosen"]["q"];th=lock["chosen"]["threshold"];table=lock["learned"]["table"]
     for i in range(1,6):
         d=folder/f"s{i:02}";s=read(d/"session.json");require(s["session"]==i and s["freeze_sha256"]==meta["freeze_sha256"] and s["test_sha256"]==meta["test_sha256"],"session identity")
@@ -290,6 +293,7 @@ def analyze(folder):
             for size in SIZES:
                 for arm in (0,1):
                     require(s["stress"][str(size)][str(arm)]==parse(d/f"stress-{size}-{arm}.csv",size,q,th,1,arm,table,meta["counts"],True),"stress mismatch")
+        require(not sessions or s["starts"][0]>=sessions[-1]["finished"],"measurement blocks overlap or out of order")
         sessions.append(s)
     sub=sessions[0]["summary"]["subjects"];require(set(map(int,sub))==set(lock["splits"]["test"]),"eight test subjects")
     losses=[100*(v["arms"]["0"]["correct"]-v["arms"]["1"]["correct"])/v["n"] for v in sub.values()]
