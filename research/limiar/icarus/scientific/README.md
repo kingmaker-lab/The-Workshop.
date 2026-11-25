@@ -4,7 +4,7 @@ Question: when does constrained selective computation outperform an equally opti
 ATH-001 ALEXANDRIA: [exploratory related work and four completed selector pilots](ALEXANDRIA.md), systematic screening pending.
 ATH-002 EUCLID: local bounded verification passed (66,218 checks); [formal model and proof draft](EUCLID.md), [EUCLID-01 verification](ath002-euclid/README.md); independent review pending.
 ATH-003 ARCHIMEDES: exploratory engineering pilots completed; [prospective design](ARCHIMEDES.md), [ARCHIMEDES-01 native pilot](ath003-archimedes/README.md) completed locally, [ARCHIMEDES-02 LEVER](ath003-lever/README.md) completed locally (s01); see [ATHENA evidence ledger](ATHENA-RESULTS.md).
-ATH-004 GAUSS: next phase, pending locked confirmatory protocol, hierarchical statistical analysis and noninferiority.
+ATH-004 GAUSS: active; [prospective locked protocol v1](ath004-gauss/PROTOCOL.md), [local execution](ath004-gauss/README.md). Primary CAUSAL vs FULL, IID HORIZON N256/W16, 5 fresh blocks and 120 seeds. Local smoke and confirmation pending. No changes to LEVER.
 ATH-005 ATLAS: real workloads, multiple hardware environments.
 ATH-006 THEMIS: independent artifact replication.
 ATH-007 ACADEMIA: manuscript, immutable artifact archive, peer review.
