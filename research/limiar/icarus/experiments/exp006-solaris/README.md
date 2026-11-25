@@ -1,0 +1,20 @@
+# EXP-006 SOLARIS | research only
+Integrated native binary-input path on Linux x86_64. Predeclared goals for solar_persistent: >=90% observer CPU reduction vs HELIOS, >=50% amortized CPU reduction vs PROMETHEUS, <=1 pp accuracy loss vs native full, zero prefix overshoot. Report failures without retroactive tuning.
+30 new seeds, 24 batches x 64 rows default (46,080 test rows), independent calibration, same binary bytes per strategy; rotate order each batch. HELIOS and PROMETHEUS are rebenchmarked from resident binary input (including decode/validation/pack), not numerically compared to their historical runs with different timing boundaries. Native full and fixed16 controls use the same binary input and safety path. Native reset and persistent variants use independently sampled policies, so differences are not a pure controller ablation. Native persistent threshold and feedback carry across batches of unchanged budget; reset on budget change; credit resets each batch, preserving prefix bound for every batch and consequently cumulative announced budgets. All modes use ASCENSION weights; no guarantee of quality target. Native observer includes fresh memory/temperature guard, affinity CPU ticks, PSI and frequency, adaptive polling, hysteresis; no worker, no sudo. Guard stops below 512 MiB or at 80 C; missing known sensor aborts; no discovered sensor allowed only in passive mode. No load generation.
+Timing: contiguous in-process resident serialized batch to result, includes observation, decode or memcpy/validation, evaluation and Python result conversion in the harness; excludes source generation/serialization, shared preflight, 100ms sleep, calibration, output file serialization, process startup. Setup CPU added to amortized observer/CPU metrics (native includes state allocation); Python original and fast initialization also included. Not full application/network/disk latency; CLI file I/O outside step timing. Observer comparisons include native safety while Python also has additional per-request guard counted in total. Throughput is active service time, not sustained arrival rate. Peak RSS is entire harness process, not per-mode; no memory reduction claim. Missing native telemetry sentinel -1. C CLI works independently of Python with pre-generated binary input (4 native-endian doubles for thresholds 8/16/24/32 followed by fixed batches of 32 binary64 features per row then n byte labels). Only local trusted fixtures, not network or production input. Real application workloads and isolated per-mode RSS deferred to follow-up; synthetic data only. No tests executed yet.
+Build and run:
+```sh
+cc -std=c11 -O2 -Wall -Wextra -Werror -fPIC -shared -ffp-contract=off ../exp004-ascension/ascension.c -o ../exp004-ascension/libascension.so -lm
+cc -std=c11 -O2 -Wall -Wextra -Werror -fPIC -shared -ffp-contract=off solaris.c -o libsolaris.so -lm
+cc -std=c11 -O2 -Wall -Wextra -Werror -ffp-contract=off -DSOLARIS_CLI solaris.c -o solaris_cli -lm
+python3 -m unittest -v
+python3 solaris.py --seeds 1 --compiler-info "$(cc --version | head -n1); -O2 -ffp-contract=off" > solaris-smoke.json
+python3 solaris.py --compiler-info "$(cc --version | head -n1); -O2 -ffp-contract=off" > solaris-local.json
+# optional native-only smoke, new fixture filename required
+python3 solaris.py --fixture solaris-fixture.bin
+./solaris_cli 64 solaris-fixture.bin > solaris-native.csv
+```
+Stop on safety failure; do not bypass. Test skips are not passes. Research only.
+
+## Pilot result (revision fb58359)
+One seed, 24 batches, 1536 synthetic rows. Persistent observer CPU reduction 92.16%, integrated CPU reduction 84.72%, accuracy 90.56% vs full 94.53% (3.97 pp loss; target failed), zero recorded prefix overruns. Full 30-seed SOLARIS run not executed. Threshold drift observed; quantization-induced windup is a hypothesis. See [EXP-00X ICARO](../exp00x-icaro/README.md) for the final candidate and matched replay.

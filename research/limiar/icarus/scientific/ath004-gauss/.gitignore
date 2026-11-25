@@ -1,0 +1,4 @@
+__pycache__/
+.gauss-*/
+gauss-*.json
+gauss-*.json.tmp

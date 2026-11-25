@@ -1,0 +1,5 @@
+__pycache__/
+libatlas.so
+.atlas-*/
+atlas-*.json
+atlas-*.json.tmp

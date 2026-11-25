@@ -1,0 +1,6 @@
+__pycache__/
+libarch.so
+.arch-smoke/
+.arch-pilot/
+arch-*.json
+arch-*.json.tmp

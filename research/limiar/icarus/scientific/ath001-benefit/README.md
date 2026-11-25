@@ -1,0 +1,10 @@
+# ATH-001 BENEFIT-01 | exploratory pilot
+Operationalize ALEXANDRIA question: does expected net correctness gain outperform absolute cheap margin under identical discrete logical prefix quotas? Not a replication of EEFP or confirmatory test.
+Independent calibration 2048/seed/scenario; fixed margin bins and smoothing (pooled pseudocount 16 toward zero, contextual 32 toward pooled). Only cheap margin and sign of x0 used to rank held-out samples. Original FEATHER IID vs synthetic heteroskedastic tail (scale 2 vs .35 conditional on x0 sign, same label model). Both synthetic; stress scenario deliberately provides exploitable context and does not establish real-world generalization. 24 x64 test rows per seed/scenario; smoke seed2099; exploratory seeds2101..2119 odd; no final confirmation yet. Four fixed budgets, five matched selectors incl diagnostic label oracle; FULL/LITE controls. At b=32 all selectors expand all. Primary descriptive contrast benefit_context vs margin at b=16 in both scenarios; report all other cells without cherry-picking. Equal exact expansion count, including possibly negative gain (oracle is exact-count ceiling, not an unconstrained optimal stopping rule). Record per-seed paired differences and harms. No latency or energy claim: all FULL/LITE predictions precomputed offline, Python reimplementation of selector, no native runtime benchmark. Replay uses full batch lookahead; no actual CPU quota. Safety snapshot before calibration and each batch; 512 MiB/80 C guard inherited; no artificial load, no sudo. Tests offline small fixtures. No new dependencies. Tests not executed at publication.
+Run from this directory:
+```sh
+python3 -m unittest -v
+python3 benefit.py --smoke > ath001-smoke.json.tmp && mv ath001-smoke.json.tmp ath001-smoke.json
+python3 benefit.py > ath001-pilot.json.tmp && mv ath001-pilot.json.tmp ath001-pilot.json
+```
+Only run pilot after operational smoke and tests pass. Stop on safety abort, preserve partial stdout/stderr; do not bypass guard. Do not tune on pilot and call it confirmation. Archive raw records separately.

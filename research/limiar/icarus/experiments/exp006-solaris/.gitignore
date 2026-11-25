@@ -1,0 +1,6 @@
+__pycache__/
+libsolaris.so
+solaris_cli
+solaris-*.json
+solaris-*.bin
+solaris-*.csv
