@@ -15,3 +15,6 @@ Uploaded smoke and pilot at dc787f73fd228b6e26a5ad2f41018a16f81d60de, binary SHA
 
 ## ARCHIMEDES-02 | LEVER
 [Final planned synthetic engineering pilot](ath003-lever/README.md): finer work grid, fixed latent rows across W, adverse stress distribution, separately calibrated causal exact-count comparator, full fast path and selection-only diagnostics. 32,760 independent Boolean preference sequence checks of causal quota/count rule (n<=12, four budgets) passed in an auxiliary JS check; this does not execute C or Python code. Local compilation and pilot pending. Per-policy RSS, live observer, independent timing sessions and real workloads remain pending. GAUSS and ATLAS follow; do not interpret pilot closure as research completion.
+
+## LEVER | Local pilot result
+Completed locally, revision b63dbd07a063057e036c077eaaa6775f060e0dd0, 12,960 timed calls. CAUSAL IID HORIZON N256/W16: 69.05% median CPU reduction, 0.78125 pp quality loss. Adverse distribution failed joint goals. FAST full-budget path has matching reported results and near-FULL CPU ratio. See [ATHENA evidence ledger](ATHENA-RESULTS.md). Exploratory engineering cycle closed; GAUSS confirmation and other outstanding investigations remain pending.
