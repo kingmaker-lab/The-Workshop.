@@ -2,13 +2,14 @@
 
 **Projeto Limiar | The Workshop Research | LIM-I001**  
 **Autor:** Gabriel Oliveira Pereira (Kingmaker), The Workshop  
-**Versão:** 0.2.0 — manuscrito técnico preliminar, 25 de novembro de 2026  
-**Estado:** research only; ICARUS e pilotos exploratórios ATHENA encerrados; validação confirmatória pendente; sem revisão por pares.  
-**Revisão experimental final:** `37e848d2886c6cd9937951139cec6d1e991008f5`.
+**Versão:** 1.0.0 — manuscrito de encerramento experimental, 25 de novembro de 2026  
+**Estado:** research only; ciclo experimental encerrado (PARTIAL ASCENSION); confirmação sintética GAUSS concluída, OMEGA terminal concluído; sem revisão por pares ou replicação independente.  
+**Revisão do Ciclo I:** `37e848d2886c6cd9937951139cec6d1e991008f5`.  
+**Revisão terminal OMEGA:** `11fe6a3286f35749caf37d5fe6664d2f5bf6e1ca`.
 
 ## Resumo
 
-Este trabalho investiga a viabilidade de distribuir computação de forma seletiva em hardware de recursos limitados, combinando classificação por estágios, restrições de orçamento lógico, execução nativa e observação de recursos Linux. O protocolo ICARUS evoluiu por seis experimentos (WAX, FEATHER, DAEDALUS, ASCENSION, HELIOS e SOLARIS) e uma validação final, EXP-00X ÍCARO. O domínio inicial é um classificador linear sintético de 32 atributos, com expansão opcional de quatro para 32 termos. A variante final utiliza uma fila de prioridade para selecionar exemplos de menor margem absoluta sob quotas de prefixo. Em 30 sementes, 46.080 exemplos e 720 lotes, a variante obteve 93,5308% de acurácia contra 94,8199% do FULL nativo, redução de 53,1456% dos termos, de 92,4921% do custo de CPU do observador frente a HELIOS e de 85,5273% do custo amortizado total frente a PROMETHEUS. Não houve violação registrada do orçamento lógico. Entretanto, a perda de 1,2891 ponto percentual excedeu o limite pré-declarado de 1 p.p.; o custo total também foi aproximadamente 9,88% superior ao FULL nativo. Quatro dos cinco critérios finais foram satisfeitos. O resultado caracteriza um compromisso entre qualidade, custo de observação e seleção. ATHENA amplia a investigação com quatro pilotos de seleção (680.960 exemplos sintéticos), 66.218 verificações matemáticas limitadas e dois pilotos nativos de custo. LEVER observou, em configuração IID específica, redução mediana de CPU de 69,05% com perda de 0,781 p.p. usando seleção causal; em distribuição adversa, as metas conjuntas não foram atingidas. Não se demonstra aceleração universal, economia de energia ou redução de memória.
+Este trabalho investiga a viabilidade de distribuir computação de forma seletiva em hardware de recursos limitados, combinando classificação por estágios, restrições de orçamento lógico, execução nativa e observação de recursos Linux. O protocolo ICARUS evoluiu por seis experimentos (WAX, FEATHER, DAEDALUS, ASCENSION, HELIOS e SOLARIS) e uma validação final, EXP-00X ÍCARO. O domínio inicial é um classificador linear sintético de 32 atributos, com expansão opcional de quatro para 32 termos. A variante final utiliza uma fila de prioridade para selecionar exemplos de menor margem absoluta sob quotas de prefixo. Em 30 sementes, 46.080 exemplos e 720 lotes, a variante obteve 93,5308% de acurácia contra 94,8199% do FULL nativo, redução de 53,1456% dos termos, de 92,4921% do custo de CPU do observador frente a HELIOS e de 85,5273% do custo amortizado total frente a PROMETHEUS. Não houve violação registrada do orçamento lógico. Entretanto, a perda de 1,2891 ponto percentual excedeu o limite pré-declarado de 1 p.p.; o custo total também foi aproximadamente 9,88% superior ao FULL nativo. Quatro dos cinco critérios finais foram satisfeitos. O resultado caracteriza um compromisso entre qualidade, custo de observação e seleção. ATHENA amplia a investigação com quatro pilotos de seleção (680.960 exemplos sintéticos), 66.218 verificações matemáticas limitadas e dois pilotos nativos de custo. LEVER observou, em configuração IID específica, redução mediana de CPU de 69,05% com perda de 0,781 p.p. usando seleção causal; em distribuição adversa, as metas conjuntas não foram atingidas. GAUSS confirmou condicionalmente, em 120 sementes inéditas e cinco blocos, redução geométrica de CPU de 61,1415% e perda de 0,8236 p.p., com limites superiores unilaterais aproximados de 95% de 0,4078 para a razão CPU e 0,9446 p.p. para a perda. ATLAS investigou sinais reais de smartphone. No estudo terminal OMEGA, com MotionSense, oito participantes reservados e 3.640 janelas, a redução de CPU do kernel foi 55,7689% (limite inferior 55,6570%), com perda macro de 2,9293 p.p. (limite superior 4,6775 p.p.) e redução de RSS de 0,6924%. A execução nativa independente de Python e a integridade lógica foram verificadas nos relatórios, mas a hipótese conjunta não foi satisfeita. O fluxo nativo completo foi 2,66% mais lento descritivamente. O veredito terminal é PARTIAL ASCENSION. Não se demonstra aceleração universal, economia de energia ou redução significativa de memória.
 
 **Palavras-chave:** computação condicional, orçamento de recursos, seleção por margem, Linux, código nativo, restrições de prefixo, benchmarking.
 
@@ -335,30 +336,104 @@ LEVER fixa as características latentes e os rótulos entre níveis W, salvo arr
 | STATIC | 90,625% | 86,771% |
 | LITE | 86,354% | 83,125% |
 
-Cada distribuição contém 960 exemplos latentes únicos. Nenhuma célula adversa atingiu conjuntamente as metas descritivas de CPU e qualidade. Na distribuição IID, a fronteira agregada de RANK ocorreu entre W1 e W2, e CAUSAL apresentou economia mediana em todos os nove níveis. A melhor combinação conjunta observada foi **CAUSAL, HORIZON, N256/W16: 69,05% menos CPU e perda de 0,78125 p.p.** (768 exemplos). Essa redução equivale a aproximadamente 3,23 vezes o desempenho em termos de tempo de CPU do kernel, não de latência fim a fim. O candidato foi escolhido após observar os dados; requer confirmação inédita.
+Cada distribuição contém 960 exemplos latentes únicos. Nenhuma célula adversa atingiu conjuntamente as metas descritivas de CPU e qualidade. Na distribuição IID, a fronteira agregada de RANK ocorreu entre W1 e W2, e CAUSAL apresentou economia mediana em todos os nove níveis. A melhor combinação conjunta observada foi **CAUSAL, HORIZON, N256/W16: 69,05% menos CPU e perda de 0,78125 p.p.** (768 exemplos). Essa redução equivale a aproximadamente 3,23 vezes o desempenho em termos de tempo de CPU do kernel, não de latência fim a fim. O candidato foi escolhido após observar os dados; a confirmação inédita encontra-se na seção 12.
 
 No LIBERTAS, FAST apresentou razão mediana de CPU frente a FULL de 1,0030, ante 1,1248 para RANK, com igualdade dos checksums e acertos registrados. O caminho direto elimina seleção redundante no orçamento integral; não constitui novo resultado de economia de expansões. O RSS de pico da invocação LEVER foi 26.132 KiB; não é memória por estratégia. Os ensaios nativos registraram zero violações lógicas dos seletores viáveis.
 
-### 11.5 Limites e objetivos após ATHENA
+### 11.5 Limites da fase exploratória
 
-| Objetivo aspiracional | Estado |
-|---|---|
-| CPU ≥50% menor e perda ≤1 p.p. | Observado conjuntamente em células exploratórias específicas; não confirmado |
-| Redução de memória ≥25% | Não demonstrada por estratégia |
-| Independência de runtime | Kernels C executados; executor Python e validação integral pendente |
-| Orçamento lógico | Demonstrações sob hipóteses explícitas e verificações locais |
-| Robustez sob mudanças | Limitada; nenhum seletor universalmente superior |
-| Energia e aplicações reais | Não avaliadas adequadamente |
+As observações dos pilotos motivaram GAUSS e ATLAS, sem converter resultados selecionados retrospectivamente em evidência confirmatória. Os limites preventivos de ARGOS e estudos subsequentes foram de 256 MiB de memória disponível e 80 °C; as rotinas originais preservaram seus limites. As guardas são amostradas, não garantia física contínua.
 
-Os limites preventivos de ARGOS e pilotos subsequentes de baixo consumo foram alterados localmente para 256 MiB de memória disponível e 80 °C; as rotinas originais do Ciclo I preservam seus limites. Trata-se de guardas amostradas, não garantia de segurança. Checkpoints atômicos com SHA-256 permitem retomar grupos completos, mas não certificam os dados de origem. Resultados de múltiplas sementes numa sessão não equivalem a replicações físicas independentes.
+## 12. GAUSS: confirmação sintética prospectiva
 
-## 12. Trabalhos futuros: validação confirmatória
+O [protocolo congelado](scientific/ath004-gauss/PROTOCOL.md) selecionou previamente CAUSAL versus FULL em IID HORIZON, N256/W16, cinco blocos de 24 sementes novas (3001–3120), sete repetições temporizadas. Foram 491.520 exemplos de calibração, 30.720 exemplos de teste e 3.360 chamadas temporizadas. Smoke separado. A análise usa médias por bloco da diferença de acurácia e do logaritmo das razões pareadas de medianas de CPU; limite superior t unilateral aproximado de 95%, df=4.
 
-O ciclo de pilotos de seleção e engenharia está encerrado. ALEXANDRIA ainda requer revisão sistemática de textos completos; EUCLID aguarda revisão matemática independente. GAUSS deverá congelar hipótese, candidato, tamanho amostral, sementes inéditas, sessões, análise e tratamento de interrupções antes da confirmação. Uma hipótese conjunta exige limite superior unilateral de confiança de 95% para perda FULL−candidato de até 1 p.p. e limite superior da razão de CPU abaixo de 1; a meta aspiracional de 50% requer razão de até 0,5, com critério definido antecipadamente. CAUSAL IID HORIZON N256/W16 é candidato proposto, não validado; RANK e FAST são comparadores relevantes. ATLAS estudará cargas reais e outros dispositivos; ATH-006 THEMIS replicação independente (distinta de BENEFIT-04); ACADEMIA, arquivo imutável e revisão do manuscrito. Não há resultado confirmatório antecipado.
+| Estratégia | Acertos | Perda vs FULL (p.p.) | Razão geométrica CPU |
+|---|---:|---:|---:|
+| FULL |29.160|0|1|
+| CAUSAL |28.907|0,823568|0,388585|
+| RANK |28.980|0,585938|0,524934|
+| STATIC |27.761|4,554036|0,447528|
 
-## 13. Conclusão
+CAUSAL: limite superior de perda 0,944564 p.p.; razão CPU superior 0,407803. Satisfeitos os critérios de não inferioridade, superioridade em CPU e redução de pelo menos 50% segundo o protocolo; zero violações lógicas registradas. RANK e STATIC são descritivos. Os cinco arquivos de sessão e o consolidado foram conferidos anteriormente; ver [ledger](scientific/ATHENA-RESULTS.md). A inferência é condicional à representatividade e independência dos blocos, com uma máquina e proximidade temporal; não constitui validação em sinais reais.
 
-ICARUS estabeleceu um protótipo de computação seletiva nativa com restrições de prefixo, mas a validação final do Ciclo I não cumpriu a meta de qualidade nem superou FULL nativo em CPU. ATHENA delimitou propriedades matemáticas, benefícios condicionais de contexto e auditoria, e condições empíricas em que a economia de trabalho supera o overhead. ARCHIMEDES e LEVER observaram reduções reais de tempo de CPU do kernel sintético em configurações específicas; LEVER também documentou degradação importante sob distribuição adversa. A contribuição defendida é a delimitação dessas condições e dos limites de inferência, não superioridade universal, novidade estabelecida ou prontidão para produção. O encerramento dos pilotos abre a validação científica, não encerra a pesquisa.
+## 13. ATLAS: cargas reais e desenvolvimento
+
+### 13.1 MOTION
+
+UCI HAR [10], janelas inerciais previamente filtradas e sobrepostas. 15 participantes de ajuste, seis de calibração, nove de teste, sem cruzar identificadores. 2.947 janelas, 49 lotes e 2.940 chamadas temporizadas. Centroides padronizados de seis classes; seis médias baratas e 24 características opcionais. FULL: 2.123 acertos (72,039%); LITE: 1.679. Comparação CAUSAL versus STATIC sob quota exata:
+
+| Quota | STATIC acertos | CAUSAL acertos | Redução CPU vs FULL | Perda vs FULL |
+|---|---:|---:|---:|---:|
+|25%|1784|1836|54,31%|9,739 p.p.|
+|50%|1903|1985|35,76%|4,683 p.p.|
+|75%|2011|2068|17,60%|1,866 p.p.|
+
+Nenhum regime atingiu ambas as metas. FULL corrigiu 614 erros de LITE e introduziu 170; expansão não implica ganho positivo. O timing mede extração de características e classificação nativas, não aquisição. [Protocolo](scientific/ath005-atlas/README.md).
+
+### 13.2 KINESIS
+
+Validação cruzada exploratória nos 21 participantes oficiais de treinamento UCI HAR, excluindo os nove sujeitos de MOTION. Três divisões, cada uma com 8 fit / 3 benefício / 3 limiar / 7 avaliação, 7.352 janelas e 11.250 chamadas temporizadas. Médias e variâncias na camada barata; 18 características temporais opcionais. Hierarquia fixa dinâmico/estático, estimativa de ganho assinado por grupo e margem. FLAT_FULL 5.453 acertos, HIER_FULL 5.488, HIER_LITE 5.308; grupo correto em 97,620% das janelas.
+
+| Quota | STATIC acertos | MARGIN acertos | BENEFIT acertos | Redução CPU BENEFIT vs FLAT_FULL |
+|---|---:|---:|---:|---:|
+|25%|5365|5349|5374|40,20%|
+|50%|5412|5416|5434|26,40%|
+|75%|5456|5483|5475|13,45%|
+
+BENEFIT superou STATIC nos três regimes, MARGIN em dois, sem atingir a meta conjunta. A camada barata já consumia aproximadamente 47% da CPU do FULL plano. A hierarquia fixa impede recuperar erros de grupo. Esses resultados motivaram orçamento como teto, extração fundida e hierarquia recuperável. As janelas são sobrepostas e os folds compartilham sujeitos de treinamento; não constitui confirmação externa. [Protocolo](scientific/ath005-kinesis/README.md).
+
+## 14. OMEGA: avaliação terminal
+
+### 14.1 Desenho e seleção congelada
+
+[Desenho terminal](scientific/OMEGA-FINAL-PROTOCOL.md), [implementação](scientific/ath005-omega/README.md) e [registro completo de resultados, grade de calibração e hashes](scientific/OMEGA-RESULTS.md). MotionSense [11] fornece um novo corpus de sinais de smartphone, com seis classes (inclui corrida em vez de deitar), não uma transferência zero-shot. Janelas não sobrepostas de 128 observações, sem cruzar gravação ou sujeito. 8 participantes de ajuste (3.554 janelas), 4 de benefício (1.849), 4 de calibração (1.811) e 8 reservados (3.640). FULL e OMEGA compartilham o kernel de médias/variâncias e diferenças de lag; OMEGA pode corrigir o grupo inicial ao expandir. A quota prefixal é um teto floor(iq/4), q=1,2,3; não há preenchimento obrigatório. A política expande somente se o ganho estimado superar o limiar e a quota permitir. FULL avalia 30 características, LITE 12; a expansão calcula outras 18.
+
+Nenhuma das 12 configurações de calibração atingiu ambas as metas observadas. A regra de fallback pré-definida selecionou teto de 75% e limiar 0,10, maior acurácia macro entre configurações com razão CPU até 0,5. Calibração: acurácia macro 79,6165%, perda 3,9577 p.p., razão CPU 0,437054. Não houve retuning após avaliação. Cinco sessões com sete repetições pareadas, quatro braços, 133 lotes por sessão, total 18.620 medições primárias; as janelas repetidas não são novos exemplos de qualidade.
+
+### 14.2 Resultados e critérios
+
+| Estratégia | Acertos | Acurácia global (%) | Macro por sujeito (%) | Expansões |
+|---|---:|---:|---:|---:|
+| FULL |2687|73,8187|73,9695|3640|
+| OMEGA |2580|70,8791|71,0402|575|
+| LITE |2386|65,5495|65,8518|0|
+| STATIC |2611|71,7308|71,9048|2685|
+
+OMEGA evita 84,20% das expansões e 50,52% das características, recupera 194 acertos frente a LITE e perde 31 frente a STATIC, com 2.110 expansões a menos. Contagem de características não equivale a instruções ou energia.
+
+| Critério | Estimativa | Limite superior unilateral aproximado 95% | Resultado |
+|---|---:|---:|---|
+| Razão CPU <=0,5 |0,44231074|0,44343050|Atendido|
+| Perda macro <=1 p.p. |2,929293|4,677490|Não estabelecido|
+| Razão RSS <=0,75 |0,99307588|1,00423175|Não estabelecido|
+| Paridade standalone |Verificada nos relatórios|—|Atendido|
+| Excesso lógico |0|—|Atendido|
+
+Qualidade: limite t com df=7 sobre diferenças por sujeito. CPU: limite t com df=4 sobre log das razões geométricas por sessão; cada razão agrega medianas por lote, somadas por sujeito e ponderadas igualmente entre sujeitos. RSS: VmHWM em processos separados, razão log por sessão. Redução geométrica de CPU 55,7689%, limite inferior 55,6570%, aceleração 2,261x em CPU do kernel. Redução de RSS 0,6924%, sem atingir meta. Veredito **PARTIAL ASCENSION**: hipótese conjunta primária não estabelecida. Os intervalos dependem das hipóteses de independência e representatividade, não garantidas pelos arquivos.
+
+### 14.3 Fronteira operacional e overhead
+
+Replay secundário limitado a 15 s por braço, mesmos parâmetros, sem pressão artificial. As comparações usam prefixo comum. Vazão ativa = janelas / soma do wall time do kernel.
+
+| Lote máximo | Janelas comuns | Economia CPU | Vazão FULL/s | Vazão OMEGA/s |
+|---:|---:|---:|---:|---:|
+|1|1164|40,79%|193252|285753|
+|16|3640|54,36%|301796|636607|
+|64|3640|54,94%|293597|651744|
+|256|3640|53,98%|299679|380615|
+
+Lote unitário truncado; nenhuma expansão é admissível pela quota. O teste 256 não implica lotes completos de 256 janelas. O tempo total nativo, incluindo leitura binária, aquecimento, guardas e saída CSV, teve razão geométrica 1,02660: 2,66% mais lento descritivamente. O ganho do kernel não se traduziu em ganho ponta a ponta. A aquisição de sensores e preparação Python permanecem fora desse tempo.
+
+### 14.4 Auditoria e validade
+
+Oito JSONs locais (freeze, test, cinco sessões e omega-final); hashes de sessão correspondentes, predições e máscaras consistentes, resultados primários recalculados. 18.620 chamadas primárias e 3.564 medições de replay, sem incluir os tempos das execuções separadas de memória. Os arquivos originais do dataset, CSVs nativos e executáveis não foram revalidados independentemente. Os hashes e a grade completa constam no ledger terminal; os JSON brutos não são redistribuídos nesta publicação. Dois arquivos de atividade sentar do mesmo participante de teste apresentam hash idêntico; mantidos, sem evidência de vazamento entre splits. Cinco sessões muito próximas (intervalos de 4,74 a 25,16 s), apenas oito sujeitos finais, uma máquina, sem cálculo de poder formal; limites de confiança aproximados. Acurácia absoluta modesta; nenhuma reivindicação de universalidade. Não se altera o candidato nem se amplia a amostra para perseguir resultados favoráveis.
+
+## 15. Conclusão e encerramento
+
+ICARUS demonstrou um protótipo de seleção sob restrições lógicas, mas o Ciclo I não superou FULL nativo em CPU nem atingiu a margem de qualidade. ATHENA delimitou propriedades matemáticas e a fronteira de custo; GAUSS confirmou conjuntamente as metas de CPU e qualidade em uma condição sintética congelada. ATLAS e OMEGA demonstraram economia de CPU em sinais reais, porém o estudo terminal não estabeleceu não inferioridade de qualidade nem redução de memória. OMEGA executou inferência em C sem Python e não registrou excesso lógico. A contribuição é caracterizar **quando a computação seletiva compensa e quando seus custos ou erros anulam a vantagem**. Não se reivindica inovação universal, economia de energia, aceleração ponta a ponta ou prontidão para produção.
+
+O ciclo experimental está encerrado. Não haverá OMEGA-02 para perseguir metas não atingidas. Restam a revisão independente das demonstrações, revisão sistemática de literatura, ATH-006 THEMIS (reprodução independente) e ATH-007 ACADEMIA (arquivamento e avaliação do manuscrito). Este documento é a versão de encerramento experimental, não publicação revisada por pares.
 
 ## Referências
 
@@ -373,6 +448,10 @@ Referências iniciais provenientes da revisão exploratória ALEXANDRIA; a revis
 7. ACM. *Artifact Review and Badging*. https://www.acm.org/publications/policies/artifact-review-and-badging-current
 8. The Workshop. [Protocolo ICARUS](README.md), [ledger do Ciclo I](scientific/CYCLE-I.md), [EUCLID](scientific/EUCLID.md) e [ALEXANDRIA](scientific/ALEXANDRIA.md), 2026.
 9. The Workshop. [ATHENA: ledger de resultados](scientific/ATHENA-RESULTS.md), [ARCHIMEDES](scientific/ARCHIMEDES.md) e [LEVER](scientific/ath003-lever/README.md), 2026.
+
+10. UCI Machine Learning Repository. *Human Activity Recognition Using Smartphones*. https://archive.ics.uci.edu/dataset/240/humanactivityrecognitionusingsmartphones
+11. MotionSense dataset and documentation. https://github.com/mmalekzadeh/motion-sense
+12. The Workshop. [GAUSS](scientific/ath004-gauss/PROTOCOL.md), [OMEGA terminal study](scientific/OMEGA-FINAL-PROTOCOL.md), [terminal evidence](scientific/OMEGA-RESULTS.md), 2026.
 
 ---
 
