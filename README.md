@@ -135,6 +135,11 @@ O Workshop não está limitado a uma tecnologia ou domínio específico.
 
 ---
 
+## Mapa dos projetos
+
+- [Projeto Limiar](docs/MAPA-DO-REPOSITORIO.md#projeto-limiar) — ICARUS, ATHENA, GAUSS, ATLAS, OMEGA, Cerberus Fase II e Ouroboros Fase II.
+- [Projetos anteriores do Workshop](docs/MAPA-DO-REPOSITORIO.md#projetos-anteriores-do-workshop) — acervo original e links para os laboratórios.
+
 # 🧪 Projects
 
 Alguns dos projetos e experimentos atualmente presentes no Workshop:
