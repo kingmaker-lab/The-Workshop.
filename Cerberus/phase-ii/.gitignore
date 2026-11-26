@@ -5,3 +5,5 @@ __pycache__/
 *.sqlite-wal
 *.sqlite-shm
 *.key
+
+models/build/

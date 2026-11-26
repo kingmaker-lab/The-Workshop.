@@ -44,3 +44,4 @@ Para iniciar o consumidor, execute `python3 -m cerberus --key operator.key --db 
 - [Backlog e critérios de aceite](docs/backlog.md)
 - [Histórico e integração GitHub](docs/history.md)
 - [Evidência local](docs/verification.md)
+- [Modelos executáveis em Assembly, Java e Pascal](models/README.md)
