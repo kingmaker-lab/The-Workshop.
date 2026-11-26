@@ -103,6 +103,9 @@ def main():
     if args.emulator and not args.build:
         parser.error("--emulator requires --build")
     configure_sdk()
+    if args.apk:
+        args.apk = args.apk.resolve()
+    args.output = args.output.resolve()
     os.chdir(ROOT)
     report = {"schema": "pulse.suite.v1", "python": sys.version,
               "platform": platform.platform(), "experiments": {}}
@@ -122,7 +125,30 @@ def main():
         if ex["001"]["status"] == "pass":
             for number, fn in [("002", exp002), ("003", exp003), ("004", exp004), ("005", exp005)]:
                 ex[number] = guarded(fn, path, ex["001"])
-            if args.emulator and args.build and ex["002"].get("package") == PACKAGE and ex["005"].get("signature_verified"):
+            if args.build:
+                expected = {
+                    "001": ex["001"].get("manifest_present") and ex["001"].get("dex_candidates") == ["classes.dex"],
+                    "002": ex["002"].get("package") == PACKAGE and ex["002"].get("permissions") == ["android.permission.VIBRATE"] and any(c["name"] == ".MainActivity" or c["name"] == PACKAGE + ".MainActivity" for c in ex["002"].get("components", [])),
+                    "003": bool(ex["003"].get("files")) and all(d.get("sections", {}).get("classes", 0) > 0 for d in ex["003"].get("files", [])),
+                    "005": ex["005"].get("signature_verified") is True,
+                }
+                if os.environ.get("NDK_CLANG_DIR"):
+                    expected["004"] = (ex["001"].get("abi_candidates") == ["arm64-v8a", "x86_64"]
+                                       and bool(ex["004"].get("files"))
+                                       and all("Java_lab_workshop_pulsefixture_MainActivity_nativeAnswer" in n.get("jni_exports", []) for n in ex["004"]["files"]))
+                    if not tool("readelf") and ex["004"]["status"] == "pass":
+                        ex["004"]["status"] = "partial"
+                for number, matches in expected.items():
+                    ex[number]["fixture_ground_truth_matches"] = bool(matches)
+                    if not matches and ex[number]["status"] == "pass":
+                        ex[number]["status"] = "fail"
+                # Unsigned control: apksigner must reject the same payload before signing.
+                if ex["005"]["status"] == "pass":
+                    rc, output = command([tool("apksigner"), "verify", str(path.parent / "aligned.apk")])
+                    ex["005"]["unsigned_control_rejected"] = rc != 0
+                    if rc == 0:
+                        ex["005"]["status"] = "fail"
+            if args.emulator and args.build and ex["002"].get("package") == PACKAGE and ex["005"]["status"] == "pass":
                 ex["006"] = guarded(runtime, path, args.emulator)
     for i in range(1, 7):
         ex.setdefault(f"{i:03}", {"status": "skip", "reason": "required input, SDK or explicit emulator not available"})
