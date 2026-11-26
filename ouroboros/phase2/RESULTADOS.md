@@ -4,7 +4,7 @@ Os cinco testes da Fase II passaram, incluindo 25 vetores históricos com cifrag
 
 A reconstrução das equações de EXP-002 reproduziu `0x80000000 → 0x00001040` em 65.536 pares sintéticos. Em EXP-003, a linha `0x80 → 0x50` foi verificada para todas as 256 entradas e todas as 256 chaves de 8 bits.
 
-As suítes históricas EXP-005–014 passaram em uma cópia descartável, com 68 testes no total. A execução separada de conformidade do EXP-014 repetiu 327.680 comparações, cobrindo o domínio completo de 16 bits para cinco chaves, com cinco verificações de permutação e 40 bytes de subchave comparados. O JSON gerado coincidiu byte a byte com o relatório versionado na fotografia local de `origin/main`.
+As suítes históricas EXP-005–014 passaram em uma cópia descartável, com 62 testes no total. A execução separada de conformidade do EXP-014 repetiu 327.680 comparações, cobrindo o domínio completo de 16 bits para cinco chaves, com cinco verificações de permutação e 40 bytes de subchave comparados. O JSON gerado coincidiu byte a byte com o relatório versionado na fotografia local de `origin/main`.
 
 ## Painel exato
 
