@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="lab.workshop.pulsefixture">
     <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="35"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
-    <application android:label="Pulse Fixture" android:allowBackup="false" android:debuggable="false">
+    <application android:label="Pulse Fixture" android:allowBackup="false" android:debuggable="false" android:extractNativeLibs="true">
         <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
