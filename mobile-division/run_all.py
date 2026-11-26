@@ -109,8 +109,11 @@ def main():
     os.chdir(ROOT)
     report = {"schema": "pulse.suite.v1", "python": sys.version,
               "platform": platform.platform(), "experiments": {}}
-    rc, output = command([sys.executable, "-m", "unittest", "discover", "-s", "tests", "-v"], timeout=120)
-    report["unit_tests"] = {"status": "pass" if rc == 0 else "fail", "output": output}
+    try:
+        rc, output = command([sys.executable, "-m", "unittest", "discover", "-s", "tests", "-v"], timeout=120)
+        report["unit_tests"] = {"status": "pass" if rc == 0 else "fail", "output": output}
+    except Exception as e:
+        report["unit_tests"] = {"status": "error", "reason": str(e)}
     ex = report["experiments"]
     path = args.apk
     if args.build:
@@ -144,10 +147,14 @@ def main():
                         ex[number]["status"] = "fail"
                 # Unsigned control: apksigner must reject the same payload before signing.
                 if ex["005"]["status"] == "pass":
-                    rc, output = command([tool("apksigner"), "verify", str(path.parent / "aligned.apk")])
-                    ex["005"]["unsigned_control_rejected"] = rc != 0
-                    if rc == 0:
-                        ex["005"]["status"] = "fail"
+                    try:
+                        rc, output = command([tool("apksigner"), "verify", str(path.parent / "aligned.apk")])
+                        ex["005"]["unsigned_control_rejected"] = rc == 1
+                        ex["005"]["unsigned_control_output"] = output
+                        if rc != 1:
+                            ex["005"]["status"] = "fail"
+                    except Exception as e:
+                        ex["005"].update(status="error", reason=str(e))
             if args.emulator and args.build and ex["002"].get("package") == PACKAGE and ex["005"]["status"] == "pass":
                 ex["006"] = guarded(runtime, path, args.emulator)
     for i in range(1, 7):
