@@ -1,0 +1,27 @@
+name: CERBERUS FASE II
+on:
+  push:
+    paths:
+      - "Cerberus/phase-ii/**"
+      - ".github/workflows/cerberus-phase-ii.yml"
+  pull_request:
+    paths:
+      - "Cerberus/phase-ii/**"
+      - ".github/workflows/cerberus-phase-ii.yml"
+permissions: {}
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    container: debian:13-slim
+    permissions:
+      contents: read
+    steps:
+      - run: |
+          apt-get update
+          apt-get install -y --no-install-recommends ca-certificates git python3
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+      - run: python3 -m unittest discover -s tests -v
+        working-directory: Cerberus/phase-ii
