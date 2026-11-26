@@ -1,4 +1,5 @@
 import json
+import random
 import unittest
 from pathlib import Path
 
@@ -41,3 +42,25 @@ class BaselineTests(unittest.TestCase):
         self.assertEqual(report["samples"], 256)
         self.assertEqual(len(report["mean_changed_bits_by_input_bit"]), 32)
         self.assertTrue(all(0 < count < 64 for count in report["mean_changed_bits_by_input_bit"]))
+
+    def test_documented_arx_differentials(self):
+        def rol(word, shift, width):
+            return ((word << shift) | (word >> (width - shift))) & ((1 << width) - 1)
+
+        def arx(word, key, width, shift):
+            added = (word + key) & ((1 << width) - 1)
+            return rol(added, 7, width) ^ rol(word, shift, width)
+
+        # EXP-002 samples the 32-bit relation. EXP-003 exhausts the 8-bit row.
+
+        rng = random.Random(20261126)
+        for _ in range(65536):
+            word, key = rng.getrandbits(32), rng.getrandbits(32)
+            self.assertEqual(arx(word, key, 32, 13) ^ arx(word ^ 0x80000000, key, 32, 13), 0x1040)
+
+        for key in range(256):
+            row_count = sum(
+                arx(word, key, 8, 5) ^ arx(word ^ 0x80, key, 8, 5) == 0x50
+                for word in range(256)
+            )
+            self.assertEqual(row_count, 256, f"EXP-003 key {key:02x}")
