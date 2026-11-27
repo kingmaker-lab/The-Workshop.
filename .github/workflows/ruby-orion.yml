@@ -21,8 +21,8 @@ jobs:
             ruby: '3.3'
           - os: ubuntu-latest
             ruby: '3.4'
-          - os: windows-latest
-            ruby: '3.4'
+          # Windows CI is blocked by the parent repo name ending in a dot.
+          # Re-enable after extraction to the standalone Ruby-Orion repository.
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     defaults:

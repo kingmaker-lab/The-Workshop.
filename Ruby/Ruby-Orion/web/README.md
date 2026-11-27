@@ -65,6 +65,12 @@ In the browser, `/?selftest=1` checks Ruby runtime startup and
 `/?benchtest=1` executes the EXP-001 suite, setting the hidden
 `#bench-selftest` marker to `passed` on success.
 
+CI currently runs the native CLI on **Linux / Ruby 3.3 and 3.4** and the
+Studio validator on **Linux / Ruby 3.4**. Windows validation is pending:
+the containing repository is named `The-Workshop.` (with a trailing dot),
+which prevents GitHub Actions Windows from creating its checkout workspace.
+Do not treat that omission as a Windows compatibility claim.
+
 Reference solutions for the five intermediate challenges are under
 `web/test/reference/` and are tested on native Ruby by CI. They are not
 included in the public static-asset bundle.
