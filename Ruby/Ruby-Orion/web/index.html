@@ -7,10 +7,11 @@
   <meta name="color-scheme" content="dark">
   <meta name="description" content="Ruby Orion Studio: escreva e execute Ruby no navegador, explore laboratórios guiados e inspecione arquivos localmente.">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; worker-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
-  <title>Ruby Orion Studio | The Workshop</title>
+  <title>Ruby Orion Studio v0.3 | The Workshop</title>
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/assets/studio.css">
   <script src="/assets/studio.js" defer></script>
+  <script src="/assets/bench.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Pular para o conteúdo</a>
@@ -23,6 +24,7 @@
     <nav aria-label="Navegação principal">
       <a href="#playground" data-nav="playground">Studio</a>
       <a href="#labs" data-nav="labs">Laboratórios</a>
+      <a href="#bench" data-nav="bench">Test Bench</a>
       <a href="#inspector" data-nav="inspector">File Lab</a>
       <a href="https://ruby-hub.wolfpackworkshop.workers.dev/" rel="noopener noreferrer" target="_blank">Ruby Hub ↗</a>
     </nav>
@@ -32,9 +34,9 @@
       <div class="hero-copy">
         <p class="kicker"><span class="tiny-star" aria-hidden="true">✦</span> PROJECT ORION / INTERACTIVE ENVIRONMENTS</p>
         <h1>O universo Ruby.<br><em>Nas suas mãos.</em></h1>
-        <p class="lede">Aprenda a linguagem explorando. Escreva Ruby real, experimente conceitos de engenharia e acompanhe cada descoberta diretamente no navegador.</p>
+        <p class="lede">Explore além dos exemplos: escreva Ruby real, construa soluções de engenharia, valide múltiplos casos e acompanhe seus resultados no navegador.</p>
         <div class="hero-metadata">
-          <span><i class="signal"></i> STUDIO / PREVIEW</span>
+          <span><i class="signal"></i> STUDIO / SEMI-PRO v0.3</span>
           <span>CRUBY 3.4 + WEBASSEMBLY</span>
           <span>NO SERVER-SIDE EXECUTION</span>
         </div>
@@ -51,12 +53,13 @@
     <div class="studio-shell">
       <div class="section-heading">
         <div><p class="kicker">01 / YOUR WORKBENCH</p><h2>Ambientes <em>interativos.</em></h2></div>
-        <p>Uma bancada, três maneiras de descobrir.</p>
+        <p>Uma bancada, quatro maneiras de descobrir.</p>
       </div>
       <div class="tab-bar" role="tablist" aria-label="Ambientes do Ruby Orion">
         <button id="tab-playground" class="tab active" type="button" role="tab" aria-selected="true" aria-controls="panel-playground" data-panel="playground">⌘ <span>Ruby Playground</span></button>
         <button id="tab-labs" class="tab" type="button" role="tab" aria-selected="false" aria-controls="panel-labs" data-panel="labs">✦ <span>Orion Labs</span></button>
         <button id="tab-inspector" class="tab" type="button" role="tab" aria-selected="false" aria-controls="panel-inspector" data-panel="inspector">◈ <span>File Lab</span></button>
+        <button id="tab-bench" class="tab" type="button" role="tab" aria-selected="false" aria-controls="panel-bench" data-panel="bench">▤ <span>Test Bench</span></button>
       </div>
       <section id="panel-playground" class="workspace" role="tabpanel" aria-labelledby="tab-playground">
         <div class="workspace-heading">
@@ -75,6 +78,15 @@
                 <button id="reset-code" class="button button-quiet" type="button">↺ Restaurar</button>
               </div>
               <small id="code-count">0 / 8.000</small>
+            </div>
+            <div class="pro-tools" aria-label="Ferramentas de trabalho">
+              <button id="save-draft" type="button">◈ Salvar</button>
+              <button id="load-draft" type="button">↺ Abrir rascunho</button>
+              <button id="export-source" type="button">↓ Exportar .rb</button>
+              <button id="import-source" type="button">↑ Importar .rb</button>
+              <input id="import-input" type="file" accept=".rb,text/plain" hidden>
+              <button id="jump-bench" type="button" class="pro-tools-accent">▤ Testar código</button>
+              <span id="draft-status" role="status" aria-live="polite">Rascunhos locais, sem sincronização.</span>
             </div>
             <div class="stdin-box"><label for="stdin">STDIN <span>(opcional, usado por gets)</span></label><textarea id="stdin" rows="2" maxlength="4000" placeholder="Digite aqui a entrada para gets..."></textarea></div>
           </div>
@@ -95,6 +107,45 @@
         <div class="lab-grid" id="lab-grid"><p>Carregando laboratórios...</p></div>
         <p class="lab-disclaimer">Os laboratórios de Process e IPC na versão web demonstram conceitos em Ruby. A execução de processos filhos reais e os pipes do sistema operacional continuam disponíveis apenas na CLI local do Orion.</p>
       </section>
+
+      <section id="panel-bench" class="workspace" role="tabpanel" aria-labelledby="tab-bench" hidden>
+        <div class="workspace-heading">
+          <div><p class="eyebrow">PROVING GROUNDS / RUBY 3.4 + WASM</p><h3>Orion Test Bench</h3><p>Valide seu código Ruby com múltiplas entradas e saídas esperadas. Cada caso executa numa VM Ruby nova, isolada dos outros casos. Todo o processamento permanece no navegador.</p></div>
+          <span class="counter" id="bench-state" role="status" aria-live="polite">PRONTO PARA TESTAR</span>
+        </div>
+        <div class="bench-grid">
+          <div class="bench-config">
+            <label for="bench-select" class="eyebrow">LABORATÓRIO ATUAL</label>
+            <select id="bench-select" aria-label="Escolher laboratório para testar"><option value="">Carregando...</option></select>
+            <div id="bench-objective" class="bench-objective">Escolha um laboratório ou escreva um programa no Playground.</div>
+            <button id="bench-hint-button" class="text-action" type="button" aria-expanded="false">✦ Mostrar dica</button>
+            <p id="bench-hint" class="bench-hint" hidden></p>
+            <div class="bench-case-header"><span class="eyebrow">CASOS DE TESTE</span><span id="bench-total">0 CASOS</span></div>
+            <div id="bench-cases" class="bench-case-list"></div>
+            <details class="custom-case">
+              <summary>+ Adicionar um teste personalizado</summary>
+              <div class="custom-case-fields">
+                <label for="bench-custom-input">Entrada STDIN</label>
+                <textarea id="bench-custom-input" maxlength="4000" rows="3" placeholder="Entrada enviada ao seu programa Ruby"></textarea>
+                <label for="bench-custom-expected">Saída esperada</label>
+                <textarea id="bench-custom-expected" maxlength="2000" rows="3" placeholder="O texto que seu programa deveria imprimir"></textarea>
+                <label class="custom-toggle"><input id="bench-custom-enabled" type="checkbox"> Incluir este teste adicional na suíte</label>
+              </div>
+            </details>
+            <div class="bench-actions">
+              <button id="bench-run" class="button button-primary" type="button">▶ Executar suíte</button>
+              <button id="bench-stop" class="button button-secondary" type="button" disabled>■ Parar testes</button>
+            </div>
+            <p class="bench-policy">Limites: até 6 casos por suíte, 4.000 caracteres por entrada, timeout de 9 s por caso, código de até 8.000 caracteres. Não execute código hostil.</p>
+          </div>
+          <div class="bench-results">
+            <div class="bench-results-head"><span class="eyebrow">EXECUTION REPORT</span><span id="bench-score">AGUARDANDO</span></div>
+            <div class="bench-meter" role="progressbar" aria-label="Casos executados" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="bench-meter-fill"></div></div>
+            <div id="bench-output" class="bench-output" aria-live="polite"><p class="bench-empty">Abra um laboratório, escreva a solução no Playground e execute a suíte. Os resultados individuais aparecerão aqui.</p></div>
+            <div class="progress-panel"><div><strong>Trilha Semi-Pro</strong><p>Laboratórios concluídos no dispositivo, sem conta ou rastreamento.</p></div><div><span id="bench-progress">0 / 8</span><button id="bench-clear-progress" type="button" class="text-action">Limpar progresso</button></div></div>
+          </div>
+        </div>
+      </section>
       <section id="panel-inspector" class="workspace" role="tabpanel" aria-labelledby="tab-inspector" hidden>
         <div class="workspace-heading"><div><p class="eyebrow">ALNILAM / BROWSER TOOLKIT</p><h3>File Lab</h3><p>Inspecione um arquivo local sem enviá-lo para qualquer servidor. As operações de hash utilizam a Web Crypto API do navegador.</p></div><span class="counter">LOCAL ONLY / MAX 8 MiB</span></div>
         <div class="file-workspace">
@@ -112,5 +163,6 @@ ruby bin/orion ipc demo --json</pre><a class="inline-link" href="https://github.
   </main>
   <footer><span><b>◆ RUBY ORION</b> / THREE STARS, INFINITE POSSIBILITIES</span><span>THE WORKSHOP · BUILD. BREAK. UNDERSTAND. REBUILD.</span></footer>
   <span id="runtime-selftest" data-result="not-requested" hidden></span>
+  <span id="bench-selftest" data-result="not-requested" hidden></span>
 </body>
 </html>

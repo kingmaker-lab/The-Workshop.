@@ -1,4 +1,4 @@
-name: Ruby Orion Alnilam security and stability
+name: Ruby Orion - CLI and Semi-Pro Studio validation
 on:
   push:
     branches: [main]
@@ -21,8 +21,8 @@ jobs:
             ruby: '3.3'
           - os: ubuntu-latest
             ruby: '3.4'
-          - os: windows-latest
-            ruby: '3.4'
+          # Windows CI is blocked by the parent repo name ending in a dot.
+          # Re-enable after extraction to the standalone Ruby-Orion repository.
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     defaults:
@@ -34,7 +34,8 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
       - name: Ruby syntax checks
-        run: ruby -e 'Dir.glob("{lib,bin,labs,test}/**/*.rb").each { |f| abort("Syntax error: #{f}") unless system(RbConfig.ruby, "-c", f, out: File::NULL) }'
+        run: |
+          ruby -e 'Dir.glob("{lib,bin,labs,test}/**/*.rb").each { |f| abort("Syntax error: #{f}") unless system(RbConfig.ruby, "-c", f, out: File::NULL) }'
       - name: Minitest and integration tests
         run: ruby -Ilib -Itest -e 'Dir["test/test_*.rb"].sort.each { |file| require_relative file }'
       - name: CLI smoke tests
@@ -63,6 +64,7 @@ jobs:
       - name: Check JavaScript parser
         run: |
           node --check assets/studio.js
+          node --check assets/bench.js
           node --check assets/ruby-worker.js
       - name: Rebuild deployable Worker and check syntax
         run: |

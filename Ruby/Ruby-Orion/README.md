@@ -26,11 +26,11 @@ ruby bin/orion ipc demo --timeout 5 --json
 **EXP-002:** supervisor de processo filho Ruby confiável com timeout, saída limitada e estado de execução.  
 **EXP-003:** troca de mensagens `orion-ipc/1` via pipes com contrato JSON validado.
 
-## 🌌 Orion Studio: ambientes interativos
+## 🌌 Orion Studio v0.3: Semi-Pro
 
 **Experimente Ruby no navegador:** https://orion.wolfpackworkshop.workers.dev/
 
-Ruby Playground executa CRuby/WebAssembly em um Web Worker; Orion Labs oferece EXP-001/002/003 em formato guiado; File Lab calcula hashes e analisa arquivos localmente. Processos e pipes reais continuam na CLI, sem execução remota pública. Consulte [web/README.md](web/README.md).
+O **Ruby Playground** executa CRuby/WebAssembly em um Web Worker. O **Orion Labs** oferece oito experimentos (EXP-001 a EXP-008), incluindo cinco desafios intermediários. O **Orion Test Bench** executa múltiplos casos por desafio, exibe relatórios e mantém progresso local. O **File Lab** calcula hashes e analisa arquivos localmente. Há rascunhos locais e importação/exportação `.rb`, sem upload de código. Processos e pipes reais continuam na CLI, sem execução remota pública. Consulte [web/README.md](web/README.md).
 
 ## Testes e gem
 

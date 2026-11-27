@@ -107,7 +107,10 @@ function onRuntimeMessage(event) {
   if (data.truncated) {
     els.stderr.textContent += "\nSaída limitada a 12.000 bytes por canal.";
   }
-  if (state.activeLab) {
+  if (state.activeLab && Array.isArray(state.activeLab.tests) && state.activeLab.tests.length) {
+    els.exercise.className = "exercise-check";
+    els.exercise.textContent = "Este desafio usa múltiplos testes. Abra o Test Bench para validar todos os casos.";
+  } else if (state.activeLab) {
     const passed = !data.error && !data.truncated &&
       normalize(data.output) === normalize(state.activeLab.expected);
     els.exercise.className = "exercise-check " + (passed ? "passed" : "failed");
@@ -126,7 +129,7 @@ function normalize(text) {
 }
 
 function runCode() {
-  if (state.busy) return;
+  if (state.busy || document.body.dataset.benchRunning === "true") return;
   const code = els.editor.value;
   const input = els.stdin.value;
   if (!code.trim()) { setOutput("", "Escreva um programa Ruby antes de executar.", "READY"); return; }
@@ -155,8 +158,8 @@ function runCode() {
 }
 
 function setPanel(which) {
-  const panel = ["playground", "labs", "inspector"].includes(which) ? which : "playground";
-  for (const name of ["playground", "labs", "inspector"]) {
+  const panel = ["playground", "labs", "inspector", "bench"].includes(which) ? which : "playground";
+  for (const name of ["playground", "labs", "inspector", "bench"]) {
     const tab = $("#tab-" + name);
     const section = $("#panel-" + name);
     const selected = name === panel;
@@ -176,6 +179,7 @@ function renderTemplates() {
     button.addEventListener("click", () => {
       if (state.busy) return;
       state.activeLab = null;
+      window.dispatchEvent(new CustomEvent("orion:lab-loaded", { detail: { id: "" } }));
       els.editor.value = snippet.code;
       els.stdin.value = "";
       updateCounter();
@@ -201,23 +205,24 @@ function createTextNode(tag, className, text) {
   return node;
 }
 
-function loadLab(lab) {
-  if (state.busy) return;
+function loadLab(lab, stay = false) {
+  if (state.busy || document.body.dataset.benchRunning === "true") return;
   state.activeLab = lab;
   els.editor.value = lab.code;
-  els.stdin.value = "";
+  els.stdin.value = Array.isArray(lab.tests) && lab.tests[0] ? lab.tests[0].input : "";
   updateCounter();
-  setPanel("playground");
-  location.hash = "#playground";
+  if (!stay) { setPanel("playground"); location.hash = "#playground"; }
   els.exercise.className = "exercise-check";
   els.exercise.textContent = "EXP-" + lab.id + " · Resultado esperado: " + JSON.stringify(lab.expected.trimEnd()) + ". " + lab.limitation;
-  els.editor.focus();
+  if (!stay) els.editor.focus();
+  window.dispatchEvent(new CustomEvent("orion:lab-loaded", { detail: { id: lab.id } }));
 }
 
 function renderLabs() {
   els.labCount.textContent = String(state.labs.length).padStart(2, "0") + " LABORATÓRIOS INTERATIVOS";
   const cards = state.labs.map(lab => {
     const card = createTextNode("article", "lab-card", "");
+    card.dataset.labId = lab.id;
     card.append(createTextNode("span", "lab-id", "EXP-" + lab.id + " / " + lab.pillar));
     card.append(createTextNode("h4", "", lab.title));
     card.append(createTextNode("p", "", lab.summary));
@@ -238,13 +243,14 @@ async function loadLabs() {
     const response = await fetch("/data/labs.json", { cache: "no-cache" });
     if (!response.ok) throw new Error("HTTP " + response.status);
     const data = await response.json();
-    if (data.schema_version !== 1 || !Array.isArray(data.labs)) throw new Error("Catálogo incompatível");
+    if (![1, 2].includes(data.schema_version) || !Array.isArray(data.labs)) throw new Error("Catálogo incompatível");
     state.labs = data.labs.filter(x => x && /^[0-9]{3}$/.test(x.id) &&
       typeof x.code === "string" && typeof x.expected === "string" &&
       typeof x.title === "string" && typeof x.summary === "string" &&
       typeof x.level === "string" && typeof x.pillar === "string" &&
       typeof x.limitation === "string");
     renderLabs();
+    window.dispatchEvent(new Event("orion:labs-ready"));
   } catch (error) {
     els.labGrid.replaceChildren(createTextNode("p", "", "Não foi possível carregar os laboratórios: " + error.message));
     els.labCount.textContent = "INDISPONÍVEIS";
@@ -350,6 +356,7 @@ els.reset.addEventListener("click", () => {
   els.editor.value = snippets[0].code;
   els.stdin.value = "";
   state.activeLab = null;
+  window.dispatchEvent(new CustomEvent("orion:lab-loaded", { detail: { id: "" } }));
   updateCounter();
   setOutput("# Ambiente restaurado. Pronto para começar.");
   els.exercise.className = "exercise-check";
@@ -385,4 +392,30 @@ function boot() {
     setTimeout(runCode, 100);
   }
 }
+window.OrionStudio = Object.freeze({
+  getLabs: () => state.labs.slice(),
+  getActiveLab: () => state.activeLab,
+  isBusy: () => state.busy,
+  getSource: () => els.editor.value,
+  setSource: code => {
+    if (state.busy || document.body.dataset.benchRunning === "true" ||
+        typeof code !== "string" || code.length > MAX_CODE) return false;
+    els.editor.value = code;
+    updateCounter();
+    return true;
+  },
+  clearActiveLab: () => {
+    if (state.busy || document.body.dataset.benchRunning === "true") return false;
+    state.activeLab = null;
+    window.dispatchEvent(new CustomEvent("orion:lab-loaded", { detail: { id: "" } }));
+    return true;
+  },
+  loadLabById: (id, stay = false) => {
+    const lab = state.labs.find(item => item.id === id);
+    if (!lab) return false;
+    loadLab(lab, stay);
+    return true;
+  },
+  setPanel
+});
 boot();
