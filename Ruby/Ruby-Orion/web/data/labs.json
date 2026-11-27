@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "labs": [
     {
       "id": "001",
@@ -36,6 +36,197 @@
       "expected": "orion-ipc/1 -> ALNILAM ONLINE\n",
       "code": "require \"json\"\n\nframe = {\n  protocol: \"orion-ipc/1\",\n  type: \"message\",\n  payload: { message: \"ALNILAM ONLINE\" }\n}\n\nwire = JSON.generate(frame)\nreceived = JSON.parse(wire)\nputs \"#{received.fetch('protocol')} -> #{received.fetch('payload').fetch('message')}\"\n",
       "hint": "Adicione uma chave sequence ao frame e valide se ela existe após JSON.parse."
+    },
+    {
+      "id": "004",
+      "slug": "http-header-audit",
+      "pillar": "ALNILAM / BUILD",
+      "title": "Auditoria de headers HTTP",
+      "level": "INTERMEDIÁRIO",
+      "summary": "Avalie cabeçalhos defensivos a partir de JSON, sem consultar servidores externos.",
+      "limitation": "Exercício local com dados simulados. Nenhuma requisição HTTP é feita.",
+      "concept": "Parsing JSON, normalização de chaves e regras determinísticas de validação.",
+      "objective": "Leia um objeto JSON de STDIN e imprima OK quando CSP e HSTS estiverem presentes. Caso faltem, imprima MISSING: CSP,HSTS (somente os ausentes, nessa ordem). Compare nomes sem diferenciar maiúsculas/minúsculas.",
+      "hint": "Use JSON.parse(STDIN.read), downcase nos nomes dos cabeçalhos e um array ordenado de requisitos.",
+      "expected": "OK\n",
+      "code": "require \"json\"\n\nheaders = JSON.parse(STDIN.read)\n# TODO: verificar content-security-policy e strict-transport-security.\n# Nomes são case-insensitive; saída exata: OK ou MISSING: ...\nputs \"TODO\"\n",
+      "tests": [
+        {
+          "name": "CSP e HSTS presentes",
+          "input": "{\"content-security-policy\":\"default-src 'self'\",\"strict-transport-security\":\"max-age=31536000\"}",
+          "expected": "OK\n"
+        },
+        {
+          "name": "Ausência de CSP",
+          "input": "{\"strict-transport-security\":\"max-age=31536000\"}",
+          "expected": "MISSING: CSP\n"
+        },
+        {
+          "name": "Ausência de HSTS",
+          "input": "{\"content-security-policy\":\"default-src 'none'\"}",
+          "expected": "MISSING: HSTS\n"
+        },
+        {
+          "name": "Nenhum header obrigatório",
+          "input": "{}",
+          "expected": "MISSING: CSP,HSTS\n"
+        },
+        {
+          "name": "Cabeçalhos com maiúsculas",
+          "input": "{\"Content-Security-Policy\":\"default-src 'self'\",\"Strict-Transport-Security\":\"max-age=1\"}",
+          "expected": "OK\n"
+        }
+      ]
+    },
+    {
+      "id": "005",
+      "slug": "log-aggregator",
+      "pillar": "ALNILAM / BUILD",
+      "title": "Agregador de eventos JSONL",
+      "level": "INTERMEDIÁRIO",
+      "summary": "Processe uma sequência de logs em JSON Lines, contando severidades e linhas inválidas.",
+      "limitation": "Eventos fictícios. Sem leitura de arquivos privados ou logs de usuários.",
+      "concept": "Streams de entrada, tratamento de exceções e agregação de eventos.",
+      "objective": "Para cada linha não vazia do STDIN, tente JSON.parse. Conte severity high e critical; JSON inválido incrementa invalid. Imprima exatamente high=N;critical=N;invalid=N.",
+      "hint": "Use STDIN.each_line, Hash.new(0), rescue JSON::ParserError e valores padrão em Hash.",
+      "expected": "high=2;critical=1;invalid=0\n",
+      "code": "require \"json\"\n\nstats = { \"high\" => 0, \"critical\" => 0, \"invalid\" => 0 }\nSTDIN.each_line do |line|\n  # TODO: normalizar eventos JSONL; linhas vazias não são erro.\nend\n\nputs \"TODO\"\n",
+      "tests": [
+        {
+          "name": "Dois altos e um crítico",
+          "input": "{\"severity\":\"high\"}\n{\"severity\":\"critical\"}\n{\"severity\":\"high\"}\n",
+          "expected": "high=2;critical=1;invalid=0\n"
+        },
+        {
+          "name": "Fluxo vazio",
+          "input": "",
+          "expected": "high=0;critical=0;invalid=0\n"
+        },
+        {
+          "name": "Registro inválido",
+          "input": "not-json\n{\"severity\":\"high\"}\n",
+          "expected": "high=1;critical=0;invalid=1\n"
+        },
+        {
+          "name": "Severidades não relevantes",
+          "input": "{\"severity\":\"low\"}\n{\"severity\":\"info\"}\n",
+          "expected": "high=0;critical=0;invalid=0\n"
+        },
+        {
+          "name": "Linhas em branco ignoradas",
+          "input": "\n{\"severity\":\"critical\"}\n  \n",
+          "expected": "high=0;critical=1;invalid=0\n"
+        }
+      ]
+    },
+    {
+      "id": "006",
+      "slug": "ipc-frame-validator",
+      "pillar": "ALNILAM / BUILD",
+      "title": "Validador de frames IPC",
+      "level": "INTERMEDIÁRIO",
+      "summary": "Valide contratos de mensagens versionadas do protocolo Orion IPC, incluindo entradas malformadas.",
+      "limitation": "Verificação de payloads JSON no navegador; transporte via pipes permanece na CLI local.",
+      "concept": "Validação de esquemas, checks de tipos e tratamento de entradas hostis.",
+      "objective": "Leia um documento JSON de STDIN. Imprima ACCEPT se protocol for 'orion-ipc/1', type for 'message' e payload.message for String. Caso contrário, incluindo JSON inválido, imprima REJECT.",
+      "hint": "Use is_a?(Hash), fetch com defaults e rescue JSON::ParserError. Evite confiar no tipo dos campos.",
+      "expected": "ACCEPT\n",
+      "code": "require \"json\"\n\nbegin\n  frame = JSON.parse(STDIN.read)\n  # TODO: validar protocol, type e payload.message\n  puts \"REJECT\"\nrescue JSON::ParserError\n  puts \"REJECT\"\nend\n",
+      "tests": [
+        {
+          "name": "Frame aceito",
+          "input": "{\"protocol\":\"orion-ipc/1\",\"type\":\"message\",\"payload\":{\"message\":\"Alnilam online\"}}",
+          "expected": "ACCEPT\n"
+        },
+        {
+          "name": "Protocolo desatualizado",
+          "input": "{\"protocol\":\"orion-ipc/0\",\"type\":\"message\",\"payload\":{\"message\":\"x\"}}",
+          "expected": "REJECT\n"
+        },
+        {
+          "name": "Payload de tipo errado",
+          "input": "{\"protocol\":\"orion-ipc/1\",\"type\":\"message\",\"payload\":\"nope\"}",
+          "expected": "REJECT\n"
+        },
+        {
+          "name": "Campo obrigatório ausente",
+          "input": "{\"protocol\":\"orion-ipc/1\",\"payload\":{\"message\":\"x\"}}",
+          "expected": "REJECT\n"
+        },
+        {
+          "name": "JSON inválido",
+          "input": "{broken",
+          "expected": "REJECT\n"
+        }
+      ]
+    },
+    {
+      "id": "007",
+      "slug": "frequency-index",
+      "pillar": "MINTAKA / EXPLORE",
+      "title": "Índice de frequência",
+      "level": "INTERMEDIÁRIO",
+      "summary": "Construa um índice de palavras ordenado por frequência e chave, com uma saída estável.",
+      "limitation": "Processamento determinístico de dados na memória, sem acesso ao filesystem.",
+      "concept": "Hash maps, ordenação estável, critérios secundários e custo algorítmico.",
+      "objective": "Leia palavras de STDIN separadas por espaços. Conte ocorrências e imprima cada palavra como chave:contagem, ordenada por maior frequência e, nos empates, alfabeticamente. Para entrada vazia, imprima somente uma linha vazia.",
+      "hint": "Use String#split, Enumerable#tally e sort_by { |word, count| [-count, word] }.",
+      "expected": "ruby:2\natlas:1\norion:1\n",
+      "code": "words = STDIN.read.split\ncounts = words.tally\n\n# TODO: ordenar por [-frequência, palavra] e emitir linhas chave:frequência.\nputs \"TODO\"\n",
+      "tests": [
+        {
+          "name": "Frequência e desempate",
+          "input": "ruby orion ruby atlas",
+          "expected": "ruby:2\natlas:1\norion:1\n"
+        },
+        {
+          "name": "Ordem alfabética em empate",
+          "input": "zeta beta alpha",
+          "expected": "alpha:1\nbeta:1\nzeta:1\n"
+        },
+        {
+          "name": "Uma única palavra",
+          "input": "mintaka mintaka mintaka",
+          "expected": "mintaka:3\n"
+        },
+        {
+          "name": "Entrada vazia",
+          "input": "",
+          "expected": "\n"
+        }
+      ]
+    },
+    {
+      "id": "008",
+      "slug": "integrity-sha256",
+      "pillar": "MINTAKA / EXPLORE",
+      "title": "Integridade SHA-256",
+      "level": "INTERMEDIÁRIO",
+      "summary": "Implemente uma verificação de integridade determinística sobre dados textuais.",
+      "limitation": "Hashes locais; não representa assinatura digital ou prova de autenticidade.",
+      "concept": "Digest, representação hexadecimal e diferença entre integridade e autenticidade.",
+      "objective": "Leia todo o STDIN, remova somente whitespace das pontas com strip e imprima o SHA-256 hexadecimal do resultado. Não faça acesso à rede.",
+      "hint": "require 'digest' e Digest::SHA256.hexdigest(STDIN.read.strip).",
+      "expected": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad\n",
+      "code": "require \"digest\"\n\npayload = STDIN.read.strip\n# TODO: imprimir o SHA-256 hexadecimal de payload.\nputs \"TODO\"\n",
+      "tests": [
+        {
+          "name": "Vetor clássico",
+          "input": "abc\n",
+          "expected": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad\n"
+        },
+        {
+          "name": "Alfabeto simples",
+          "input": "alpha",
+          "expected": "8ed3f6ad685b959ead7022518e1af76cd816f8e8ec7ccdda1ed4018e8f2223f8\n"
+        },
+        {
+          "name": "Nome do projeto",
+          "input": "Ruby Orion",
+          "expected": "7f4c0ab71c2ee79acaaeb3665c2fed8ce2ca6a0446e1bb2ae9a8948c4e616230\n"
+        }
+      ]
     }
-  ]
+  ],
+  "studio_version": "0.3.0"
 }
