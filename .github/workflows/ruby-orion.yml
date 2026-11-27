@@ -34,7 +34,8 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
       - name: Ruby syntax checks
-        run: ruby -e 'Dir.glob("{lib,bin,labs,test}/**/*.rb").each { |f| abort("Syntax error: #{f}") unless system(RbConfig.ruby, "-c", f, out: File::NULL) }'
+        run: |
+          ruby -e 'Dir.glob("{lib,bin,labs,test}/**/*.rb").each { |f| abort("Syntax error: #{f}") unless system(RbConfig.ruby, "-c", f, out: File::NULL) }'
       - name: Minitest and integration tests
         run: ruby -Ilib -Itest -e 'Dir["test/test_*.rb"].sort.each { |file| require_relative file }'
       - name: CLI smoke tests
