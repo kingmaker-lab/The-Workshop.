@@ -104,19 +104,41 @@ async function evaluate(source, stdin, id) {
 
 self.onmessage = async event => {
   const message = event.data;
-  if (!message || message.type !== "run" || busy) return;
+  if (!message || busy) return;
   const { id, code, input } = message;
-  if (!Number.isInteger(id) || typeof code !== "string" || typeof input !== "string") return;
-  if (code.length > MAX_CODE || input.length > MAX_INPUT) {
-    self.postMessage({ type: "fatal", id, message: "Limite de entrada excedido." });
+  if (!Number.isInteger(id) || typeof code !== "string") return;
+  if (message.type !== "run" && message.type !== "suite") return;
+  if (code.length > MAX_CODE) {
+    self.postMessage({ type: "fatal", id, message: "Limite de código excedido (8.000 caracteres)." });
+    return;
+  }
+  const suite = message.type === "suite";
+  const cases = suite ? message.cases : [{ input }];
+  if (!Array.isArray(cases) || cases.length < 1 || cases.length > 6 ||
+      cases.some(test => !test || typeof test.input !== "string" || test.input.length > MAX_INPUT)) {
+    self.postMessage({ type: "fatal", id, message: "Suíte inválida: máximo de 6 casos e 4.000 caracteres de entrada por caso." });
     return;
   }
   busy = true;
   try {
-    const result = await evaluate(code, input, id);
-    self.postMessage({ type: "result", id, ...result });
+    if (!suite) {
+      const result = await evaluate(code, input, id);
+      self.postMessage({ type: "result", id, ...result });
+    } else {
+      await getCompiledModule();
+      self.postMessage({ type: "suite-ready", id, count: cases.length });
+      for (let index = 0; index < cases.length; index++) {
+        const before = performance.now();
+        const result = await evaluate(code, cases[index].input, id);
+        self.postMessage({
+          type: "suite-case", id, index,
+          durationMs: Math.round(performance.now() - before),
+          ...result
+        });
+      }
+      self.postMessage({ type: "suite-done", id, count: cases.length });
+    }
   } catch (error) {
-    // Never forward stack traces or underlying runtime objects to the parent.
     self.postMessage({ type: "fatal", id, message: String(error && error.message || error).slice(0, 600) });
   } finally {
     busy = false;
