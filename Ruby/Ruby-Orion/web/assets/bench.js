@@ -42,6 +42,7 @@
 
   const DRAFT_PREFIX = "ruby-orion-studio:v03:draft:";
   const PROGRESS_KEY = "ruby-orion-studio:v03:completed";
+  const LAST_LAB_KEY = "ruby-orion-studio:v03:last_lab";
   const BOOT_TIMEOUT = 75_000;
   const CASE_TIMEOUT = 9_000;
   const CODE_LIMIT = 8_000;
@@ -168,6 +169,7 @@
 
   function chooseLab(id) {
     if (!id) {
+      API.clearActiveLab();
       selectedLabId = "";
       el.select.value = "";
       refreshLab();
@@ -228,6 +230,12 @@
       const option = textNode("option", "", "EXP-" + lab.id + " · " + lab.title);
       option.value = lab.id;
       el.select.append(option);
+    }
+    const params = new URLSearchParams(location.search);
+    const remembered = storageGet(LAST_LAB_KEY);
+    if (!API.getActiveLab() && !params.has("selftest") && !params.has("benchtest") &&
+        /^\d{3}$/.test(remembered || "") && labs.some(lab => lab.id === remembered)) {
+      API.loadLabById(remembered, true);
     }
     selectedLabId = API.getActiveLab()?.id || "";
     el.select.value = selectedLabId;
@@ -440,6 +448,7 @@
 
   window.addEventListener("orion:lab-loaded", event => {
     selectedLabId = event.detail?.id || "";
+    storageSet(LAST_LAB_KEY, selectedLabId);
     el.select.value = selectedLabId;
     refreshLab();
   });

@@ -179,6 +179,7 @@ function renderTemplates() {
     button.addEventListener("click", () => {
       if (state.busy) return;
       state.activeLab = null;
+      window.dispatchEvent(new CustomEvent("orion:lab-loaded", { detail: { id: "" } }));
       els.editor.value = snippet.code;
       els.stdin.value = "";
       updateCounter();
@@ -355,6 +356,7 @@ els.reset.addEventListener("click", () => {
   els.editor.value = snippets[0].code;
   els.stdin.value = "";
   state.activeLab = null;
+  window.dispatchEvent(new CustomEvent("orion:lab-loaded", { detail: { id: "" } }));
   updateCounter();
   setOutput("# Ambiente restaurado. Pronto para começar.");
   els.exercise.className = "exercise-check";
@@ -400,6 +402,12 @@ window.OrionStudio = Object.freeze({
         typeof code !== "string" || code.length > MAX_CODE) return false;
     els.editor.value = code;
     updateCounter();
+    return true;
+  },
+  clearActiveLab: () => {
+    if (state.busy || document.body.dataset.benchRunning === "true") return false;
+    state.activeLab = null;
+    window.dispatchEvent(new CustomEvent("orion:lab-loaded", { detail: { id: "" } }));
     return true;
   },
   loadLabById: (id, stay = false) => {
