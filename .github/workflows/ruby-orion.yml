@@ -1,4 +1,4 @@
-name: Ruby Orion: CLI and Semi-Pro Studio validation
+name: Ruby Orion - CLI and Semi-Pro Studio validation
 on:
   push:
     branches: [main]

@@ -242,7 +242,7 @@ async function loadLabs() {
     const response = await fetch("/data/labs.json", { cache: "no-cache" });
     if (!response.ok) throw new Error("HTTP " + response.status);
     const data = await response.json();
-    if (data.schema_version !== 1 || !Array.isArray(data.labs)) throw new Error("Catálogo incompatível");
+    if (![1, 2].includes(data.schema_version) || !Array.isArray(data.labs)) throw new Error("Catálogo incompatível");
     state.labs = data.labs.filter(x => x && /^[0-9]{3}$/.test(x.id) &&
       typeof x.code === "string" && typeof x.expected === "string" &&
       typeof x.title === "string" && typeof x.summary === "string" &&
