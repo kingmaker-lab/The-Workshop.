@@ -11,6 +11,7 @@ mapping = {
   "/assets/studio.css" => ["assets/studio.css", "text/css; charset=utf-8"],
   "/assets/favicon.svg" => ["assets/favicon.svg", "image/svg+xml"],
   "/assets/studio.js" => ["assets/studio.js", "application/javascript; charset=utf-8"],
+  "/assets/bench.js" => ["assets/bench.js", "application/javascript; charset=utf-8"],
   "/assets/ruby-worker.js" => ["assets/ruby-worker.js", "application/javascript; charset=utf-8"],
   "/data/labs.json" => ["data/labs.json", "application/json; charset=utf-8"]
 }

@@ -1,4 +1,4 @@
-name: Ruby Orion Alnilam security and stability
+name: Ruby Orion: CLI and Semi-Pro Studio validation
 on:
   push:
     branches: [main]
@@ -63,6 +63,7 @@ jobs:
       - name: Check JavaScript parser
         run: |
           node --check assets/studio.js
+          node --check assets/bench.js
           node --check assets/ruby-worker.js
       - name: Rebuild deployable Worker and check syntax
         run: |
