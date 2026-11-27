@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "initiative": "The Workshop Ruby Initiative",
-  "updated_at": "2026-11-24",
+  "updated_at": "2026-11-27",
   "projects": [
     {
       "id": "protocolo-ruby",
@@ -26,17 +26,18 @@
       "status": "development",
       "featured": true,
       "kind": "ENGINEERING / RUBY",
-      "description": "Ruby Orion v0.2 (Alnilam): engenharia Ruby, supervisor de processos e IPC na CLI. Agora com Orion Studio interativo: playground Ruby/WebAssembly, laboratórios guiados e File Lab local.",
+      "description": "Ruby Orion: CLI v0.2 + Studio Semi-Pro v0.3. Execute Ruby no navegador, resolva 8 laboratórios, valide 22 casos intermediários no Test Bench e use File Lab e rascunhos locais.",
       "stack": [
         "Ruby",
-        "CLI",
+        "WebAssembly",
+        "Test Bench",
         "Systems",
-        "IPC",
-        "WebAssembly"
+        "IPC"
       ],
       "repo": "https://github.com/kingmaker-lab/The-Workshop./tree/main/Ruby/Ruby-Orion",
       "site": "https://orion.wolfpackworkshop.workers.dev/",
-      "version": "0.2.0"
+      "version": "0.2.0",
+      "studio_version": "0.3.0"
     },
     {
       "id": "raven",
